@@ -11,15 +11,9 @@ import * as Schema from "effect/Schema";
 import type { OtlpEndpointSource } from "@s8code/contracts";
 import { sweepStalePendingAttachments } from "./attachmentStore.ts";
 import { markNoCopyOnWrite } from "./noCopyOnWrite.ts";
-import {
-  DEFAULT_SIGNAL_EXPORT,
-  nodeProcessRuntimeAttributes,
-  processServiceInstanceId,
-  type SignalExport,
-} from "@s8code/shared/observability";
+import { DEFAULT_SIGNAL_EXPORT, type SignalExport } from "@s8code/shared/observability";
 import * as OtelEnvironment from "@s8code/shared/otelEnvironment";
-import { type ReleaseChannel, releaseResourceAttributes } from "@s8code/shared/releaseResource";
-import packageJson from "../package.json" with { type: "json" };
+import { type ReleaseChannel } from "@s8code/shared/releaseResource";
 
 // Pack stamps the release channel; source and test builds run as dev.
 declare const __T3CODE_BUILD_CHANNEL__: "nightly" | "latest" | undefined;
@@ -120,23 +114,6 @@ export class ServerConfig extends Context.Service<
 }
 
 export const make = (config: ServerConfig["Service"]) => ServerConfig.of(config);
-
-export const otlpResource = (
-  config: Pick<ServerConfig["Service"], "mode" | "otelEnvironment">,
-  hostName: string,
-) => ({
-  serviceName: "t3code-server",
-  serviceVersion: packageJson.version,
-  attributes: {
-    "service.namespace": "t3code",
-    "service.runtime": "t3-server",
-    "t3code.server.managed_by": config.mode === "desktop" ? "desktop" : "standalone",
-    "service.instance.id": processServiceInstanceId(config.otelEnvironment.resourceAttributes),
-    ...releaseResourceAttributes(telemetryChannel, config.otelEnvironment.resourceAttributes),
-    "host.name": config.otelEnvironment.resourceAttributes["host.name"] || hostName,
-    ...nodeProcessRuntimeAttributes(),
-  },
-});
 
 export const layer = (config: ServerConfig["Service"]) => Layer.succeed(ServerConfig, make(config));
 
