@@ -3,7 +3,7 @@ import { type ToolActivityIcon } from "@s8code/contracts";
 import { toolActivityFaviconUrl } from "@s8code/shared/favicon";
 import { getProjectFaviconCacheKey } from "@s8code/shared/projectFavicon";
 import { use, useState } from "react";
-import { T3Wordmark } from "../T3Wordmark";
+import { BrandWordmark } from "../BrandWordmark";
 import {
   BotIcon,
   BrainIcon,
@@ -245,7 +245,7 @@ function WorkEntryIcon({ name, className }: { name: WorkEntryIconName; className
     case "device":
       return <SmartphoneIcon className={className} aria-hidden />;
     case "t3-code":
-      return <T3Wordmark className={className} aria-hidden />;
+      return <BrandWordmark className={className} aria-hidden />;
     case "check":
       return <CheckIcon className={className} aria-hidden />;
     case "list-todo":

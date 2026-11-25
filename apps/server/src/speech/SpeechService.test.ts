@@ -500,7 +500,7 @@ it.effect("honors exact aliases and phrase boundaries in batch and streamed text
         { term: "C#", aliases: [] },
         { term: "React", aliases: ["瑞安特"] },
         { term: "Kubernetes", aliases: [] },
-        { term: "T3 Code", aliases: [] },
+        { term: "S8 Code", aliases: [] },
         { term: "VSCode", aliases: [] },
         { term: "iOS", aliases: [] },
       ],
@@ -537,12 +537,12 @@ it.effect("uses vocabulary only for supported transcription and always applies a
             speechCustomWords: [
               { term: "GitHub", aliases: [] },
               { term: "Bob", aliases: ["Robert"] },
-              { term: "T3 Code", aliases: [] },
+              { term: "S8 Code", aliases: [] },
             ],
             speechHints: ["Server"],
           };
           const vocabulary =
-            supportsVocabulary && !translate ? ["Server", "GitHub", "Bob", "T3 Code"] : undefined;
+            supportsVocabulary && !translate ? ["Server", "GitHub", "Bob", "S8 Code"] : undefined;
           native.transcribe.mockResolvedValueOnce({ text: "git hub and Robert on the server" });
           expect(yield* speech.transcribe(pcm(), options)).toBe(
             vocabulary ? "git hub and Bob on the server" : "GitHub and Bob on the server",

@@ -169,7 +169,7 @@ describe("collectServerUpdateTargets", () => {
         entry.label,
         entry.reason,
       ]),
-    ).toEqual([["off", "Example Corp manages T3 Code updates."]]);
+    ).toEqual([["off", "Example Corp manages S8 Code updates."]]);
     expect(
       collectServerUpdateTargets(
         machines.map((entry) => ({
@@ -297,7 +297,7 @@ describe("collectChannelSwitchTargets", () => {
       ["behind-desktop", "update T3 Code on that machine"],
       [
         "no-nightly",
-        "Example Corp manages T3 Code updates. Only stable releases can be installed.",
+        "Example Corp manages S8 Code updates. Only stable releases can be installed.",
       ],
     ]);
   });
@@ -447,7 +447,7 @@ describe("runUpdateEverything", () => {
 });
 
 describe("describeUpdateEverything", () => {
-  it("gives each machine one row with its T3 Code and provider updates", () => {
+  it("gives each machine one row with its S8 Code and provider updates", () => {
     const id = EnvironmentId.make;
     const { rows } = describeUpdateEverything({
       localVersion: "1.1.0",

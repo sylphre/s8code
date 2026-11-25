@@ -1,6 +1,6 @@
 import type { SVGProps } from "react";
 
-export function T3Wordmark(props: SVGProps<SVGSVGElement>) {
+export function BrandWordmark(props: SVGProps<SVGSVGElement>) {
   return (
     <svg {...props} viewBox="15.5309 37 94.3941 56.96" xmlns="http://www.w3.org/2000/svg">
       <path

@@ -25,7 +25,6 @@ const LISTED_OVERLAY_ROUTES: ReadonlySet<string> = new Set([
   "NewTaskEnvironment",
   "NewTaskBranch",
   "NewTaskRepositories",
-  "SettingsLegal",
   "SettingsAuth",
   "SettingsWaitlist",
   "ThreadAgents",

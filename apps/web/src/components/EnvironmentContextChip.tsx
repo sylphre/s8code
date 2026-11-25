@@ -33,7 +33,7 @@ export function EnvironmentContextChip(props: {
           <ContextChipLabel>{label}</ContextChipLabel>
         </ContextChip>
       }
-      label={environment ? gt("T3 Code environment") : gt("Machine not in this app")}
+      label={environment ? gt("S8 Code environment") : gt("Machine not in this app")}
     />
   );
 }
