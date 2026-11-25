@@ -15,7 +15,6 @@ import {
   type EnvironmentPresentation,
 } from "@s8code/client-runtime/connection";
 import { createServerEnvironmentAtoms } from "@s8code/client-runtime/state/server";
-import { createOutdatedServerUpdateCommand } from "@s8code/client-runtime/state/outdatedServerUpdate";
 import { createEnvironmentServerConfigsAtom } from "@s8code/client-runtime/state/shell";
 import { mergeWithDefaultKeybindings } from "@s8code/shared/keybindings";
 import * as Option from "effect/Option";
@@ -24,7 +23,6 @@ import { AsyncResult, Atom } from "effect/reactivity";
 import { isConnectedWithConfig } from "../components/settings/scopedSettings";
 import { environmentCatalog } from "../connection/catalog";
 import { connectionAtomRuntime } from "../connection/runtime";
-import { environmentAtomList } from "./environmentAtomList";
 import { primaryEnvironmentIdAtom, localEnvironmentIdAtom } from "./primaryEnvironment";
 import { environmentSession } from "./session";
 import { reuseProvidersIgnoringCheckedAt } from "./serverProviders.logic";
@@ -36,11 +34,6 @@ export const serverEnvironment = createServerEnvironmentAtoms(connectionAtomRunt
   usageLimitSources: true,
   usageLimitsCommand: true,
 });
-export const environmentUpdateStatesAtom = environmentAtomList(
-  "web-environment-update-states",
-  serverEnvironment.updateStateAtom,
-);
-export const updateOutdatedServer = createOutdatedServerUpdateCommand(connectionAtomRuntime);
 export const environmentServerConfigsAtom = createEnvironmentServerConfigsAtom({
   catalogValueAtom: environmentCatalog.catalogValueAtom,
   serverConfigValueAtom: serverEnvironment.configValueAtom,

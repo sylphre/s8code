@@ -24,7 +24,7 @@ import { startLegacyThreadMigrationToast } from "./components/LegacyThreadMigrat
 import { startPermissionUpdateNotices } from "./components/PermissionUpdateNotice";
 import { startAgentOpenedPreviews } from "./components/preview/agentOpenedPreviews";
 import { startMainAppLocationTracking } from "./components/sidebar/mainAppLocation";
-import { startDesktopUpdateLaunchNotice } from "./components/sidebar/updateEverythingRun";
+import { startDesktopUpdateLaunchNotice } from "./components/desktopUpdate.launchNotice";
 import { startSlowRpcRequestToasts } from "./components/SlowRpcRequestToastCoordinator";
 import { startThreadNotifications } from "./components/ThreadNotificationCoordinator";
 import { startGuideRunNotifications } from "./components/pullRequest/guide/PullRequestGuideRunCoordinator";

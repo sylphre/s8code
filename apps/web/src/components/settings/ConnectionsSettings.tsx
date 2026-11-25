@@ -4,7 +4,6 @@ import { managedCapabilityDenial } from "@s8code/client-runtime/contract-labels"
 import { SessionPermissions } from "./SessionPermissions";
 import { useSearch } from "@tanstack/react-router";
 import { ChevronRightIcon, EllipsisIcon } from "lucide-react";
-import { useAtom, useAtomValue } from "@effect/atom-react";
 import { type ReactNode, useState } from "react";
 import { T, useGT, useMessages, Var } from "gt-react";
 import {
@@ -90,11 +89,6 @@ import { EnvironmentMachineIcon } from "../EnvironmentMachineIcon";
 import { type ServerClientSessionRecord } from "~/environments/primary";
 import { isDesktopLocalConnectionTarget } from "~/connection/desktopLocal";
 import { useUiStateStore } from "~/uiStateStore";
-import {
-  resolveServerConfigVersionMismatch,
-  resolveServerSelfUpdateCapability,
-  supportsDesktopAppUpdate,
-} from "~/versionSkew";
 import { hasCloudPublicConfig } from "~/cloud/publicConfig";
 import { RemoveT3ConnectEnvironmentDialog } from "../clerk/RemoveT3ConnectEnvironmentDialog";
 import { authEnvironment } from "~/state/auth";
@@ -120,14 +114,6 @@ import {
 import { requestConfirmDialog } from "~/confirmDialog";
 import { useUpdateEnvironmentSettings } from "~/hooks/useSettings";
 import { useAtomCommand } from "../../state/use-atom-command";
-import { environmentIdsKey } from "~/state/environmentAtomList";
-import { environmentUpdateStatesAtom, serverEnvironment } from "~/state/server";
-import {
-  ServerUpdateAction,
-  ServerUpdateProgress,
-  ServerUpdatesAction,
-  type ServerUpdateTarget,
-} from "../ServerUpdateAction";
 import {
   sortDesktopPairingLinks,
   summarizeAuthorizedClients,
@@ -296,43 +282,6 @@ function ConnectionsSettingsContent({
   const listedEnvironments = savedEnvironments.filter(
     (environment) => !isDesktopLocalConnectionTarget(environment.entry.target),
   );
-  const savedUpdateStates = useAtomValue(
-    environmentUpdateStatesAtom(
-      environmentIdsKey(savedEnvironments.map(({ environmentId }) => environmentId)),
-    ),
-  );
-  const savedServerUpdateStates = savedEnvironments.map((environment, index) => ({
-    environment,
-    updateStatus: savedUpdateStates[index]!.status,
-  }));
-  const savedServerUpdateTargets = savedServerUpdateStates.flatMap(
-    ({ environment, updateStatus }): ServerUpdateTarget[] => {
-      const mismatch = resolveServerConfigVersionMismatch(environment.serverConfig, m);
-      const selfUpdate = resolveServerSelfUpdateCapability(environment.serverConfig);
-      const desktopAppUpdate = supportsDesktopAppUpdate(environment.serverConfig);
-      if (
-        !mismatch ||
-        updateStatus === "running" ||
-        !environment.entry.enabled ||
-        environment.connection.phase !== "connected" ||
-        isDesktopLocalConnectionTarget(environment.entry.target) ||
-        selfUpdate === null ||
-        (selfUpdate === "desktop-managed" && !desktopAppUpdate)
-      ) {
-        return [];
-      }
-      return [
-        {
-          environmentId: environment.environmentId,
-          serverLabel: environment.label,
-          selfUpdate,
-          installation: environment.serverConfig?.environment.capabilities.serverInstallation,
-          desktopAppUpdate,
-          targetVersion: mismatch.clientVersion,
-        },
-      ];
-    },
-  );
   const loadBalancingEnvironments = [
     ...(primaryEnvironment ? [primaryEnvironment] : []),
     ...savedEnvironments.filter((environment) => environment.entry.enabled),
@@ -419,10 +368,6 @@ function ConnectionsSettingsContent({
     primaryServerConfig?.managedPolicy,
     "remoteClients",
     m,
-  );
-  const primaryVersionMismatch = resolveServerConfigVersionMismatch(primaryServerConfig, m);
-  const primaryServerUpdateState = useAtomValue(
-    serverEnvironment.updateStateAtom(primaryEnvironmentId),
   );
   const [isAdvertisedEndpointListExpanded, setIsAdvertisedEndpointListExpanded] = useState(false);
   const defaultAdvertisedEndpointKey = useUiStateStore(
@@ -1344,47 +1289,14 @@ function ConnectionsSettingsContent({
               <SettingsRow
                 title={gt("Version")}
                 description={
-                  primaryServerUpdateState.status !== "idle" ? (
-                    <ServerUpdateProgress state={primaryServerUpdateState} />
-                  ) : (
-                    [
-                      primaryServerConfig?.environment.serverVersion ?? null,
-                      primaryEnvironment?.displayUrl ?? null,
-                    ]
-                      .filter((value): value is string => value !== null)
-                      .join(" · ") || gt("Loading…")
-                  )
+                  [
+                    primaryServerConfig?.environment.serverVersion ?? null,
+                    primaryEnvironment?.displayUrl ?? null,
+                  ]
+                    .filter((value): value is string => value !== null)
+                    .join(" · ") || gt("Loading…")
                 }
-                control={
-                  primaryVersionMismatch &&
-                  primaryEnvironmentId !== null &&
-                  primaryServerUpdateState.status !== "running" ? (
-                    <ServerUpdateAction
-                      size="sm"
-                      environmentId={primaryEnvironmentId}
-                      serverLabel={
-                        primaryEnvironment
-                          ? gt("{environment} server", { environment: primaryEnvironment.label })
-                          : gt("server")
-                      }
-                      selfUpdate={resolveServerSelfUpdateCapability(primaryServerConfig)}
-                      installation={
-                        primaryServerConfig?.environment.capabilities.serverInstallation
-                      }
-                      desktopAppUpdate={supportsDesktopAppUpdate(primaryServerConfig)}
-                      targetVersion={primaryVersionMismatch.clientVersion}
-                      label={
-                        primaryServerUpdateState.status === "failed"
-                          ? gt("Retry update")
-                          : gt("Update to {version}", {
-                              version: primaryVersionMismatch.clientVersion,
-                            })
-                      }
-                    />
-                  ) : primaryServerUpdateState.status === "idle" && primaryServerConfig ? (
-                    <LocalVersionStatusLabel />
-                  ) : undefined
-                }
+                control={primaryServerConfig ? <LocalVersionStatusLabel /> : undefined}
               />
             ) : null}
             {canManageLocalBackend && desktopBridge ? (
@@ -1856,10 +1768,6 @@ function ConnectionsSettingsContent({
         }
         headerAction={
           <div className="flex items-center gap-1">
-            {savedServerUpdateTargets.length > 0 ? (
-              <ServerUpdatesAction targets={savedServerUpdateTargets} variant="ghost-muted" />
-            ) : null}
-            {/* Actions on several machines at once, such as linking several, go here. */}
             <AddEnvironmentDialog
               key={`${addPrefill?.environmentId ?? "any"}:${addBackendHost}`}
               open={addBackendDialogOpen || addPrefill !== null}

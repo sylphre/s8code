@@ -8,7 +8,7 @@ import { desktopUpdateChannelOf } from "@s8code/shared/cliRelease";
 import { msg } from "gt-react";
 
 import { m, type MessageResolver } from "../i18n/messages";
-import { channelSwitchLabel } from "./sidebar/updateEverything.logic";
+import { channelSwitchLabel } from "./settings/updateTrackSwitch.logic";
 
 export type DesktopUpdateButtonAction = "download" | "install" | "none";
 

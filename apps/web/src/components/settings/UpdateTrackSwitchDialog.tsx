@@ -1,31 +1,29 @@
 import { thrownErrorMessage } from "@s8code/client-runtime/errors";
 import { m as resolveMessage } from "~/i18n/messages";
-import { useAtomValue } from "@effect/atom-react";
 import { settlePromise, squashAtomCommandFailure } from "@s8code/client-runtime/state/runtime";
 import type { DesktopUpdateChannel } from "@s8code/contracts";
 import { acceptsTrackSwitchRelease, desktopUpdateChannelOf } from "@s8code/shared/cliRelease";
 import { isMacPlatform } from "@s8code/shared/keybindings";
 import { T, useGT, useMessages, Var } from "gt-react";
 import { useState } from "react";
+import { useAtomValue } from "@effect/atom-react";
 import { AsyncResult } from "effect/reactivity";
 
+import { isElectron } from "~/env";
 import { APP_VERSION } from "~/branding";
+import { isDesktopLocalConnectionTarget } from "~/connection/desktopLocal";
 import { isLocalEnvironmentDisabled } from "~/localEnvironment";
 import { useDesktopUpdateState } from "~/state/desktopUpdate";
 import { useEnvironments } from "~/state/environments";
 import { npmReleaseAtom, npmReleaseFailureMessage } from "~/state/npmRelease";
 import { downloadLocalUpdate, installLocalUpdate } from "../sidebar/SidebarUpdatePill";
-import { UpdateEverythingDialog } from "../sidebar/UpdateEverythingDialog";
 import {
   channelSwitchLabel,
   localSwitchBlockReason,
-  type ChannelSwitchRelease,
-} from "../sidebar/updateEverything.logic";
-import { isHostedByThisApp, useUpdateEverything } from "../sidebar/useUpdateEverything";
-import {
   localUpdaterStaysPut,
   nothingToMove,
   prepareLocalTrackSwitch,
+  type ChannelSwitchRelease,
 } from "./updateTrackSwitch.logic";
 import {
   AlertDialog,
@@ -39,7 +37,18 @@ import {
 import { Button } from "../ui/button";
 import { stackedThreadToast, toastManager } from "../ui/toast";
 
-/** Moves this app and every connected machine to `channel`. */
+/** Servers this desktop app runs; they update with it. */
+function isHostedByThisApp(
+  environment: ReturnType<typeof useEnvironments>["environments"][number],
+) {
+  return (
+    isElectron &&
+    (environment.entry.target._tag === "PrimaryConnectionTarget" ||
+      isDesktopLocalConnectionTarget(environment.entry.target))
+  );
+}
+
+/** Moves this app to `channel`; the machines it hosts restart with it. */
 export function UpdateTrackSwitchDialog({
   channel,
   onClose,
@@ -103,7 +112,6 @@ function SwitchPlan({
   // After a partial switch this app may already be on the track; then only remotes move.
   const switchesLocal = crossesLocal && !updatesOff;
   const [checking, setChecking] = useState(false);
-  const everything = useUpdateEverything(switchesLocal ? release.version : null, release);
   const label = channelSwitchLabel(release.channel, m);
   const idle = nothingToMove(
     {
@@ -112,8 +120,6 @@ function SwitchPlan({
       savedChannel: updateState?.channel ?? null,
       switchesLocal,
       crossesLocal,
-      rows: everything.rows,
-      hasTargets: everything.hasUpdates,
     },
     m,
   );
@@ -133,7 +139,7 @@ function SwitchPlan({
   const run = async () => {
     const bridge = window.desktopBridge;
     if (!bridge) return;
-    // Stay open while the feed is checked; the run's own progress takes over after.
+    // Stay open while the feed is checked; the switch's own progress takes over after.
     setChecking(true);
     const fail = (description: string) =>
       toastManager.add(
@@ -154,42 +160,38 @@ function SwitchPlan({
       return;
     }
     const { local } = prepared;
-    const result = await settlePromise(() =>
-      everything.run(
-        local === null
-          ? {}
-          : {
-              ...(local.status === "available"
-                ? {
-                    downloadLocal: (reportError) =>
-                      downloadLocalUpdate(bridge, { notifyDownloaded: false, reportError }),
-                  }
-                : {}),
-              // Install only a build the database check covers, pinned so nothing replaces it.
-              installLocal: async (reportError) => {
-                const { downloadedVersion } = await bridge.getUpdateState();
-                if (
-                  downloadedVersion === null ||
-                  !acceptsTrackSwitchRelease(downloadedVersion, release.channel, release.version)
-                ) {
-                  reportError(
-                    gt("Could not install update"),
-                    downloadedVersion === null
-                      ? gt("This app downloaded nothing, not {version} or newer.", {
-                          version: release.version,
-                        })
-                      : gt("This app downloaded {downloaded}, not {version} or newer.", {
-                          downloaded: downloadedVersion,
-                          version: release.version,
-                        }),
-                  );
-                  return false;
-                }
-                return installLocalUpdate(bridge, reportError, downloadedVersion);
-              },
-            },
-      ),
-    );
+    if (local === null) return;
+    const result = await settlePromise(async () => {
+      if (local.status === "available") {
+        const downloaded = await downloadLocalUpdate(bridge, {
+          notifyDownloaded: false,
+          reportError: (title, description) => fail(`${title}: ${description}`),
+        });
+        if (!downloaded) return;
+      }
+      // Install only a build the database check covers, pinned so nothing replaces it.
+      const { downloadedVersion } = await bridge.getUpdateState();
+      if (
+        downloadedVersion === null ||
+        !acceptsTrackSwitchRelease(downloadedVersion, release.channel, release.version)
+      ) {
+        throw new Error(
+          downloadedVersion === null
+            ? gt("This app downloaded nothing, not {version} or newer.", {
+                version: release.version,
+              })
+            : gt("This app downloaded {downloaded}, not {version} or newer.", {
+                downloaded: downloadedVersion,
+                version: release.version,
+              }),
+        );
+      }
+      await installLocalUpdate(
+        bridge,
+        (title, description) => fail(`${title}: ${description}`),
+        downloadedVersion,
+      );
+    });
     if (result._tag === "Failure") {
       const error = squashAtomCommandFailure(result);
       fail(
@@ -201,27 +203,44 @@ function SwitchPlan({
   };
 
   return (
-    <UpdateEverythingDialog
-      open
-      onOpenChange={(open) => !open && !checking && onClose()}
-      title={gt("Switch to {label}?", { label })}
-      version={release.version}
-      providerCount={0}
-      rows={everything.rows}
-      notes={[
-        ...(idle.note === null ? [] : [idle.note]),
-        ...(crossesLocal && updatesOff
-          ? [gt("This app's updates are off here, so reinstall it yourself to switch.")]
-          : []),
-        ...(switchesLocal && isMacPlatform(navigator.platform)
-          ? [gt("If S8 Code does not reopen after it restarts, open it again.")]
-          : []),
-      ]}
-      restarts={everything.restarts}
-      confirmLabel={checking ? gt("Checking…") : gt("Switch to {label}", { label })}
-      busy={checking}
-      disabledReason={switchesLocal && localBlocked !== null ? localBlocked : idle.disabledReason}
-      onConfirm={() => void run()}
-    />
+    <AlertDialog open onOpenChange={(open) => !open && !checking && onClose()}>
+      <AlertDialogPopup>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{gt("Switch to {label}?", { label })}</AlertDialogTitle>
+          <AlertDialogDescription>
+            S8 Code <span className="font-mono text-xs">{release.version}</span>
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <div className="flex flex-col gap-3 px-6 pb-4">
+          {idle.note !== null ? <p className="text-muted-foreground text-sm">{idle.note}</p> : null}
+          {updatesOff ? (
+            <p className="text-muted-foreground text-sm">
+              {gt("This app's updates are off here, so reinstall it yourself to switch.")}
+            </p>
+          ) : null}
+          {switchesLocal && isMacPlatform(navigator.platform) ? (
+            <p className="text-muted-foreground text-sm">
+              {gt("If S8 Code does not reopen after it restarts, open it again.")}
+            </p>
+          ) : null}
+        </div>
+        <AlertDialogFooter>
+          {switchesLocal && localBlocked !== null ? (
+            <p className="self-center text-sm max-sm:order-1 max-sm:text-center sm:mr-auto">
+              {localBlocked}
+            </p>
+          ) : null}
+          <AlertDialogClose render={<Button variant="outline" disabled={checking} />}>
+            <T>Cancel</T>
+          </AlertDialogClose>
+          <Button
+            disabled={(switchesLocal && localBlocked !== null) || checking}
+            onClick={() => void run()}
+          >
+            {checking ? gt("Checking…") : gt("Switch to {label}", { label })}
+          </Button>
+        </AlertDialogFooter>
+      </AlertDialogPopup>
+    </AlertDialog>
   );
 }

@@ -238,7 +238,7 @@ export interface ProviderUpdateRun {
   >;
 }
 
-export function getProviderUpdateRunOutcome(
+function getProviderUpdateRunOutcome(
   run: ProviderUpdateRun,
   resolve: MessageResolver = m,
 ):
