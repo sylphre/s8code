@@ -85,6 +85,8 @@ export interface IssuedBearerSession {
 
 // MCP client tokens are restricted to /mcp; HTTP API and WebSocket RPC would bypass their access cap.
 const MCP_CLIENT_SUBJECT = "mcp-client";
+/** Sessions issued through the Ed25519 key pairing route; the same /mcp-only audience. */
+export const KEY_PAIRED_SUBJECT = "ed25519-key";
 const MCP_CLIENT_SESSION_TTL = Duration.days(30);
 // A peer link's session moves back out to its full lifetime when a call finds it this far
 // short, so a used link never expires and a busy one writes at most once per step.
@@ -652,6 +654,8 @@ export class EnvironmentAuth extends Context.Service<
       readonly label: string;
       readonly access: AuthMcpClientAccess;
       readonly peerLink: boolean;
+      /** Overrides the default `mcp-client` subject, for example a key-paired session. */
+      readonly subject?: string;
       readonly client: AuthClientMetadata;
       /**
        * `otherSessionRevocationCount` read before the sign-in was approved. The session is
@@ -721,7 +725,7 @@ function toBootstrapExchangeError(
 }
 
 const rejectMcpClientAudience = <S extends { readonly subject: string }>(session: S) =>
-  session.subject === MCP_CLIENT_SUBJECT
+  session.subject === MCP_CLIENT_SUBJECT || session.subject === KEY_PAIRED_SUBJECT
     ? Effect.fail(
         new ServerAuthInvalidCredentialError({
           diagnostic: "MCP client sessions are only accepted by the MCP endpoint.",
@@ -1666,7 +1670,10 @@ export const make = Effect.gen(function* () {
       mapSessionVerificationErrors,
       Effect.flatMap(
         Effect.fnUntraced(function* (session) {
-          if (session.subject !== MCP_CLIENT_SUBJECT || session.method !== "bearer-access-token") {
+          if (
+            session.method !== "bearer-access-token" ||
+            (session.subject !== MCP_CLIENT_SUBJECT && session.subject !== KEY_PAIRED_SUBJECT)
+          ) {
             return yield* new ServerAuthInvalidCredentialError({
               diagnostic: "Only MCP client sessions are accepted here.",
             });
@@ -1711,7 +1718,7 @@ export const make = Effect.gen(function* () {
   const issueMcpClientSession: EnvironmentAuth["Service"]["issueMcpClientSession"] = (input) => {
     const issue = sessions
       .issue({
-        subject: MCP_CLIENT_SUBJECT,
+        subject: input.subject ?? MCP_CLIENT_SUBJECT,
         method: "bearer-access-token",
         scopes: mcpClientScopes(input.access),
         ttl: MCP_CLIENT_SESSION_TTL,
@@ -1832,7 +1839,11 @@ const revokePairedClientsThePolicyDisallows = Effect.fn(
 ) {
   const remoteAllowed = ManagedLimits.allowsRemoteClients(policy);
   const disallowed = new Set<string>();
-  if (!remoteAllowed) disallowed.add(LINK_PAIRED_SUBJECTS.link);
+  if (!remoteAllowed) {
+    disallowed.add(LINK_PAIRED_SUBJECTS.link);
+    // Key pairing is another way in from elsewhere, so a policy without `remote` ends it too.
+    disallowed.add(KEY_PAIRED_SUBJECT);
+  }
   if (!ManagedLimits.allowsConnect(policy)) disallowed.add(LINK_PAIRED_SUBJECTS.connect);
   if (disallowed.size === 0) return;
   const sessions = (yield* stores.sessions.listActive()).filter(
