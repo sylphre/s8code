@@ -289,6 +289,17 @@ export const mcpClientScopes = (access: AuthMcpClientAccess): ReadonlyArray<Auth
         ]
       : [AuthOrchestrationReadScope, AuthOrchestrationOperateScope];
 
+/** One entry of `<T3 home>/userdata/mcp-allowlist.json`: a key that may pair with this server. */
+export const AuthMcpKeyAllowlistEntry = Schema.Struct({
+  label: TrimmedNonEmptyString,
+  /** base64url of the raw Ed25519 public key; exactly 32 bytes once decoded. */
+  publicKey: TrimmedNonEmptyString,
+});
+export type AuthMcpKeyAllowlistEntry = typeof AuthMcpKeyAllowlistEntry.Type;
+
+export const AuthMcpKeyAllowlist = Schema.Array(AuthMcpKeyAllowlistEntry);
+export type AuthMcpKeyAllowlist = typeof AuthMcpKeyAllowlist.Type;
+
 /** The random part of a one-time pairing code: this many characters from this alphabet. */
 export const PAIRING_CODE_ALPHABET = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
 export const PAIRING_CODE_LENGTH = 12;
