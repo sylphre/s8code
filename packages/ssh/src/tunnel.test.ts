@@ -1917,20 +1917,6 @@ const canBind = (port) =>
 });
 
 describe("SSH launch during desktop update", () => {
-  it.effect("archive launcher reuses the replacement without host Node", () =>
-    Effect.gen(function* () {
-      const script = yield* captureLauncherFor({ archiveVersion: "1.2.3" });
-      const result = runLauncher(script, {
-        archive: true,
-        marker: { startedAt: 0, expiresAt: 60_000 },
-        readyAt: 2_000,
-      });
-      assert.deepEqual(result.output, { remotePort: 4888, serverKind: "external" });
-      assert.equal(result.now, 2_000);
-      assert.isFalse(result.events.some((event) => event.startsWith("start ")));
-    }),
-  );
-
   it.effect.each(["managed", "external"] as const)(
     "reuses recorded %s server without runtime metadata or an update wait",
     (recordedKind) =>

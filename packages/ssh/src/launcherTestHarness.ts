@@ -201,7 +201,6 @@ set -eu
 if [ "$1" = --version ]; then printf 1.2.3; exit; fi
 [ "$1" = __ssh-helper ]
 case "$2" in
-  update-remaining) printf 'marker %s\\n' "$(cat "$HOME/clock")" >> "$HOME/events"; exec "$TEST_REAL_NODE" --require "$HOME/clock.cjs" "$HOME/helper.ts" "$2" "$3" ;;
   home-owned) exec "$TEST_REAL_NODE" "$HOME/helper.ts" "$2" "$3" ;;
   runtime-port | pick-port | wait-ready) exec "$HOME/bin/test-node" - "$3" ;;
   *) exit 1 ;;

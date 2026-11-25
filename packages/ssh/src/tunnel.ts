@@ -820,12 +820,7 @@ try {
 }
 NODE
 }
-# This script ships with the SSH client; older clients do not honor this marker.
 update_remaining() {
-  if [ "$T3_ARCHIVE_MODE" = "1" ]; then
-    "$RUNNER_FILE" __ssh-helper update-remaining "$DEFAULT_SERVER_HOME/runtime/@@T3_UPDATE_MARKER_FILE@@"
-    return
-  fi
   node - "$DEFAULT_SERVER_HOME/runtime/@@T3_UPDATE_MARKER_FILE@@" <<'NODE'
 const fs = require("node:fs");
 const path = process.argv[2];
