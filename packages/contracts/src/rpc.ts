@@ -370,7 +370,6 @@ import {
 } from "./device.ts";
 import {
   ServerConfigStreamEvent,
-  DesktopUpdateCommitInput,
   ServerPrepareTriageError,
   ServerPrepareTriageInput,
   ServerPrepareTriageResult,
@@ -381,15 +380,9 @@ import {
   ServerRemoveKeybindingInput,
   ServerRemoveKeybindingResult,
   ServerProviderUpdatedPayload,
-  ProviderRuntimeModeLimitsInput,
-  ProviderRuntimeModeLimitsResult,
-  ServerSelfUpdateError,
   ServerNpmRelease,
   ServerNpmReleaseError,
   ServerNpmReleaseInput,
-  ServerSelfUpdateInput,
-  ServerSelfUpdateProgressEvent,
-  ServerSelfUpdateResult,
   ServerTraceDiagnosticsResult,
   ServerProcessDiagnosticsResult,
   ServerProcessResourceHistoryInput,
@@ -593,9 +586,6 @@ export const WS_METHODS = {
   serverRefreshProviders: "server.refreshProviders",
   serverGetProviderRuntimeModeLimits: "server.getProviderRuntimeModeLimits",
   serverUpdateProvider: "server.updateProvider",
-  serverUpdateServer: "server.updateServer",
-  serverUpdateServerWithProgress: "server.updateServerWithProgress",
-  serverCommitDesktopUpdate: "server.commitDesktopUpdate",
   serverUpsertKeybinding: "server.upsertKeybinding",
   serverRemoveKeybinding: "server.removeKeybinding",
   serverRunStorageCleanup: "server.runStorageCleanup",
@@ -924,25 +914,6 @@ const WsServerGetNpmReleaseRpc = Rpc.make(WS_METHODS.serverGetNpmRelease, {
   payload: ServerNpmReleaseInput,
   success: Schema.NullOr(ServerNpmRelease),
   error: Schema.Union([ServerNpmReleaseError, EnvironmentAuthorizationError]),
-});
-
-const WsServerUpdateServerRpc = Rpc.make(WS_METHODS.serverUpdateServer, {
-  payload: ServerSelfUpdateInput,
-  success: ServerSelfUpdateResult,
-  error: Schema.Union([ServerSelfUpdateError, EnvironmentAuthorizationError]),
-});
-
-const WsServerUpdateServerWithProgressRpc = Rpc.make(WS_METHODS.serverUpdateServerWithProgress, {
-  payload: ServerSelfUpdateInput,
-  success: ServerSelfUpdateProgressEvent,
-  error: Schema.Union([ServerSelfUpdateError, EnvironmentAuthorizationError]),
-  stream: true,
-});
-
-const WsServerCommitDesktopUpdateRpc = Rpc.make(WS_METHODS.serverCommitDesktopUpdate, {
-  payload: DesktopUpdateCommitInput,
-  success: ServerSelfUpdateResult,
-  error: Schema.Union([ServerSelfUpdateError, EnvironmentAuthorizationError]),
 });
 
 const WsServerRunStorageCleanupRpc = Rpc.make(WS_METHODS.serverRunStorageCleanup, {
@@ -2522,10 +2493,7 @@ export const WsRpcGroup = RpcGroup.make(
   WsProviderInstallCancelRpc,
   WsProviderInstallSubscribeRpc,
   WsProviderInstallRemoveRpc,
-  WsServerUpdateServerRpc,
   WsServerGetNpmReleaseRpc,
-  WsServerUpdateServerWithProgressRpc,
-  WsServerCommitDesktopUpdateRpc,
   WsServerUpsertKeybindingRpc,
   WsServerRemoveKeybindingRpc,
   WsServerRunStorageCleanupRpc,

@@ -69,7 +69,7 @@ const makeServerConfig = Effect.fn(function* (baseDir: string) {
 });
 
 it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("ServerEnvironmentLive", (it) => {
-  it.effect("publishes proven install ownership only for manually updated servers", () =>
+  it.effect("publishes proven install ownership for the resolved installation", () =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       const platform = yield* HostProcess.Platform;
@@ -104,9 +104,6 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("ServerEnvironmen
         expect(descriptor.capabilities.serverInstallation).toEqual(
           mode === "web" && platform !== "win32" ? { kind: "npm-global", prefix } : undefined,
         );
-        expect(descriptor.capabilities.serverSelfUpdate).toBe(
-          mode === "web" ? undefined : "desktop-managed",
-        );
         expect(descriptor.capabilities).toMatchObject({
           settledWorktreeCleanup: true,
           storageCleanupRun: true,
@@ -115,79 +112,6 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("ServerEnvironmen
           threadAutoSettlementScope: true,
         });
       }
-    }),
-  );
-  it.effect.each([
-    { desktopAppUpdate: false, advertised: undefined },
-    { desktopAppUpdate: true, advertised: true },
-  ])(
-    "advertises desktop app updates only when the desktop can install them ($desktopAppUpdate)",
-    ({ desktopAppUpdate, advertised }) =>
-      Effect.gen(function* () {
-        const fs = yield* FileSystem.FileSystem;
-        const baseDir = yield* fs.makeTempDirectoryScoped();
-        const config = yield* makeServerConfig(baseDir);
-        yield* fs.makeDirectory(config.stateDir, { recursive: true });
-        const descriptor = yield* Effect.gen(function* () {
-          const environment = yield* ServerEnvironment.ServerEnvironment;
-          return yield* environment.getDescriptor;
-        }).pipe(
-          Effect.provide(
-            ServerEnvironment.layer.pipe(
-              Layer.provide(layerEmptySecretStore),
-              Layer.provide(
-                ServerConfig.layer({
-                  ...config,
-                  mode: "desktop",
-                  desktopTelemetryControlFd: 5,
-                  desktopAppUpdate,
-                }),
-              ),
-            ),
-          ),
-          Effect.provideService(HostProcess.Environment, {}),
-        );
-        const capabilities = descriptor.capabilities;
-        expect({
-          serverSelfUpdate: capabilities.serverSelfUpdate,
-          desktopAppUpdate: capabilities.desktopAppUpdate,
-          desktopAppChannelSwitch: capabilities.desktopAppChannelSwitch,
-          serverSelfUpdateProgress: capabilities.serverSelfUpdateProgress,
-        }).toEqual({
-          serverSelfUpdate: "desktop-managed",
-          desktopAppUpdate: advertised,
-          desktopAppChannelSwitch: advertised,
-          serverSelfUpdateProgress: advertised,
-        });
-      }),
-  );
-  it.effect("names the environment and its machine from the overrides", () =>
-    Effect.gen(function* () {
-      const fileSystem = yield* FileSystem.FileSystem;
-      const baseDir = yield* fileSystem.makeTempDirectoryScoped({
-        prefix: "t3-server-environment-override-test-",
-      });
-      const descriptor = yield* Effect.gen(function* () {
-        const serverEnvironment = yield* ServerEnvironment.ServerEnvironment;
-        return yield* serverEnvironment.getDescriptor;
-      }).pipe(
-        Effect.provide(
-          layerServerEnvironment(baseDir).pipe(
-            Layer.provide(
-              ConfigProvider.layer(
-                ConfigProvider.fromEnv({
-                  env: {
-                    T3CODE_ENVIRONMENT_LABEL: " MacBook ",
-                    T3CODE_ENVIRONMENT_MACHINE_KIND: "laptop",
-                  },
-                }),
-              ),
-            ),
-          ),
-        ),
-      );
-      expect(descriptor.label).toBe("MacBook");
-      expect(descriptor.platform.machine).toBe("laptop");
     }),
   );
   it.effect.each([

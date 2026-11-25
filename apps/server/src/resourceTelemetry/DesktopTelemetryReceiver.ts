@@ -10,8 +10,6 @@ import {
   type DesktopHostTelemetrySnapshot,
   type DesktopShellEnvironmentSnapshot,
   DesktopTelemetryControlMessage,
-  type DesktopUpdateChannel,
-  type DesktopUpdateStatusReport,
   type ResourceTelemetrySourceStatus,
 } from "@s8code/contracts";
 import { resolveServerBackgroundActivitySettings } from "@s8code/shared/backgroundActivitySettings";
@@ -156,12 +154,6 @@ export interface DesktopTelemetryReceiverHealth {
   readonly lastError: Option.Option<string>;
 }
 
-/** Moves the desktop app to `channel` and installs only `targetVersion`. */
-export interface DesktopTrackSwitch {
-  readonly channel: DesktopUpdateChannel;
-  readonly targetVersion: string;
-}
-
 export class DesktopTelemetryReceiver extends Context.Service<
   DesktopTelemetryReceiver,
   {
@@ -191,24 +183,6 @@ export class DesktopTelemetryReceiver extends Context.Service<
     ) => Effect.Effect<void, DesktopTelemetryControlError>;
     /** Tells the desktop parent that the server accepts requests, so it can skip readiness polling. */
     readonly announceServerReady: Effect.Effect<void, DesktopTelemetryControlError>;
-    readonly requestDesktopUpdate: (
-      requestId: string,
-      trackSwitch?: DesktopTrackSwitch,
-    ) => Effect.Effect<void, DesktopTelemetryControlError>;
-    readonly commitDesktopUpdate: (
-      requestId: string,
-    ) => Effect.Effect<void, DesktopTelemetryControlError>;
-    readonly cancelDesktopUpdate: (
-      requestId: string,
-    ) => Effect.Effect<void, DesktopTelemetryControlError>;
-    readonly desktopUpdates: Effect.Effect<
-      {
-        readonly latest: Option.Option<DesktopUpdateStatusReport>;
-        readonly changes: Stream.Stream<DesktopUpdateStatusReport>;
-      },
-      never,
-      Scope.Scope
-    >;
   }
 >()("t3/resourceTelemetry/DesktopTelemetryReceiver") {}
 
@@ -441,8 +415,6 @@ export const make = Effect.fn("resourceTelemetry.desktopTelemetryReceiver.make")
   );
   const changes = yield* PubSub.sliding<DesktopHostTelemetrySnapshot>(8);
   const healthChanges = yield* PubSub.sliding<DesktopTelemetryReceiverHealth>(4);
-  const latestUpdateReport = yield* Ref.make(Option.none<DesktopUpdateStatusReport>());
-  const updateReportChanges = yield* PubSub.sliding<DesktopUpdateStatusReport>(16);
   const controlMutex = yield* Semaphore.make(1);
   const snapshotMutex = yield* Semaphore.make(1);
   const health = yield* Ref.make<DesktopTelemetryReceiverHealth>({
@@ -623,12 +595,9 @@ export const make = Effect.fn("resourceTelemetry.desktopTelemetryReceiver.make")
           return recordContact.pipe(Effect.andThen(shellEnvironment.apply(message)));
         }
 
+        // The desktop app still reports update status over the channel; it has no consumer here.
         if (message.type === "desktopUpdateStatus") {
-          return recordContact.pipe(
-            Effect.andThen(Ref.set(latestUpdateReport, Option.some(message))),
-            Effect.andThen(PubSub.publish(updateReportChanges, message)),
-            Effect.asVoid,
-          );
+          return recordContact;
         }
 
         const sampledAt = DateTime.makeUnsafe(message.sampledAtUnixMs);
@@ -744,34 +713,6 @@ export const make = Effect.fn("resourceTelemetry.desktopTelemetryReceiver.make")
     announceServerReady: sendControlMessage({ version: 1, type: "serverReady" }).pipe(
       Effect.withSpan("DesktopTelemetryReceiver.announceServerReady"),
     ),
-    requestDesktopUpdate: Effect.fn("DesktopTelemetryReceiver.requestDesktopUpdate")(
-      function (requestId, trackSwitch) {
-        return sendControlMessage({
-          version: 1,
-          type: "requestDesktopUpdate",
-          requestId,
-          ...trackSwitch,
-        });
-      },
-    ),
-    commitDesktopUpdate: Effect.fn("DesktopTelemetryReceiver.commitDesktopUpdate")(
-      function (requestId) {
-        return sendControlMessage({ version: 1, type: "commitDesktopUpdate", requestId });
-      },
-    ),
-    cancelDesktopUpdate: Effect.fn("DesktopTelemetryReceiver.cancelDesktopUpdate")(
-      function (requestId) {
-        return sendControlMessage({ version: 1, type: "cancelDesktopUpdate", requestId });
-      },
-    ),
-    desktopUpdates: Effect.gen(function* () {
-      const subscription = yield* PubSub.subscribe(updateReportChanges);
-      const initial = yield* Ref.get(latestUpdateReport);
-      return {
-        latest: initial,
-        changes: Stream.fromSubscription(subscription),
-      };
-    }),
   });
 });
 
@@ -816,21 +757,6 @@ export const layerTest = (
         return Effect.void;
       }),
       announceServerReady: Effect.void,
-      requestDesktopUpdate: Effect.fn("DesktopTelemetryReceiver.requestDesktopUpdate")(function () {
-        return Effect.void;
-      }),
-      commitDesktopUpdate: Effect.fn("DesktopTelemetryReceiver.commitDesktopUpdate")(function () {
-        return Effect.void;
-      }),
-      cancelDesktopUpdate: Effect.fn("DesktopTelemetryReceiver.cancelDesktopUpdate")(function () {
-        return Effect.void;
-      }),
-      desktopUpdates:
-        overrides.desktopUpdates ??
-        Effect.succeed({
-          latest: Option.none<DesktopUpdateStatusReport>(),
-          changes: Stream.empty,
-        }),
       ...overrides,
     }),
   );
