@@ -24,6 +24,20 @@ Install the `t3` CLI first ([Command line](./install.md#command-line)), then run
 
 New services bind to localhost only. Run `t3 up --lan` (sets `T3CODE_LAN=true` in `service.env`) to listen on LAN and Tailscale addresses for direct desktop/mobile connections, or `t3 up --no-lan` to disable it. Anyone on that network can reach the port (gated by pairing). `T3CODE_HOST` overrides `T3CODE_LAN`. Hosted `app.t3.codes` always uses T3 Connect.
 
+## Bind to a Tailscale address
+
+To answer only on your Tailnet, put the interface's IP (from `tailscale ip`)
+in `service.env`:
+
+```dotenv
+T3CODE_HOST=100.64.15.22
+```
+
+The same works for a server started by hand: `t3 serve --host 100.64.15.22`.
+Tailnet addresses count as private, so the LAN reachability rules treat them
+like a local network, and `--tailscale-serve` stays available when you want
+HTTPS on top.
+
 ## Configure the service environment
 
 Add `KEY=VALUE` entries to `service.env` in your T3 home directory (`~/.t3/service.env` by default). Values are literal (quote spaces or `#`; no shell expansion) and survive installs and updates.
