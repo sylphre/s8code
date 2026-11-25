@@ -421,19 +421,6 @@ export type ServerObservability = typeof ServerObservability.Type;
 export const OtlpSignal = Schema.Literals(["traces", "metrics", "logs"]);
 export type OtlpSignal = typeof OtlpSignal.Type;
 
-export const OtlpEndpointCheckInput = Schema.Struct({
-  signal: OtlpSignal,
-  url: TrimmedNonEmptyString.check(Schema.isPattern(/^https?:\/\/./i)),
-});
-export type OtlpEndpointCheckInput = typeof OtlpEndpointCheckInput.Type;
-
-export const OtlpEndpointCheckResult = Schema.Union([
-  Schema.TaggedStruct("Accepted", { latencyMs: Schema.Number }),
-  Schema.TaggedStruct("Rejected", { status: Schema.Number }),
-  Schema.TaggedStruct("Unreachable", { timedOut: Schema.Boolean }),
-]);
-export type OtlpEndpointCheckResult = typeof OtlpEndpointCheckResult.Type;
-
 /** The client tells the server what it is, so the triage context can name it. */
 export const ServerPrepareTriageInput = Schema.Struct({
   client: AuthClientPresentationMetadata,
