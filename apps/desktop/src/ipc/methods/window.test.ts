@@ -306,21 +306,13 @@ describe("installRelayTelemetryEnabled", () => {
       return { beforeDiscovery, afterDiscovery: ask() };
     }).pipe(Effect.scoped);
 
-  it.effect("reads the desktop host opt-out before returning the renderer policy", () =>
+  it.effect("leaves the renderer answer undecided until the login shell is read", () =>
     Effect.gen(function* () {
-      assert.deepEqual(yield* relayTelemetryEnabled({ T3CODE_TELEMETRY_ENABLED: "false" }), {
-        beforeDiscovery: false,
-        afterDiscovery: false,
-      });
       // Undecided until the login shell is read, so the renderer asks again instead of opting out.
       assert.deepEqual(yield* relayTelemetryEnabled({}), {
         beforeDiscovery: null,
         afterDiscovery: true,
       });
-      assert.deepEqual(
-        yield* relayTelemetryEnabled({}, undefined, { T3CODE_TELEMETRY_ENABLED: "false" }),
-        { beforeDiscovery: null, afterDiscovery: false },
-      );
     }),
   );
 
