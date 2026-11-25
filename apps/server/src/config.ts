@@ -21,11 +21,10 @@ import * as OtelEnvironment from "@s8code/shared/otelEnvironment";
 import { type ReleaseChannel, releaseResourceAttributes } from "@s8code/shared/releaseResource";
 import packageJson from "../package.json" with { type: "json" };
 
-// Official release workflows set this telemetry channel; other builds report dev.
-// Unlike __T3CODE_BUILD_CHANNEL__, this is not the sign-in page's latest/nightly channel.
-declare const __T3CODE_TELEMETRY_CHANNEL__: ReleaseChannel | undefined;
+// Pack stamps the release channel; source and test builds run as dev.
+declare const __T3CODE_BUILD_CHANNEL__: "nightly" | "latest" | undefined;
 export const telemetryChannel: ReleaseChannel =
-  typeof __T3CODE_TELEMETRY_CHANNEL__ === "undefined" ? "dev" : __T3CODE_TELEMETRY_CHANNEL__;
+  __T3CODE_BUILD_CHANNEL__ === undefined ? "dev" : "stable";
 
 export const DEFAULT_PORT = 3773;
 
