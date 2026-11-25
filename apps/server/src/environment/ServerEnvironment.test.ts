@@ -9,7 +9,6 @@ import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
 import * as Layer from "effect/Layer";
 
-import { DEFAULT_SIGNAL_EXPORT } from "@s8code/shared/observability";
 import * as HostProcess from "@s8code/shared/HostProcess";
 import * as OtelEnvironment from "@s8code/shared/otelEnvironment";
 
@@ -50,12 +49,6 @@ const makeServerConfig = Effect.fn(function* (baseDir: string) {
     traceBatchWindowMs: 200,
     traceMaxBytes: 10 * 1024 * 1024,
     traceMaxFiles: 10,
-    otlpTracesUrl: undefined,
-    otlpMetricsUrl: undefined,
-    otlpLogsUrl: undefined,
-    otlpTracesExport: DEFAULT_SIGNAL_EXPORT,
-    otlpMetricsExport: DEFAULT_SIGNAL_EXPORT,
-    otlpLogsExport: DEFAULT_SIGNAL_EXPORT,
     otelEnvironment: OtelEnvironment.none,
     cwd: process.cwd(),
     baseDir,

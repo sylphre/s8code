@@ -423,7 +423,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("server settings"
       const serverSettings = yield* ServerSettingsModule.ServerSettingsService;
 
       yield* serverSettings.updateSettings({
-        observability: { otlpTracesUrl: "http://localhost:4318/v1/traces" },
+        sourceControlWritingStyle: { customInstructions: "match the repo" },
         textGenerationModelSelection: {
           instanceId: ProviderInstanceId.make("codex"),
           model: DEFAULT_SERVER_SETTINGS.textGenerationModelSelection.model,
@@ -439,14 +439,14 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("server settings"
       });
 
       const next = yield* serverSettings.updateSettings({
-        observability: { otlpMetricsUrl: "http://localhost:4318/v1/metrics" },
+        sourceControlWritingStyle: { mode: "conventional_commits" },
         textGenerationModelSelection: {
           options: [{ id: "fastMode", value: false }],
         },
       });
 
-      assert.equal(next.observability.otlpTracesUrl, "http://localhost:4318/v1/traces");
-      assert.equal(next.observability.otlpMetricsUrl, "http://localhost:4318/v1/metrics");
+      assert.equal(next.sourceControlWritingStyle.customInstructions, "match the repo");
+      assert.equal(next.sourceControlWritingStyle.mode, "conventional_commits");
       assert.deepEqual(
         next.textGenerationModelSelection,
         createModelSelection(
@@ -473,12 +473,12 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("server settings"
         contents: `{ "responseStreamingMode": "turn" }`,
       });
       yield* serverSettings.updateSettings({
-        observability: { otlpTracesUrl: "http://localhost:4318/v1/traces" },
+        sourceControlWritingStyle: { customInstructions: "match the repo" },
       });
 
       const saved = yield* decodeServerSettingsJson(yield* fs.readFileString(config.settingsPath));
       assert.equal(saved.responseStreamingMode, "turn");
-      assert.equal(saved.observability.otlpTracesUrl, "http://localhost:4318/v1/traces");
+      assert.equal(saved.sourceControlWritingStyle.customInstructions, "match the repo");
 
       yield* writeFileStringAtomically({
         filePath: config.settingsPath,
@@ -514,7 +514,7 @@ it.layer(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer))("server settings"
 
       const error = yield* Effect.flip(
         serverSettings.updateSettings({
-          observability: { otlpTracesUrl: "http://localhost:4318/v1/traces" },
+          sourceControlWritingStyle: { customInstructions: "match the repo" },
         }),
       );
 

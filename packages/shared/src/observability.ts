@@ -10,22 +10,10 @@ import * as Queue from "effect/Queue";
 import * as References from "effect/References";
 import * as Result from "effect/Result";
 import * as Semaphore from "effect/Semaphore";
-import * as Schema from "effect/Schema";
-import * as SchemaIssue from "effect/SchemaIssue";
-import * as SchemaTransformation from "effect/SchemaTransformation";
 import * as Tracer from "effect/Tracer";
 import { OtlpResource, OtlpTracer } from "effect/observability";
 
 import { makeAsyncRotatingFileSink } from "./logging.ts";
-
-export const OtlpProtocol = Schema.Literals(["http/json", "http/protobuf"]);
-export type OtlpProtocol = typeof OtlpProtocol.Type;
-
-export interface SignalExport {
-  readonly protocol: OtlpProtocol;
-  readonly headers: Readonly<Record<string, string>> | undefined;
-  readonly exportIntervalMs: number;
-}
 
 /**
  * `process.runtime.*` resource attributes for a Node process, matching the
@@ -52,12 +40,6 @@ export const processServiceInstanceId = (
   // @effect-diagnostics-next-line cryptoRandomUUID:off -- Resources are built synchronously, outside any Effect.
   generatedServiceInstanceId ??= crypto.randomUUID();
   return generatedServiceInstanceId;
-};
-
-export const DEFAULT_SIGNAL_EXPORT: SignalExport = {
-  protocol: "http/json",
-  headers: undefined,
-  exportIntervalMs: 10_000,
 };
 
 const FLUSH_BUFFER_THRESHOLD = 256;
@@ -884,44 +866,3 @@ function parseBigInt(input: string): bigint {
     return 0n;
   }
 }
-
-export const OtlpHeadersFromString = Schema.String.pipe(
-  Schema.decodeTo(
-    Schema.Record(Schema.String, Schema.String),
-    SchemaTransformation.transformEffect({
-      decode: (input) => {
-        const headers: Record<string, string> = {};
-        for (const pair of input.split(",")) {
-          if (pair.trim() === "") {
-            continue;
-          }
-          const separator = pair.indexOf("=");
-          const key = separator === -1 ? "" : pair.slice(0, separator).trim();
-          if (key === "") {
-            return Effect.fail(
-              new SchemaIssue.InvalidValue({
-                message: `Expected key=value but received ${JSON.stringify(pair.trim())}.`,
-              }),
-            );
-          }
-          try {
-            headers[key] = decodeURIComponent(pair.slice(separator + 1).trim());
-          } catch {
-            return Effect.fail(
-              new SchemaIssue.InvalidValue({
-                message: `Header ${JSON.stringify(key)} has a malformed percent-encoded value.`,
-              }),
-            );
-          }
-        }
-        return Effect.succeed(headers);
-      },
-      encode: (headers) =>
-        Effect.succeed(
-          Object.entries(headers)
-            .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-            .join(","),
-        ),
-    }),
-  ),
-);

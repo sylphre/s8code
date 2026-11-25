@@ -1,7 +1,6 @@
 import * as NodeCrypto from "@effect/platform-node/NodeCrypto";
 import { expect, it } from "@effect/vitest";
 import { DEFAULT_SERVER_SETTINGS, EnvironmentId, ProjectId } from "@s8code/contracts";
-import { DEFAULT_SIGNAL_EXPORT } from "@s8code/shared/observability";
 import * as OtelEnvironment from "@s8code/shared/otelEnvironment";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
@@ -81,12 +80,6 @@ it.effect("parks automatic pull until activation without delaying command readin
         traceBatchWindowMs: 200,
         traceMaxBytes: 1024,
         traceMaxFiles: 1,
-        otlpTracesUrl: undefined,
-        otlpMetricsUrl: undefined,
-        otlpLogsUrl: undefined,
-        otlpTracesExport: DEFAULT_SIGNAL_EXPORT,
-        otlpMetricsExport: DEFAULT_SIGNAL_EXPORT,
-        otlpLogsExport: DEFAULT_SIGNAL_EXPORT,
         otelEnvironment: OtelEnvironment.none,
         staticDir: undefined,
         devAllowedOrigins: [],

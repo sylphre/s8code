@@ -8,7 +8,6 @@ import {
 import { resolveWorktreeT3Home } from "@s8code/shared/devHome";
 import * as HostProcess from "@s8code/shared/HostProcess";
 import { formatHostForUrl, isWildcardHost } from "@s8code/shared/hostClassification";
-import { DEFAULT_SIGNAL_EXPORT } from "@s8code/shared/observability";
 import { buildPairingAppLink } from "@s8code/shared/remote";
 import * as OtelEnvironment from "@s8code/shared/otelEnvironment";
 import {
@@ -351,12 +350,6 @@ const makePairServerConfig = Effect.fn(function* (input: {
     traceBatchWindowMs: 1_000,
     traceMaxBytes: 10 * 1024 * 1024,
     traceMaxFiles: 10,
-    otlpTracesUrl: undefined,
-    otlpMetricsUrl: undefined,
-    otlpLogsUrl: undefined,
-    otlpTracesExport: DEFAULT_SIGNAL_EXPORT,
-    otlpMetricsExport: DEFAULT_SIGNAL_EXPORT,
-    otlpLogsExport: DEFAULT_SIGNAL_EXPORT,
     otelEnvironment: OtelEnvironment.none,
     mode: "web",
     port: state.port,
