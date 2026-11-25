@@ -429,26 +429,14 @@ describe("isRelayTracingEnabled", () => {
     );
   });
 
-  it("is off on a CI runner unless T3CODE_TELEMETRY_ENABLED turns it on", () => {
-    assert.isFalse(OtelEnvironment.isRelayTracingEnabled({ CI: "true" }));
-    assert.isFalse(OtelEnvironment.isRelayTracingEnabled({ JENKINS_URL: "https://ci.example" }));
-    assert.isTrue(
-      OtelEnvironment.isRelayTracingEnabled({ CI: "true", T3CODE_TELEMETRY_ENABLED: "true" }),
-    );
-    assert.isFalse(
-      OtelEnvironment.isRelayTracingEnabled({ CI: "true", T3CODE_TELEMETRY_ENABLED: "false" }),
-    );
-  });
-
-  it.effect("product opt-out beats SDK enable without disabling user-configured tracing", () =>
+  it.effect("follows the SDK kill switch without touching user-configured tracing", () =>
     Effect.gen(function* () {
       const env = {
-        T3CODE_TELEMETRY_ENABLED: "false",
         T3CODE_OTEL_SDK_DISABLED: "false",
         OTEL_SDK_DISABLED: "true",
         OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: "https://user.example.test/v1/traces",
       };
-      assert.isFalse(OtelEnvironment.isRelayTracingEnabled(env));
+      assert.isTrue(OtelEnvironment.isRelayTracingEnabled(env));
 
       const otel = yield* load(env);
       assert.isFalse(otel.disabled);
