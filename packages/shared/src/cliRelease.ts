@@ -4,7 +4,6 @@ import * as Schema from "effect/Schema";
 import { compareSemverVersions } from "./semver.ts";
 
 const CLI_RELEASE_REPOSITORY = "pingdotgg/t3code";
-export const CLI_RELEASES_PAGE_URL = `https://github.com/${CLI_RELEASE_REPOSITORY}/releases`;
 export const CLI_RELEASE_CHECKSUMS_FILE = "SHA256SUMS";
 export const CLI_RELEASE_BASE_URL_ENV = "T3CODE_RELEASE_BASE_URL";
 
@@ -88,14 +87,6 @@ export const CLI_RELEASE_CHANNELS: ReadonlyArray<CliReleaseChannel> = [
 export function cliReleaseChannelOf(version: string): CliReleaseChannel {
   const channel = /^[^-+]+-(nightly|preview)\.\d{8}\.\d+$/.exec(version)?.[1];
   return channel === "nightly" || channel === "preview" ? channel : "stable";
-}
-
-/** Whether updating between these versions crosses Stable and Nightly. Preview builds cross nothing.
- * Hosts refuse a crossing outside a track switch, which checks the database first. */
-export function crossesReleaseTrack(fromVersion: string, toVersion: string): boolean {
-  const from = cliReleaseChannelOf(fromVersion);
-  const to = cliReleaseChannelOf(toVersion);
-  return from !== to && from !== "preview" && to !== "preview";
 }
 
 /** The desktop update track a build belongs to. Preview builds have no feed and read as Stable. */
