@@ -48,7 +48,7 @@ import * as EventStore from "./EventStore.ts";
 import * as IdAllocator from "@s8code/provider-core/server/IdAllocator";
 import * as ProjectionStore from "./ProjectionStore.ts";
 import * as ProviderEventIngestor from "./ProviderEventIngestor.ts";
-import * as ProviderUsageAnalytics from "../telemetry/ProviderUsageAnalytics.ts";
+import * as ProviderTurnEvents from "../providerTurnEvents.ts";
 import * as ThreadCommandExecutor from "./ThreadCommandExecutor.ts";
 import * as ProviderInstanceRegistry from "../provider/ProviderInstanceRegistry.ts";
 import { UsageLimitResetFallback } from "../usage/UsageLimitSources.ts";
@@ -352,8 +352,8 @@ it.effect("takes a hub's reset for an unreset usage_limit, then refreshes the sn
 );
 
 it.effect("records accepted billed turn usage once without billing the context window", () => {
-  const recorded: Array<ProviderUsageAnalytics.ProviderTurnReport> = [];
-  const layerAnalytics = Layer.succeed(ProviderUsageAnalytics.ProviderTurnAnalytics, {
+  const recorded: Array<ProviderTurnEvents.ProviderTurnReport> = [];
+  const layerAnalytics = Layer.succeed(ProviderTurnEvents.ProviderTurnEvents, {
     runStarted: () => Effect.void,
     turnCompleted: (report) =>
       Effect.sync(() => {

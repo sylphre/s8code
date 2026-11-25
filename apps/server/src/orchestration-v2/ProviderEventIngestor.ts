@@ -27,10 +27,7 @@ import * as SqlError from "effect/sql/SqlError";
 
 import { AgentScope } from "@s8code/shared/AgentScope";
 import { modelSelectionsEqual } from "@s8code/shared/model";
-import {
-  ProviderTurnAnalytics,
-  type ProviderTurnAnalyticsContext,
-} from "../telemetry/ProviderUsageAnalytics.ts";
+import { ProviderTurnEvents, type ProviderTurnAnalyticsContext } from "../providerTurnEvents.ts";
 import * as GitVcsDriver from "../vcs/GitVcsDriver.ts";
 import * as ProviderInstanceRegistry from "../provider/ProviderInstanceRegistry.ts";
 import { UsageLimitResetFallback } from "../usage/UsageLimitSources.ts";
@@ -254,7 +251,7 @@ export const layer: Layer.Layer<
     const projections = yield* ProjectionStore.ProjectionStoreV2;
     const idAllocator = yield* IdAllocator.IdAllocatorV2;
     const threadCommands = yield* ThreadCommandExecutor.ThreadCommandExecutor;
-    const analytics = yield* ProviderTurnAnalytics;
+    const turnEvents = yield* ProviderTurnEvents;
     const agentScope = yield* AgentScope;
     const instances = yield* ProviderInstanceRegistry.ProviderInstanceRegistry;
     const usageLimitResets = yield* UsageLimitResetFallback;
@@ -907,7 +904,7 @@ export const layer: Layer.Layer<
                     const oldest = completedTurnAnalytics.values().next().value;
                     if (oldest !== undefined) completedTurnAnalytics.delete(oldest);
                   }
-                  yield* analytics.turnCompleted({
+                  yield* turnEvents.turnCompleted({
                     driver: input.event.driver,
                     providerTurn,
                     ...(input.analyticsContext === undefined

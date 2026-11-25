@@ -50,7 +50,7 @@ import * as IdAllocator from "@s8code/provider-core/server/IdAllocator";
 import * as ProviderAdapter from "@s8code/provider-core/server/ProviderAdapter";
 import { PROVIDER_STOP_REASON_SIGNAL } from "@s8code/provider-core/server/subagentProjection";
 import * as ProviderEventIngestor from "./ProviderEventIngestor.ts";
-import * as ProviderUsageAnalytics from "../telemetry/ProviderUsageAnalytics.ts";
+import * as ProviderTurnEvents from "../providerTurnEvents.ts";
 import type { ProjectionStoreV2Error } from "./ProjectionStore.ts";
 import {
   knownProviderFailureMessage,
@@ -105,7 +105,7 @@ function isSettledSubagentStatus(status: OrchestrationV2Subagent["status"]): boo
 }
 
 /** A provider-native subagent's turns arrive on its parent's run, but the parent agent started them. */
-const NATIVE_SUBAGENT_TURN_ORIGIN: ProviderUsageAnalytics.ProviderTurnOrigin = {
+const NATIVE_SUBAGENT_TURN_ORIGIN: ProviderTurnEvents.ProviderTurnOrigin = {
   createdBy: "agent",
   creationSource: "provider",
   scheduled: false,
@@ -727,7 +727,7 @@ export const layer: Layer.Layer<
     const previewAgentActivity = yield* PreviewAgentActivity.PreviewAgentActivity;
     const turnItemPositions = yield* TurnItemPositionStore.TurnItemPositionStoreV2;
     const finalizationObserver = yield* RunFinalizationService.RunFinalizationObserver;
-    const turnAnalytics = yield* ProviderUsageAnalytics.ProviderTurnAnalytics;
+    const turnEvents = yield* ProviderTurnEvents.ProviderTurnEvents;
     const threadCommands = yield* ThreadCommandExecutor.ThreadCommandExecutor;
 
     const writeFinalRunEvents = Effect.fn("RunExecutionService.writeFinalRunEvents")(
@@ -1077,7 +1077,7 @@ export const layer: Layer.Layer<
         } else {
           yield* eventSink.writeWithEffects(finalization);
         }
-        yield* turnAnalytics.runSettled({
+        yield* turnEvents.runSettled({
           runId: input.run.id,
           status: input.terminal.status,
           completedAt,
@@ -1118,7 +1118,7 @@ export const layer: Layer.Layer<
           Effect.map(Fiber.join),
         ),
       startRootRun: Effect.fn("RunExecutionService.startRootRun")(function* (input) {
-        const rootTurnOrigin: ProviderUsageAnalytics.ProviderTurnOrigin = {
+        const rootTurnOrigin: ProviderTurnEvents.ProviderTurnOrigin = {
           createdBy: input.message.createdBy,
           creationSource: input.message.creationSource,
           scheduled: input.message.scheduledTaskId !== undefined,
@@ -1233,9 +1233,9 @@ export const layer: Layer.Layer<
           ...(input.run.restartContinuationOfRunId === undefined
             ? {}
             : { restartContinuation: true }),
-        } satisfies ProviderUsageAnalytics.ProviderTurnAnalyticsContext;
+        } satisfies ProviderTurnEvents.ProviderTurnAnalyticsContext;
         if (input.attempt.reason === "initial") {
-          yield* turnAnalytics.runStarted({
+          yield* turnEvents.runStarted({
             runId: input.run.id,
             driver: input.providerThread.driver,
             context: { ...analyticsContext, segment: "initial" },

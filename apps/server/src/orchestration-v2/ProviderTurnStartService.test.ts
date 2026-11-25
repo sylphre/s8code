@@ -86,7 +86,7 @@ import * as ProviderAdapter from "@s8code/provider-core/server/ProviderAdapter";
 import * as ProviderSessionManager from "./ProviderSessionManager.ts";
 import * as ProviderTurnStart from "./ProviderTurnStartService.ts";
 import * as RunExecutionService from "./RunExecutionService.ts";
-import * as ProviderUsageAnalytics from "../telemetry/ProviderUsageAnalytics.ts";
+import * as ProviderTurnEvents from "../providerTurnEvents.ts";
 import * as RuntimePolicy from "./RuntimePolicy.ts";
 import * as TurnItemPositionStore from "./TurnItemPositionStore.ts";
 
@@ -1439,7 +1439,7 @@ function makeLocalCommandHarness(input: {
           startRootRun,
           forkBaseline: () => Effect.succeed(Effect.void),
         }),
-        Layer.succeed(ProviderUsageAnalytics.ProviderTurnAnalytics, {
+        Layer.succeed(ProviderTurnEvents.ProviderTurnEvents, {
           runStarted: () => Effect.void,
           turnCompleted: () => Effect.void,
           runSettled: (report) => Effect.sync(() => void settledRuns.push(report.status)),

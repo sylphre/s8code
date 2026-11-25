@@ -58,7 +58,7 @@ import * as ProviderAdapter from "@s8code/provider-core/server/ProviderAdapter";
 import * as ProjectionStore from "./ProjectionStore.ts";
 import * as ProviderCommitBatch from "./ProviderCommitBatch.ts";
 import * as ProviderEventIngestor from "./ProviderEventIngestor.ts";
-import * as ProviderUsageAnalytics from "../telemetry/ProviderUsageAnalytics.ts";
+import * as ProviderTurnEvents from "../providerTurnEvents.ts";
 import * as McpAppModelContext from "../mcpApps/McpAppModelContext.ts";
 import * as PreviewAgentActivity from "../preview/PreviewAgentActivity.ts";
 import * as RunExecutionService from "./RunExecutionService.ts";
@@ -1637,7 +1637,7 @@ it.effect("ingests new member threads of an owned child after the root turn term
     const layerTest = RunExecutionService.layer.pipe(
       Layer.provide(
         Layer.mergeAll(
-          Layer.succeed(ProviderUsageAnalytics.ProviderTurnAnalytics, {
+          Layer.succeed(ProviderTurnEvents.ProviderTurnEvents, {
             runStarted: (input) =>
               Ref.update(requests, (current) => [...current, `started:${input.runId}`]),
             turnCompleted: () => Effect.void,
