@@ -16,6 +16,7 @@ import * as Option from "effect/Option";
 import * as Result from "effect/Result";
 import * as Schema from "effect/Schema";
 import * as SecureRandom from "effect/crypto/SecureRandom";
+import * as Stream from "effect/Stream";
 import type * as Types from "effect/Types";
 import { HttpRouter, HttpServerRequest, HttpServerResponse } from "effect/http";
 
@@ -66,26 +67,58 @@ const envelopeResponse = (
     },
   );
 
-/**
- * Reads the JSON-RPC message, or the JSON error body, the transport answered
- * with. None keeps the response byte-for-byte: an empty body, typically an
- * accepted notification, stays empty.
- */
-const responseMessage = (
-  response: HttpServerResponse.HttpServerResponse,
-): Option.Option<unknown> => {
-  const body = response.body;
-  if (body._tag !== "Uint8Array" || body.contentLength === 0) return Option.none();
-  const source = body.text ?? Buffer.from(body.body).toString("utf8");
-  const parsed = (() => {
-    try {
-      return JSON.parse(source) as unknown;
-    } catch {
-      return undefined;
-    }
-  })();
-  return parsed === undefined ? Option.none() : Option.some(parsed);
+const parseJsonMessage = (source: string): unknown => {
+  try {
+    return JSON.parse(source) as unknown;
+  } catch {
+    return undefined;
+  }
 };
+
+/**
+ * Reads the JSON-RPC messages, or the JSON error body, the transport answered
+ * with. None keeps the response byte-for-byte: an empty body, typically an
+ * accepted notification, stays empty. An SSE body carries the messages of one
+ * response in order, so they arrive as the array the client plays back.
+ */
+const responseMessages = Effect.fn("mcpE2ee.responseMessages")(function* (
+  response: HttpServerResponse.HttpServerResponse,
+) {
+  const body = response.body;
+  // Stream bodies are the transport's own SSE framing already; everything
+  // else reaches the middleware buffered. Read both as text first.
+  const source =
+    body._tag === "Stream"
+      ? Option.some(yield* Stream.mkString(Stream.decodeText(Stream.orDie(body.stream))))
+      : body._tag === "Uint8Array" && body.contentLength > 0
+        ? Option.some(body.text ?? Buffer.from(body.body).toString("utf8"))
+        : Option.none();
+  if (Option.isNone(source)) return Option.none();
+  if (
+    response.headers["content-type"]?.startsWith("text/event-stream") === true ||
+    body._tag === "Stream"
+  ) {
+    // An SSE body carries the messages of one response as `data:` frames, in
+    // order; a streamed one arrives framed the same way.
+    const messages = source.value
+      .split("\n\n")
+      .map((event) =>
+        event
+          .split(/\r?\n/)
+          .filter((line) => line.startsWith("data:"))
+          .map((line) => line.slice("data:".length).trim())
+          .join("\n"),
+      )
+      .filter((data) => data.length > 0)
+      .map(parseJsonMessage)
+      .filter((message) => message !== undefined);
+    return messages.length === 0
+      ? Option.none()
+      : (Option.some(messages) as Option.Option<unknown>);
+  }
+  const parsed = parseJsonMessage(source.value);
+  return parsed === undefined ? Option.none() : Option.some(parsed);
+});
 
 /**
  * Decrypts the POST body of an established E2EE session into its JSON-RPC
@@ -224,16 +257,11 @@ const makeMcpE2eeMiddleware = Effect.gen(function* () {
     }
     const response = exit.value;
     const counter = session.sendCounter++;
+    const messages = yield* responseMessages(response);
     return envelopeResponse(
       session,
       counter,
-      {
-        t: "plain",
-        message: Option.match(responseMessage(response), {
-          onNone: () => null,
-          onSome: (value) => value,
-        }),
-      },
+      { t: "plain", message: Option.getOrElse(messages, () => null) },
       response.headers["mcp-session-id"] === undefined
         ? {}
         : { "mcp-session-id": response.headers["mcp-session-id"] },

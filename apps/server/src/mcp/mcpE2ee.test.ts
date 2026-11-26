@@ -19,13 +19,16 @@ import * as NodeServices from "@effect/platform-node/NodeServices";
 import { expect, it } from "@effect/vitest";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
+import * as Schema from "effect/Schema";
 import { HttpBody, HttpClient, HttpClientRequest, HttpRouter } from "effect/http";
+import { McpServer, Tool, Toolkit } from "effect/ai";
 
 import * as ServerConfig from "../config.ts";
 import * as ServerSecretStore from "../auth/ServerSecretStore.ts";
 import * as ServerE2ee from "../e2ee/layer.ts";
 import * as ServerSettings from "../serverSettings.ts";
 import * as McpHttpServer from "./McpHttpServer.ts";
+import * as McpToolAccess from "./McpToolAccess.ts";
 import * as McpSessionRegistry from "./McpSessionRegistry.ts";
 
 const token = "providerTokenWithoutDots";
@@ -384,6 +387,122 @@ it.effect("rejects replays, skipped counters, and plaintext inside an E2EE sessi
         body: HttpBody.text("", "application/json"),
       });
       expect(replay.status).toBe(500);
+    }),
+  ).pipe(Effect.provide(NodeHttpServer.layerTest)),
+);
+
+const progressToolkit = Toolkit.make(
+  Tool.make("emit_progress", {
+    description: "Emits one progress notification, then answers.",
+    success: Schema.Struct({ ok: Schema.Boolean }),
+    dependencies: [McpServer.McpServer],
+  }),
+);
+
+const layerProgressTool = McpHttpServer.toolkitRegistration(
+  progressToolkit,
+  McpToolAccess.toLayer(progressToolkit, {
+    emit_progress: McpToolAccess.reads(() =>
+      Effect.flatMap(McpServer.McpServer, (server) =>
+        Effect.as(
+          server.notifications["notifications/progress"]({
+            progressToken: "e2ee-token",
+            progress: 1,
+          }),
+          { ok: true },
+        ),
+      ),
+    ),
+  }),
+);
+
+it.effect("carries an SSE tool response as one envelope of ordered messages", () =>
+  Effect.scoped(
+    Effect.gen(function* () {
+      yield* HttpRouter.serve(
+        McpHttpServer.layerMcpTransport(layerProgressTool).pipe(
+          Layer.provide(ServerE2ee.layer),
+          Layer.provide(ServerSettings.layerTest()),
+          Layer.provide(
+            Layer.mock(McpSessionRegistry.McpSessionRegistry)({
+              resolve: (presented) =>
+                Effect.succeed(
+                  presented === token
+                    ? ({
+                        environmentId,
+                        requestNamespace: "provider-session",
+                        thread: {
+                          threadId,
+                          providerSessionId: "provider-session",
+                          providerInstanceId: ProviderInstanceId.make("codex"),
+                        },
+                        client: undefined,
+                        capabilities: new Set(["orchestration"]),
+                        issuedAt: 1,
+                      } as never)
+                    : undefined,
+                ),
+            }),
+          ),
+          Layer.provide(ServerSecretStore.layer),
+          Layer.provide(ServerConfig.layerTest(process.cwd(), { prefix: "t3-mcp-e2ee-sse-test-" })),
+          Layer.provide(Layer.mergeAll(NodeServices.layer, PlatformNodeCrypto.layer)),
+        ),
+        { disableListenLog: true, disableLogger: true },
+      ).pipe(Layer.build);
+      const bare = yield* HttpClient.HttpClient;
+      const httpClient = HttpClient.mapRequest(HttpClientRequest.bearerToken(token))(bare);
+      const client = NodeCrypto.generateKeyPairSync("x25519");
+      const { keys, keyId } = yield* openE2eeSession(httpClient, client);
+
+      const initialize = yield* postEnvelope(httpClient, keyId, keys.send, 0, {
+        jsonrpc: "2.0",
+        id: 1,
+        method: "initialize",
+        params: {
+          protocolVersion: "2025-06-18",
+          capabilities: {},
+          clientInfo: { name: "mcp-e2ee-sse-test", version: "1.0.0" },
+        },
+      });
+      expect(initialize.status).toBe(200);
+      const sessionId = initialize.headers["mcp-session-id"];
+      expect(sessionId).not.toBeNull();
+
+      const called = yield* postEnvelope(
+        HttpClient.mapRequest(HttpClientRequest.setHeader("mcp-session-id", sessionId!))(
+          httpClient,
+        ),
+        keyId,
+        keys.send,
+        1,
+        {
+          jsonrpc: "2.0",
+          id: 2,
+          method: "tools/call",
+          params: {
+            name: "emit_progress",
+            arguments: {},
+            _meta: { progressToken: "e2ee-token" },
+          },
+        },
+      );
+      expect(called.status).toBe(200);
+      const rawCalled = yield* called.text;
+      expect(called.headers["content-type"]).toContain("application/json");
+      expect(rawCalled).not.toContain('"jsonrpc"');
+      const calledEnvelope = JSON.parse(rawCalled) as { t: string; c: number; ct: string };
+      expect(calledEnvelope.t).toBe("e2ee");
+      const playback = decryptEnvelope(keys.receive, calledEnvelope.c, calledEnvelope.ct) as {
+        t: string;
+        message: ReadonlyArray<{ method?: string; id?: number }>;
+      };
+      expect(playback.t).toBe("plain");
+      // The progress notification rides ahead of the tool result, in order.
+      expect(playback.message.map((message) => message.method ?? message.id)).toEqual([
+        "notifications/progress",
+        2,
+      ]);
     }),
   ).pipe(Effect.provide(NodeHttpServer.layerTest)),
 );
