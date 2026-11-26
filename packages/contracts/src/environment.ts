@@ -227,6 +227,13 @@ export const ExecutionEnvironmentCapabilities = Schema.Struct({
   issueLinkedThreads: Schema.optionalKey(Schema.Boolean),
   /** Keeps more than one account per standalone issue tracker; older servers keep one. */
   issueTrackerAccounts: Schema.optionalKey(Schema.Boolean),
+  /** Server's /ws runs the E2EE handshake when the upgrade names `e2ee=1`. */
+  e2ee: Schema.optionalKey(Schema.Boolean),
+  /**
+   * Fingerprint of the server's E2EE identity keys, sha256 over the Ed25519
+   * and static X25519 public keys, base64url. Absent on older servers.
+   */
+  e2eeFingerprint: Schema.optionalKey(Schema.String),
 });
 export type ExecutionEnvironmentCapabilities = typeof ExecutionEnvironmentCapabilities.Type;
 
