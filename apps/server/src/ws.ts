@@ -60,6 +60,7 @@ import {
   ORCHESTRATION_PROTOCOL_QUERY_PARAM,
   CLIENT_CAPABILITIES_QUERY_PARAM,
   HTTP_USAGE_LIMIT_SOURCES_CAPABILITY,
+  E2EE_QUERY_PARAM,
   SETTINGS_SECRET_REFERENCES_CAPABILITY,
   ORCHESTRATION_PROTOCOL_VERSION,
   OrchestrationV2DispatchCommandError,
@@ -116,6 +117,8 @@ import { RpcGroup, RpcSerialization, RpcServer } from "effect/rpc";
 import * as CheckpointDiffQuery from "./checkpointing/CheckpointDiffQuery.ts";
 import * as NativeChildWorkQuery from "./orchestration-v2/NativeChildWorkQuery.ts";
 import * as ServerConfig from "./config.ts";
+import * as E2eeSocket from "./e2ee/socket.ts";
+import * as ServerE2ee from "./e2ee/layer.ts";
 import * as EnvironmentTheme from "./environmentTheme.ts";
 import * as Keybindings from "./keybindings.ts";
 import * as ExternalLauncher from "./process/externalLauncher.ts";
@@ -3750,15 +3753,34 @@ export const layer = Layer.unwrap(
           ),
         );
         const splitFrames = url.value.searchParams.has(SOCKET_FRAME_PARTS_QUERY_PARAM);
+        const e2ee = yield* ServerE2ee.ServerE2ee;
+        const e2eeEnabled =
+          url.value.searchParams.get(E2EE_QUERY_PARAM) === "1" &&
+          Option.isSome(yield* e2ee.fingerprint);
         const framedRpcWebSocketHttpEffect = rpcWebSocketHttpEffect.pipe(
           Effect.provideService(
             HttpServerRequest.HttpServerRequest,
             // The RPC server upgrades the request itself, so its socket is
-            // wrapped through the request it reads.
+            // wrapped through the request it reads. E2EE wraps inside the
+            // frame splitter so large plaintext frames still split before
+            // they are encrypted; the heartbeat wraps both so its frames
+            // travel the same path as any other frame.
             Object.create(request, {
               upgrade: {
-                value: Effect.map(request.upgrade, (socket) =>
-                  withSocketHeartbeat(splitFrames ? splitLargeSocketFrames(socket) : socket),
+                value: Effect.flatMap(request.upgrade, (socket) =>
+                  e2eeEnabled
+                    ? Effect.map(
+                        E2eeSocket.e2eeServerSocket(socket, e2ee.acceptHello),
+                        (e2eeSocket) =>
+                          withSocketHeartbeat(
+                            splitFrames ? splitLargeSocketFrames(e2eeSocket) : e2eeSocket,
+                          ),
+                      )
+                    : Effect.succeed(
+                        withSocketHeartbeat(
+                          splitFrames ? splitLargeSocketFrames(socket) : socket,
+                        ),
+                      ),
                 ),
               },
             }),
@@ -3768,7 +3790,7 @@ export const layer = Layer.unwrap(
           sessions.markConnected(session.sessionId),
           () =>
             Effect.raceFirst(
-              framedRpcWebSocketHttpEffect,
+              routedRpcWebSocketHttpEffect,
               sessions.awaitInvalidation(session.sessionId, session.proofKeyThumbprint).pipe(
                 Effect.as(HttpServerResponse.empty()),
                 Effect.catchTags({

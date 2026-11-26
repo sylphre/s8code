@@ -10,6 +10,7 @@ import * as SecureRandom from "effect/crypto/SecureRandom";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
 import * as Layer from "effect/Layer";
+import * as Option from "effect/Option";
 import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
 
@@ -18,6 +19,7 @@ import * as ServerSecretStore from "../auth/ServerSecretStore.ts";
 import { resolveServerInstallation } from "../cli/invocation.ts";
 import { readAgentActivityPublishingActive } from "../cloud/config.ts";
 import * as ServerConfig from "../config.ts";
+import * as ServerE2ee from "../e2ee/layer.ts";
 import { databaseMigrationHead } from "../persistence/databaseMigrationHead.ts";
 import * as ProcessRunner from "../processRunner.ts";
 import { isSpeechPlatformSupported } from "../speech/platform.ts";
@@ -196,6 +198,8 @@ export const make = Effect.gen(function* () {
   const serverInstallation = yield* resolveServerInstallation;
 
   const databaseMigration = databaseMigrationHead(serverConfig.dbPath);
+  const e2ee = yield* ServerE2ee.ServerE2ee;
+  const e2eeFingerprint = yield* e2ee.fingerprint;
   const descriptor: ExecutionEnvironmentDescriptor = {
     environmentId,
     label,
@@ -288,6 +292,9 @@ export const make = Effect.gen(function* () {
       shellThreadFamilies: true,
       shellOlderSettled: true,
       agentFeedback: true,
+      ...(Option.isSome(e2eeFingerprint)
+        ? { e2ee: true, e2eeFingerprint: e2eeFingerprint.value }
+        : {}),
     },
   };
 

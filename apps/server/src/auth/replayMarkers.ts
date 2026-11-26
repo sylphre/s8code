@@ -8,6 +8,7 @@ import * as Path from "effect/Path";
 import * as Schedule from "effect/Schedule";
 
 import { CLOUD_REPLAY_MARKER_PREFIXES } from "../cloud/CloudLink.ts";
+import { HANDSHAKE_REPLAY_MARKER_PREFIX } from "../e2ee/handshake.ts";
 import * as ServerConfig from "../config.ts";
 import { forkParked } from "../serverActivation.ts";
 import { KEY_CHALLENGE_MARKER_PREFIX } from "./KeyPairing.ts";
@@ -16,6 +17,7 @@ import { DPOP_REPLAY_MARKER_PREFIX } from "./dpop.ts";
 const REPLAY_MARKER_PREFIXES = [
   DPOP_REPLAY_MARKER_PREFIX,
   KEY_CHALLENGE_MARKER_PREFIX,
+  HANDSHAKE_REPLAY_MARKER_PREFIX,
   ...CLOUD_REPLAY_MARKER_PREFIXES,
 ];
 
