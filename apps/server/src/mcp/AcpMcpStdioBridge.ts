@@ -1,5 +1,6 @@
 // Relay JSON-RPC verbatim; schema decoding would reject foreign payloads.
 // @effect-diagnostics globalJsonInEffect:off
+// @effect-diagnostics runEffectInsideEffect:off - Replies to server requests leave the fiber as fire-and-forget promises.
 import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
 import * as Option from "effect/Option";
@@ -8,6 +9,8 @@ import * as Schema from "effect/Schema";
 import * as Scope from "effect/Scope";
 import * as Stream from "effect/Stream";
 import { discardResponseBody, responsePayloads } from "@s8code/shared/mcpResponsePayloads";
+
+import { e2eeFetchImplementation } from "../e2ee/e2eeFetch.ts";
 
 /** ACP mandates stdio MCP support; HTTP/SSE support varies. */
 
@@ -78,6 +81,12 @@ export interface McpToolSessionOptions {
   readonly authorization: string;
   readonly clientName: string;
   readonly fetchImplementation?: (url: string, init?: RequestInit) => Promise<Response>;
+  /**
+   * The server's E2EE fingerprint, when its descriptor advertised one; the
+   * session then speaks envelopes only. Without it the session stays
+   * plaintext, whatever the server offers.
+   */
+  readonly e2eeFingerprint?: string | undefined;
 }
 
 export interface McpToolSession {
@@ -95,11 +104,13 @@ export interface McpToolSession {
 export const mcpToolSession = (
   options: McpToolSessionOptions,
 ): Effect.Effect<McpToolSession, AcpMcpBridgeError, Scope.Scope> => {
-  const fetchImplementation = options.fetchImplementation ?? fetch;
+  const baseFetch = options.fetchImplementation ?? fetch;
   let sessionId: string | null = null;
   let protocolVersion: string | null = null;
   let nextId = 0;
 
+  // Under E2EE the JSON-RPC body rides inside the envelope, so the session id
+  // must travel as a request header for the middleware to find it.
   const headers = () => ({
     accept: "application/json, text/event-stream",
     authorization: options.authorization,
@@ -107,10 +118,21 @@ export const mcpToolSession = (
     ...(protocolVersion === null ? {} : { "mcp-protocol-version": protocolVersion }),
   });
 
+  // With a pin the session speaks envelopes from the first POST, and falls
+  // back to plaintext only when the server has no E2EE identity at all.
+  const fetchImplementation: (url: string, init?: RequestInit) => Promise<Response> =
+    options.e2eeFingerprint
+      ? e2eeFetchImplementation(options.e2eeFingerprint)(baseFetch, options.endpoint, headers)
+      : baseFetch;
+
+  // `onServerRequest` answers a request the server opened mid-response; under
+  // E2EE the whole body is read at once, so the reply must go out before the
+  // caller's own response is read on.
   const send = Effect.fn("AcpMcpStdioBridge.send")(function* (
     message: unknown,
+    onServerRequest: (envelope: JsonRpcEnvelope) => void = () => {},
   ): Effect.fn.Return<ReadonlyArray<unknown>, AcpMcpBridgeError> {
-    const response = yield* Effect.tryPromise({
+    const response: Response = yield* Effect.tryPromise({
       try: (signal) =>
         fetchImplementation(options.endpoint, {
           method: "POST",
@@ -129,12 +151,16 @@ export const mcpToolSession = (
     }
     const payloads: Array<unknown> = [];
     yield* Stream.runForEach(responsePayloads(response, bridgeError), (payload) => {
-      protocolVersion = protocolVersionOf(payload) ?? protocolVersion;
-      const envelope = asEnvelope(payload);
-      if (envelope?.id !== undefined && typeof envelope.method === "string") {
-        return send(replyToServerRequest(envelope)).pipe(Effect.asVoid);
+      // The E2EE envelope of one SSE response carries its messages as an array.
+      for (const entry of Array.isArray(payload) ? payload : [payload]) {
+        protocolVersion = protocolVersionOf(entry) ?? protocolVersion;
+        const envelope = asEnvelope(entry);
+        if (envelope?.id !== undefined && typeof envelope.method === "string") {
+          onServerRequest(envelope);
+          continue;
+        }
+        payloads.push(entry);
       }
-      payloads.push(payload);
       return Effect.void;
     });
     return payloads;
@@ -145,7 +171,11 @@ export const mcpToolSession = (
     params: unknown,
   ): Effect.fn.Return<JsonRpcEnvelope, AcpMcpBridgeError> {
     const id = `t3-cli-${nextId++}`;
-    const responses = yield* send({ jsonrpc: "2.0", id, method, params });
+    const responses = yield* send({ jsonrpc: "2.0", id, method, params }, (envelope) => {
+      void send(replyToServerRequest(envelope))
+        .pipe(Effect.runPromise)
+        .catch(() => undefined);
+    });
     const envelope = asEnvelope(responses.find((entry) => asEnvelope(entry)?.id === id));
     if (envelope === null || envelope.error !== undefined) {
       const rpcError = Option.getOrUndefined(decodeRpcError(envelope?.error));
