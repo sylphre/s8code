@@ -3,6 +3,7 @@ import { translatableDetail } from "../errors/translatable.ts";
 import {
   type ServerConfig,
   type ServerConfigStreamEvent,
+  E2EE_QUERY_PARAM,
   WsSubscribeServerConfigRpc,
   WS_METHODS,
 } from "@s8code/contracts";
@@ -49,6 +50,7 @@ import {
   withoutEnvironmentThemes,
 } from "../state/serverConfigProjection.ts";
 import { environmentMismatchError } from "../connection/errors.ts";
+import { e2eeClientSocket } from "../connection/e2ee/e2eeSocket.ts";
 import { recordServerClock } from "../clock.ts";
 
 const SOCKET_OPEN_TIMEOUT = "15 seconds";
@@ -250,9 +252,22 @@ export const make = Effect.fn("RpcSessionFactory.make")(function* (
     };
     const socketUrl = new URL(connection.socketUrl);
     socketUrl.searchParams.set(SOCKET_FRAME_PARTS_QUERY_PARAM, "1");
+    // The descriptor comes from the same handshake that authorized the socket,
+    // so its fingerprint pins the keys the accept names before any frame flows.
+    const e2eeFingerprint =
+      connection.descriptor?.capabilities.e2ee === true
+        ? connection.descriptor.capabilities.e2eeFingerprint
+        : undefined;
+    if (e2eeFingerprint !== undefined) {
+      socketUrl.searchParams.set(E2EE_QUERY_PARAM, "1");
+    }
     const layerSocket = Layer.effect(
       Socket.Socket,
-      Effect.map(Effect.service(Socket.Socket), joinSocketFrameParts),
+      e2eeFingerprint === undefined
+        ? Effect.map(Effect.service(Socket.Socket), joinSocketFrameParts)
+        : Effect.flatMap(Effect.service(Socket.Socket), (socket) =>
+            Effect.map(e2eeClientSocket(socket, e2eeFingerprint), joinSocketFrameParts),
+          ),
     ).pipe(
       Layer.provide(
         Socket.layerWebSocket(socketUrl.toString(), {
