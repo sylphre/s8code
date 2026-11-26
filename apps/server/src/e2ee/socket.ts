@@ -4,6 +4,7 @@
 import {
   decodeE2eeFrame,
   E2eeFrameError,
+  encodeE2eeFrameCounter,
   E2eeHello,
   type E2eeHello as E2eeHelloType,
 } from "@s8code/contracts";
@@ -104,12 +105,12 @@ export const e2eeServerSocket = Effect.fn("e2ee/socket.e2eeServerSocket")(functi
         Effect.suspend(() => {
           const session = state.session;
           if (session === null) return Effect.fail(writeError(new E2eeFrameError()));
-          const frame = aeadEncrypt(
-            session.keys.send,
-            session.sendCounter++,
-            Buffer.from(chunk, "utf8"),
+          const counter = session.sendCounter++;
+          const frame = aeadEncrypt(session.keys.send, counter, Buffer.from(chunk, "utf8"));
+          return Effect.mapError(
+            underlying.write(Buffer.concat([encodeE2eeFrameCounter(counter), frame])),
+            writeError,
           );
-          return Effect.mapError(underlying.write(frame), writeError);
         }),
       );
     return {
