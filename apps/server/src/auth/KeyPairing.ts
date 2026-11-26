@@ -26,6 +26,7 @@ import { HttpRouter, HttpServerRequest, HttpServerResponse } from "effect/http";
 import * as NodeCrypto from "node:crypto";
 
 import * as ServerConfig from "../config.ts";
+import * as ServerE2ee from "../e2ee/layer.ts";
 import { forkParked } from "../serverActivation.ts";
 import { requestUrl } from "../requestUrl.ts";
 import * as EnvironmentAuth from "./EnvironmentAuth.ts";
@@ -147,6 +148,7 @@ const make = Effect.gen(function* () {
   const fileSystem = yield* FileSystem.FileSystem;
   const pathService = yield* Path.Path;
   const config = yield* ServerConfig.ServerConfig;
+  const e2ee = yield* ServerE2ee.ServerE2ee;
 
   const allowlistPath = pathService.join(config.stateDir, "mcp-allowlist.json");
   const allowlist = yield* Ref.make<AuthMcpKeyAllowlist>(yield* loadAllowlist(allowlistPath));
@@ -258,7 +260,14 @@ const make = Effect.gen(function* () {
   }).pipe(Effect.ignoreCause({ log: true }));
   yield* forkParked(watchAllowlist);
 
-  return KeyPairing.of({ issueChallenge, verify });
+  return KeyPairing.of({
+    issueChallenge,
+    verify,
+    e2eeFingerprint: Option.filter(
+      yield* e2ee.fingerprint,
+      (fingerprint) => fingerprint.length > 0,
+    ),
+  });
 });
 
 export class KeyPairing extends Context.Service<
@@ -272,6 +281,8 @@ export class KeyPairing extends Context.Service<
       KeyPairingResult,
       KeyPairingError | EnvironmentAuth.ServerAuthInternalError | ServerSecretStore.SecretStoreError
     >;
+    /** The server's E2EE identity fingerprint, so a pairing client can pin it without the descriptor. */
+    readonly e2eeFingerprint: Option.Option<string>;
   }
 >()("t3/auth/KeyPairing") {}
 
@@ -292,6 +303,9 @@ const challengeRouteLayer = HttpRouter.add(
       {
         nonce: challenge.nonce,
         expiresAt: DateTime.formatIso(challenge.expiresAt),
+        ...(Option.isSome(keyPairing.e2eeFingerprint)
+          ? { e2eeFingerprint: keyPairing.e2eeFingerprint.value }
+          : {}),
       },
       200,
     );
@@ -319,6 +333,9 @@ const verifyRouteLayer = HttpRouter.add(
             sessionId: issued.sessionId,
             token: issued.token,
             expiresAt: DateTime.formatIso(issued.expiresAt),
+            ...(Option.isSome(keyPairing.e2eeFingerprint)
+              ? { e2eeFingerprint: keyPairing.e2eeFingerprint.value }
+              : {}),
           },
           200,
         ),
