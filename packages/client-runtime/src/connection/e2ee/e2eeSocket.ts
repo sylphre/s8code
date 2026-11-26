@@ -39,15 +39,22 @@ const decryptFrameString = (keys: Ciphers, frame: string | Uint8Array): Promise<
   return keys.receive.decrypt(bytes).then(textDecoder.decode);
 };
 
+const decryptFrameBytes = (keys: Ciphers, frame: string | Uint8Array): Promise<Uint8Array> => {
+  if (typeof frame !== "string") return keys.receive.decrypt(frame as Uint8Array<ArrayBuffer>);
+  return keys.receive.decrypt(textEncoder.encode(frame) as Uint8Array<ArrayBuffer>);
+};
+
 /**
  * Wraps a socket opened with `e2ee=1` so the first frame on the wire is the
  * hello, the first reply decrypts as the accept, and every later frame is an
  * AEAD frame. Writes wait for the handshake the reader completes, so the RPC
- * layer may start sending before the first pull.
+ * layer may start sending before the first pull. `binary` also encrypts
+ * binary frames, for sockets whose payloads are not RPC strings.
  */
 export const e2eeClientSocket = Effect.fn("e2ee/e2eeSocket.e2eeClientSocket")(function* (
   socket: Socket.Socket,
   pinnedFingerprint: string | undefined,
+  { binary = false }: { binary?: boolean } = {},
 ) {
   const keyPair = yield* Effect.promise(() => newClientEphemeral());
   const hello = yield* Effect.promise(() => helloHeadline(keyPair));
@@ -65,11 +72,23 @@ export const e2eeClientSocket = Effect.fn("e2ee/e2eeSocket.e2eeClientSocket")(fu
           (frame) => Effect.mapError(underlying.write(frame), writeError),
         ),
       );
+    const sendBytes = (chunk: Uint8Array): Effect.Effect<void, Socket.SocketError> =>
+      Effect.flatMap(Deferred.await(ciphers), (keys) =>
+        Effect.flatMap(
+          Effect.tryPromise({
+            try: () => keys.send.encrypt(chunk as Uint8Array<ArrayBuffer>),
+            catch: writeError,
+          }),
+          (frame) => Effect.mapError(underlying.write(frame), writeError),
+        ),
+      );
     return {
       write: (chunk) =>
         typeof chunk === "string"
           ? send(chunk)
-          : Effect.mapError(underlying.write(chunk), writeError),
+          : binary && !(chunk instanceof Socket.CloseEvent)
+            ? sendBytes(chunk)
+            : Effect.mapError(underlying.write(chunk), writeError),
       writeAll: (chunks) =>
         Effect.mapError(
           Effect.forEach(
@@ -77,7 +96,9 @@ export const e2eeClientSocket = Effect.fn("e2ee/e2eeSocket.e2eeClientSocket")(fu
             (chunk) =>
               typeof chunk === "string"
                 ? send(chunk)
-                : Effect.mapError(underlying.write(chunk), writeError),
+                : binary && !(chunk instanceof Socket.CloseEvent)
+                  ? sendBytes(chunk)
+                  : Effect.mapError(underlying.write(chunk), writeError),
             { discard: true },
           ),
           writeError,
@@ -108,30 +129,48 @@ export const e2eeClientSocket = Effect.fn("e2ee/e2eeSocket.e2eeClientSocket")(fu
         ),
       );
 
-    const pull: Socket.Reader["pull"] = Effect.suspend(() =>
-      handshakeDone
-        ? decryptPull()
-        : Effect.flatMap(underlying.pull, (batch) =>
-            Effect.gen(function* () {
-              const frame = batch[0];
-              if (batch.length !== 1 || typeof frame !== "string") {
-                // @effect-diagnostics-next-line unnecessaryFailYieldableError:off
-                return yield* Effect.fail(
-                  readError("expected the E2EE accept as the only first frame"),
-                );
-              }
-              const accepted = yield* Effect.tryPromise({
-                try: () => acceptServerHandshake(keyPair, decodeAccept(frame), pinnedFingerprint),
-                catch: readError,
-              });
-              const keys = yield* Effect.promise(() => importFrameKeyPair(accepted.keys));
-              state.ciphers = keys;
-              handshakeDone = true;
-              yield* Deferred.succeed(ciphers, keys);
-              return yield* decryptPull();
-            }),
-          ),
-    );
+    const decryptPullBytes = (): Socket.Reader["pull"] =>
+      Effect.flatMap(underlying.pull, (batch) =>
+        Effect.map(
+          Effect.tryPromise({
+            try: () =>
+              Promise.all(
+                batch.map(async (frame) => {
+                  const keys = state.ciphers;
+                  if (keys === null) throw new E2eeFrameError();
+                  return await decryptFrameBytes(keys, frame);
+                }),
+              ),
+            catch: readError,
+          }),
+          (bytes) => [bytes[0]!, ...bytes.slice(1)] as const,
+        ),
+      );
+
+    const pull: Socket.Reader["pull"] = Effect.suspend(() => {
+      if (!handshakeDone)
+        return Effect.flatMap(underlying.pull, (batch) =>
+          Effect.gen(function* () {
+            const frame = batch[0];
+            if (batch.length !== 1 || typeof frame !== "string") {
+              // @effect-diagnostics-next-line unnecessaryFailYieldableError:off
+              return yield* Effect.fail(
+                readError("expected the E2EE accept as the only first frame"),
+              );
+            }
+            const accepted = yield* Effect.tryPromise({
+              try: () => acceptServerHandshake(keyPair, decodeAccept(frame), pinnedFingerprint),
+              catch: readError,
+            });
+            const keys = yield* Effect.promise(() => importFrameKeyPair(accepted.keys));
+            state.ciphers = keys;
+            handshakeDone = true;
+            yield* Deferred.succeed(ciphers, keys);
+            return yield* (binary ? decryptPullBytes : decryptPull)();
+          }),
+        );
+      return (binary ? decryptPullBytes : decryptPull)();
+    });
 
     // The server answers the hello with the accept, so it goes out before
     // the first pull.
