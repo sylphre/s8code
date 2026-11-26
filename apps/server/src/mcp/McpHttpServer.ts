@@ -101,6 +101,7 @@ import { MessageToolkit } from "./toolkits/message/tools.ts";
 import * as MessageHandlers from "./toolkits/message/handlers.ts";
 import { HtmlPreviewTool, HtmlPreviewToolkit, HtmlRenderToolkit } from "./toolkits/html/tools.ts";
 import { MCP_HTTP_PATH } from "../httpCors.ts";
+import * as EnvelopeE2ee from "./mcpE2ee.ts";
 import { requestUrl } from "../requestUrl.ts";
 import { routineSpan } from "@s8code/shared/observability";
 
@@ -1263,7 +1264,10 @@ export const layerMcpTransport = <RA, RE, RR>(registrations: Layer.Layer<RA, RE,
     protocols: mcpProtocols,
     allowSessionTermination: true,
     registrations,
-  }).pipe(Layer.provide(layerMcpAuthMiddleware));
+  }).pipe(
+    Layer.provide(EnvelopeE2ee.layerMcpE2eeMiddleware),
+    Layer.provide(layerMcpAuthMiddleware),
+  );
 
 /** Every tool the T3 MCP server advertises. AgentContextBudget.test.ts measures this set. */
 export const layerTools = Layer.mergeAll(
