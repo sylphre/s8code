@@ -51,11 +51,14 @@ const x25519PublicKey = (raw: Uint8Array): NodeCrypto.KeyObject =>
 const dh = (privateKey: NodeCrypto.KeyObject, peerPublic: Uint8Array): Buffer =>
   Buffer.from(NodeCrypto.diffieHellman({ privateKey, publicKey: x25519PublicKey(peerPublic) }));
 
-const x25519RawPublic = (keyObject: NodeCrypto.KeyObject): Buffer =>
-  Buffer.from(
-    (NodeCrypto.createPublicKey(keyObject).export({ format: "jwk" }) as NodeCrypto.JsonWebKey).x!,
-    "base64url",
-  );
+const x25519RawPublic = (keyObject: NodeCrypto.KeyObject): Buffer => {
+  // createPublicKey(keyObject) rejects public keys; public keys export directly.
+  const jwk =
+    keyObject.type === "private"
+      ? NodeCrypto.createPublicKey(keyObject).export({ format: "jwk" })
+      : keyObject.export({ format: "jwk" });
+  return Buffer.from((jwk as NodeCrypto.JsonWebKey).x!, "base64url");
+};
 
 const hkdf = (ikm: Buffer, info: string, length: number): Buffer =>
   Buffer.from(
