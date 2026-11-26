@@ -20,6 +20,9 @@ import * as NodeSocket from "@effect/platform-node/NodeSocket";
 
 import { authenticateMediaRequest, failEnvironmentInternal } from "../auth/http.ts";
 import * as SessionStore from "../auth/SessionStore.ts";
+import * as E2eeSocket from "../e2ee/socket.ts";
+import * as ServerE2ee from "../e2ee/layer.ts";
+import { E2EE_QUERY_PARAM } from "@s8code/contracts";
 import * as DeviceService from "./DeviceService.ts";
 import { repeatStillFrame } from "./mjpegStillFrame.ts";
 
@@ -103,6 +106,7 @@ const proxyWebSocket = Effect.fn("DeviceHubProxy.proxyWebSocket")(function* (
   upstreamUrl: string,
   protocols: ReadonlyArray<string> = [],
   headers: Readonly<Record<string, string>> = {},
+  e2ee: ServerE2ee.ServerE2eeService | undefined = undefined,
 ) {
   const transport = NodeHttpServerRequest.toIncomingMessage(request).socket;
   const client = yield* request.upgrade;
@@ -113,11 +117,14 @@ const proxyWebSocket = Effect.fn("DeviceHubProxy.proxyWebSocket")(function* (
   }).pipe(Effect.provide(upstreamWebSocketConstructor));
   yield* Effect.scoped(
     Effect.gen(function* () {
-      const writeToClient = yield* client.writer;
       const writeToUpstream = yield* upstream.writer;
+      const clientSide = e2ee
+        ? yield* E2eeSocket.e2eeServerSocket(client, e2ee.acceptHello, { binary: true })
+        : client;
+      const writeToClient = yield* clientSide.writer;
       return yield* Effect.raceFirst(
         pumpFrames(upstream, writeToClient),
-        pumpFrames(client, writeToUpstream),
+        pumpFrames(clientSide, writeToUpstream),
       );
     }),
   ).pipe(
@@ -254,12 +261,19 @@ const handler = Effect.gen(function* () {
     routed?.headers ??
     (ready.hub.token === undefined ? undefined : { authorization: `Bearer ${ready.hub.token}` });
   if (upgrade) {
+    // E2EE covers the client↔proxy hop only; the loopback hub keeps its own
+    // protocols, and a client without the query rides unwrapped as before.
+    const e2ee =
+      url.value.searchParams.get(E2EE_QUERY_PARAM) === "1"
+        ? Option.getOrUndefined(yield* Effect.serviceOption(ServerE2ee.ServerE2ee))
+        : undefined;
     return yield* Effect.raceFirst(
       proxyWebSocket(
         request,
         upstreamUrl.replace(/^http/, "ws"),
         routed?.protocols,
         upstreamHeaders,
+        e2ee,
       ),
       invalidated.pipe(Effect.as(HttpServerResponse.empty())),
     );

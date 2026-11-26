@@ -40,6 +40,15 @@ const decryptFrame = (session: Session, frame: Uint8Array): string => {
   return Buffer.from(aeadDecrypt(session.keys.receive, counter, ciphertext)).toString("utf8");
 };
 
+const decryptBinaryFrame = (session: Session, frame: Uint8Array): Uint8Array => {
+  const { counter, ciphertext } = decodeE2eeFrame(frame);
+  if (counter !== session.receiveCounter) {
+    throw new E2eeFrameError();
+  }
+  session.receiveCounter += 1;
+  return aeadDecrypt(session.keys.receive, counter, ciphertext);
+};
+
 const decryptPull = (
   state: { session: Session | null },
   underlying: Socket.Reader,
@@ -52,6 +61,18 @@ const decryptPull = (
     }),
   );
 
+const decryptPullBytes = (
+  state: { session: Session | null },
+  underlying: Socket.Reader,
+): Socket.Reader["pull"] =>
+  Effect.map(underlying.pull, (batch) =>
+    Arr.map(batch, (frame) => {
+      const session = state.session;
+      if (session === null || typeof frame === "string") throw new E2eeFrameError();
+      return decryptBinaryFrame(session, frame);
+    }),
+  );
+
 /**
  * Wraps a WS RPC socket so the first inbound message must be the hello.
  * The accept goes out over the raw socket before any encrypted frame, and
@@ -60,6 +81,7 @@ const decryptPull = (
 export const e2eeServerSocket = Effect.fn("e2ee/socket.e2eeServerSocket")(function* (
   socket: Socket.Socket,
   acceptHello: (hello: E2eeHelloType) => Effect.Effect<ServerHandshakeResult, E2eeHandshakeError>,
+  { binary = false }: { binary?: boolean } = {},
 ) {
   const keys = yield* Deferred.make<ServerHandshakeResult["keys"], never>();
   const state: { session: Session | null } = { session: null };
@@ -85,7 +107,7 @@ export const e2eeServerSocket = Effect.fn("e2ee/socket.e2eeServerSocket")(functi
           receiveCounter: 0,
         };
         yield* Deferred.succeed(keys, result.keys);
-        return yield* decryptPull(state, underlying);
+        return yield* (binary ? decryptPullBytes : decryptPull)(state, underlying);
       }),
     );
 
@@ -94,7 +116,9 @@ export const e2eeServerSocket = Effect.fn("e2ee/socket.e2eeServerSocket")(functi
     const rawWriter = yield* socket.writer;
     let handshakeDone = false;
     const pull: Socket.Reader["pull"] = Effect.suspend(() =>
-      handshakeDone ? decryptPull(state, underlying) : handshakePull(underlying, rawWriter),
+      handshakeDone
+        ? (binary ? decryptPullBytes : decryptPull)(state, underlying)
+        : handshakePull(underlying, rawWriter),
     );
     return { upgrade: underlying.upgrade, pull };
   });
@@ -113,11 +137,26 @@ export const e2eeServerSocket = Effect.fn("e2ee/socket.e2eeServerSocket")(functi
           );
         }),
       );
+    const sendBytes = (chunk: Uint8Array): Effect.Effect<void, Socket.SocketError> =>
+      Effect.flatMap(Deferred.await(keys), () =>
+        Effect.suspend(() => {
+          const session = state.session;
+          if (session === null) return Effect.fail(writeError(new E2eeFrameError()));
+          const counter = session.sendCounter++;
+          const frame = aeadEncrypt(session.keys.send, counter, chunk);
+          return Effect.mapError(
+            underlying.write(Buffer.concat([encodeE2eeFrameCounter(counter), frame])),
+            writeError,
+          );
+        }),
+      );
     return {
       write: (chunk) =>
         typeof chunk === "string"
           ? send(chunk)
-          : Effect.mapError(underlying.write(chunk), writeError),
+          : binary && !(chunk instanceof Socket.CloseEvent)
+            ? sendBytes(chunk)
+            : Effect.mapError(underlying.write(chunk), writeError),
       writeAll: (chunks) =>
         Effect.mapError(
           Effect.forEach(
@@ -125,7 +164,9 @@ export const e2eeServerSocket = Effect.fn("e2ee/socket.e2eeServerSocket")(functi
             (chunk) =>
               typeof chunk === "string"
                 ? send(chunk)
-                : Effect.mapError(underlying.write(chunk), writeError),
+                : binary && !(chunk instanceof Socket.CloseEvent)
+                  ? sendBytes(chunk)
+                  : Effect.mapError(underlying.write(chunk), writeError),
             { discard: true },
           ),
           writeError,
