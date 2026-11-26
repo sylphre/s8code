@@ -48,6 +48,31 @@ while IFS= read -r manifest; do
   fi
 done < <(find . -name package.json -not -path '*/node_modules/*')
 
+# The desktop updater stays (see the 2026-11-26 decision): the update feed comes
+# from the app-update.yml baked in at build time, so a stray upstream repo id in
+# the feed or the builder config would auto-update S8 Code into official T3 Code.
+# Desktop test fixtures mimic upstream feeds and pages, which is not a violation,
+# and the github.repository guards in .github/workflows are legitimate.
+desktop_pingdot_allow_re='^(apps/desktop/src/snapShot/DesktopSnapShot\.test\.ts|apps/desktop/src/snapShot/snapShot\.test\.ts|apps/desktop/src/updates/DesktopUpdates\.test\.ts|apps/desktop/src/updates/releaseNotes\.test\.ts|apps/desktop/src/updates/githubUpdateFeed\.test\.ts):'
+if hits=$(grep -rni 'pingdotgg' apps/desktop --exclude-dir=node_modules 2>/dev/null | grep -Ev "$desktop_pingdot_allow_re"); then
+  printf 'upstream repo id left in the desktop app:\n%s\n' "$hits"
+  status=1
+fi
+
+while IFS= read -r feed; do
+  if grep -qin 'pingdotgg' "$feed"; then
+    grep -Hin 'pingdotgg' "$feed"
+    status=1
+  fi
+done < <(find . \( -name 'app-update.yml' -o -name 'app-update.yaml' \) -not -path '*/node_modules/*')
+
+while IFS= read -r builder_config; do
+  if grep -qi 'pingdotgg' "$builder_config" ; then
+    grep -Hin 'pingdotgg' "$builder_config"
+    status=1
+  fi
+done < <(find . -regextype posix-extended -type f -regex '.*/electron-builder\.(yml|yaml|json|json5|js|cjs|ts)' -not -path '*/node_modules/*')
+
 # Author metadata like the podspec `hello@t3tools.com` contact lines is allowed.
 
 if [ "$status" -eq 0 ]; then
