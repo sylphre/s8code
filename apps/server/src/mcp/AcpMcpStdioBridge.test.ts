@@ -1,12 +1,31 @@
 // @effect-diagnostics nodeBuiltinImport:off globalTimers:off
+import * as NodeFSP from "node:fs/promises";
+import * as NodePath from "node:path";
 import * as NodeStream from "node:stream";
 
+import { NodeHttpServer } from "@effect/platform-node";
+import * as PlatformNodeCrypto from "@effect/platform-node/NodeCrypto";
+import * as NodeServices from "@effect/platform-node/NodeServices";
 import { describe, expect, it } from "@effect/vitest";
+import { EnvironmentId, ProviderInstanceId, ThreadId } from "@s8code/contracts";
+import * as Context from "effect/Context";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
 import * as Fiber from "effect/Fiber";
+import * as Layer from "effect/Layer";
+import * as Schema from "effect/Schema";
+import { HttpRouter, HttpServer } from "effect/http";
+import { McpServer, Tool, Toolkit } from "effect/ai";
 import { vi } from "vite-plus/test";
 
+import * as ServerConfig from "../config.ts";
+import * as ServerE2ee from "../e2ee/layer.ts";
+import { loadOrCreateServerIdentity } from "../e2ee/keys.ts";
+import * as ServerSecretStore from "../auth/ServerSecretStore.ts";
+import * as ServerSettings from "../serverSettings.ts";
+import * as McpHttpServer from "./McpHttpServer.ts";
+import * as McpToolAccess from "./McpToolAccess.ts";
+import * as McpSessionRegistry from "./McpSessionRegistry.ts";
 import { mcpToolSession, runAcpMcpCliFastPath, runAcpMcpStdioBridge } from "./AcpMcpStdioBridge.ts";
 
 function makeHarness(
@@ -516,5 +535,130 @@ describe("AcpMcpStdioBridge", () => {
       yield* Fiber.interrupt(fiber);
       expect(signal?.aborted).toBe(true);
     }),
+  );
+});
+
+describe("mcpToolSession under E2EE", () => {
+  const token = "providerTokenWithoutDots";
+  const environmentId = EnvironmentId.make("environment-mcp-tool-e2ee-test");
+  const threadId = ThreadId.make("thread-mcp-tool-e2ee-test");
+
+  const Result = Schema.Struct({ ok: Schema.Boolean });
+
+  const progressToolkit = Toolkit.make(
+    Tool.make("emit_progress", {
+      description: "Answers after emitting one progress notification.",
+      success: Result,
+      dependencies: [McpServer.McpServer],
+    }),
+  );
+
+  const layerProgressTool = McpHttpServer.toolkitRegistration(
+    progressToolkit,
+    McpToolAccess.toLayer(progressToolkit, {
+      emit_progress: McpToolAccess.reads(() =>
+        Effect.flatMap(McpServer.McpServer, (server) =>
+          Effect.as(
+            server.notifications["notifications/progress"]({
+              progressToken: "e2ee-tool-token",
+              progress: 1,
+            }),
+            { ok: true },
+          ),
+        ),
+      ),
+    }),
+  );
+
+  // One secrets directory per test, shared by the server build and the pin
+  // reader, so both sides of the handshake hold the same identity.
+  const cwd = process.cwd();
+  const layerServer = (baseDir: string) =>
+    McpHttpServer.layerMcpTransport(layerProgressTool).pipe(
+      Layer.provide(ServerE2ee.layer),
+      Layer.provide(ServerSettings.layerTest()),
+      Layer.provide(
+        Layer.mock(McpSessionRegistry.McpSessionRegistry)({
+          resolve: (presented) =>
+            Effect.succeed(
+              presented === token
+                ? ({
+                    environmentId,
+                    requestNamespace: "provider-session",
+                    thread: {
+                      threadId,
+                      providerSessionId: "provider-session",
+                      providerInstanceId: ProviderInstanceId.make("codex"),
+                    },
+                    client: undefined,
+                    capabilities: new Set(["orchestration"]),
+                    issuedAt: 1,
+                  } as never)
+                : undefined,
+            ),
+        }),
+      ),
+      Layer.provide(ServerConfig.layerTest(cwd, baseDir)),
+      Layer.provide(Layer.mergeAll(NodeServices.layer, PlatformNodeCrypto.layer)),
+    );
+
+  it.effect("runs a tool call as envelopes when the descriptor pins a fingerprint", () =>
+    Effect.scoped(
+      Effect.gen(function* () {
+        const baseDir = yield* Effect.promise(() =>
+          NodeFSP.mkdtemp(NodePath.join("/tmp", "t3-mcp-tool-e2ee-")),
+        );
+        yield* HttpRouter.serve(layerServer(baseDir), {
+          disableListenLog: true,
+          disableLogger: true,
+        }).pipe(Layer.build);
+        // The same directory holds the secret store, so a second build reads
+        // the identity the server just created and pins.
+        const storeContext = yield* Layer.build(
+          ServerSecretStore.layer.pipe(
+            Layer.provide(ServerConfig.layerTest(cwd, baseDir)),
+            Layer.provide(Layer.mergeAll(NodeServices.layer, PlatformNodeCrypto.layer)),
+          ),
+        );
+        const identity = yield* loadOrCreateServerIdentity(
+          Context.get(storeContext, ServerSecretStore.ServerSecretStore),
+        );
+        const server = yield* HttpServer.HttpServer;
+        const address = server.address;
+        if (address._tag === "UnixPathAddress") return yield* Effect.die("expected a TCP address");
+        const session = yield* mcpToolSession({
+          endpoint: `http://127.0.0.1:${address.port}/mcp`,
+          authorization: `Bearer ${token}`,
+          clientName: "mcp-tool-e2ee-test",
+          e2eeFingerprint: identity.fingerprint,
+        });
+        const result = yield* session.call("emit_progress", {});
+        expect(result).toMatchObject({ structuredContent: { ok: true } });
+      }),
+    ).pipe(Effect.provide(NodeHttpServer.layerTest)),
+  );
+
+  it.effect("runs a tool call in plaintext when the descriptor carries no fingerprint", () =>
+    Effect.scoped(
+      Effect.gen(function* () {
+        const baseDir = yield* Effect.promise(() =>
+          NodeFSP.mkdtemp(NodePath.join("/tmp", "t3-mcp-tool-e2ee-")),
+        );
+        yield* HttpRouter.serve(layerServer(baseDir), {
+          disableListenLog: true,
+          disableLogger: true,
+        }).pipe(Layer.build);
+        const server = yield* HttpServer.HttpServer;
+        const address = server.address;
+        if (address._tag === "UnixPathAddress") return yield* Effect.die("expected a TCP address");
+        const session = yield* mcpToolSession({
+          endpoint: `http://127.0.0.1:${address.port}/mcp`,
+          authorization: `Bearer ${token}`,
+          clientName: "mcp-tool-e2ee-test",
+        });
+        const result = yield* session.call("emit_progress", {});
+        expect(result).toMatchObject({ structuredContent: { ok: true } });
+      }),
+    ).pipe(Effect.provide(NodeHttpServer.layerTest)),
   );
 });
