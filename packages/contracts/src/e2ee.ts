@@ -67,3 +67,51 @@ export const decodeE2eeFrame = (frame: Uint8Array): { counter: number; ciphertex
     ciphertext: frame.slice(E2EE_FRAME_COUNTER_BYTES),
   };
 };
+
+/**
+ * /mcp carries the same handshake one POST header pair instead of socket
+ * frames, and its JSON-RPC messages as envelopes carrying e2ee, hello, or
+ * accept payloads.
+ */
+export const E2EE_HTTP_HELLO_HEADER = "x-s8-e2ee-hello";
+export const E2EE_HTTP_ACCEPT_HEADER = "x-s8-e2ee-accept";
+/** Names the handshake's session keys; clients echo it on every envelope POST. */
+export const E2EE_HTTP_KEY_ID_HEADER = "x-s8-e2ee-key-id";
+
+/**
+ * One encrypted /mcp message. The counter takes the frame format's role: the
+ * 8-byte big-endian value is the AES-256-GCM nonce tail and AAD, and session
+ * ciphers accept only `previous + 1`.
+ */
+export const McpE2eeEnvelope = Schema.Struct({
+  t: Schema.Literal("e2ee"),
+  v: Schema.Literal(1),
+  /** The frame counter of this message, as a decimal number. */
+  c: Schema.Number,
+  /** AES-256-GCM over the JSON-RPC message with its 16-byte tag, base64url. */
+  ct: Schema.String,
+});
+export type McpE2eeEnvelope = typeof McpE2eeEnvelope.Type;
+
+/**
+ * What one /mcp POST body carries: the handshake's hello and accept, or an
+ * encrypted message. `plain` marks a message sent without E2EE, which the
+ * server answers in kind when the session allows it.
+ */
+export const McpE2eeRequest = Schema.Union([
+  McpE2eeEnvelope,
+  Schema.Struct({ t: Schema.Literal("hello"), hello: E2eeHello }),
+  E2eeHello,
+]);
+export type McpE2eeRequest = typeof McpE2eeRequest.Type;
+
+/**
+ * What one /mcp response body carries: an encrypted message, the accept the
+ * hello POST asked for, or an unencrypted message.
+ */
+export const McpE2eeResponse = Schema.Union([
+  McpE2eeEnvelope,
+  Schema.Struct({ t: Schema.Literal("accept"), accept: E2eeAccept }),
+  Schema.Struct({ t: Schema.Literal("plain"), message: Schema.Unknown }),
+]);
+export type McpE2eeResponse = typeof McpE2eeResponse.Type;
