@@ -6,6 +6,8 @@ import {
   type OrchestrationV2LinkedSender,
   type RuntimeMode,
 } from "@s8code/contracts";
+// The E2EE wrapper runs its own session Effect per POST, outside this service's fibers.
+// @effect-diagnostics runEffectInsideEffect:off
 import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
@@ -16,8 +18,11 @@ import * as Result from "effect/Result";
 import * as Schema from "effect/Schema";
 import * as HttpBody from "effect/http/HttpBody";
 import * as HttpClient from "effect/http/HttpClient";
+import * as HttpClientError from "effect/http/HttpClientError";
 import * as HttpClientRequest from "effect/http/HttpClientRequest";
+import * as HttpClientResponse from "effect/http/HttpClientResponse";
 
+import { makeE2eeFetch } from "../e2ee/e2eeFetch.ts";
 import * as McpInvocationContext from "../mcp/McpInvocationContext.ts";
 import * as PeerLinks from "./PeerLinks.ts";
 
@@ -107,6 +112,9 @@ const responseJson = (contentType: string | undefined, text: string) =>
         .join("")
     : text;
 
+const asMessage = (cause: unknown): string =>
+  cause instanceof Error ? cause.message : String(cause);
+
 const make = Effect.gen(function* () {
   const links = yield* PeerLinks.PeerLinks;
   const httpClient = yield* HttpClient.HttpClient;
@@ -125,6 +133,55 @@ const make = Effect.gen(function* () {
         HttpClientRequest.setBody(HttpBody.text(JSON.stringify(body), "application/json")),
       ),
     );
+
+  // One E2EE session per linked address, alive as long as the client here.
+  // The bearer token travels in the fixed headers; the envelope carries only
+  // the JSON-RPC message, so it rides the session the peer keyed.
+  const e2eeSessions = new Map<
+    string,
+    (message: unknown, headers: Record<string, string>) => Promise<Response>
+  >();
+  const postE2ee = (
+    resolved: PeerLinks.ResolvedPeerLink,
+    body: unknown,
+    headers: Record<string, string>,
+  ): Effect.Effect<
+    HttpClientResponse.HttpClientResponse,
+    OrchestratorMcpFailure | HttpClientError.HttpClientError
+  > => {
+    if (resolved.e2eeFingerprint === undefined) {
+      return post(resolved.url, resolved.token, body, headers);
+    }
+    let ride = e2eeSessions.get(resolved.url);
+    if (ride === undefined) {
+      const e2ee = makeE2eeFetch({
+        endpoint: `${resolved.url}/mcp`,
+        headers: () => ({ authorization: `Bearer ${resolved.token}` }),
+        pinnedFingerprint: resolved.e2eeFingerprint,
+      });
+      ride = (message, perCall) =>
+        Effect.runPromise(
+          e2ee.post(message, perCall).pipe(
+            Effect.map((result) =>
+              Response.json(result.message === null ? {} : result.message, {
+                status: result.status,
+                headers: result.headers,
+              }),
+            ),
+          ),
+        );
+      e2eeSessions.set(resolved.url, ride);
+    }
+    return Effect.tryPromise({
+      try: () => ride!(body, headers),
+      catch: (cause) =>
+        new OrchestratorMcpFailure({ code: "orchestration_error", message: asMessage(cause) }),
+    }).pipe(
+      Effect.map((web) =>
+        HttpClientResponse.fromWeb(HttpClientRequest.post(`${resolved.url}/mcp`), web),
+      ),
+    );
+  };
 
   // A peer that renews a used link says when it now ends; one that does not sends nothing.
   const recordLinkExpiry = (
@@ -146,13 +203,9 @@ const make = Effect.gen(function* () {
     );
 
   const openSession = Effect.fn("PeerMcpClient.openSession")(
-    function* (
-      { link, url, token }: PeerLinks.ResolvedPeerLink,
-      limitHeader: Record<string, string>,
-    ) {
-      const initialized = yield* post(
-        url,
-        token,
+    function* (resolved: PeerLinks.ResolvedPeerLink, limitHeader: Record<string, string>) {
+      const initialized = yield* postE2ee(
+        resolved,
         {
           jsonrpc: "2.0",
           id: 0,
@@ -176,10 +229,9 @@ const make = Effect.gen(function* () {
               : `The linked environment refused to start an MCP session (HTTP ${initialized.status}).`,
         });
       }
-      yield* recordLinkExpiry(link, initialized.headers);
-      yield* post(
-        url,
-        token,
+      yield* recordLinkExpiry(resolved.link, initialized.headers);
+      yield* postE2ee(
+        resolved,
         { jsonrpc: "2.0", method: "notifications/initialized" },
         { ...limitHeader, "mcp-session-id": sessionId, "mcp-protocol-version": PROTOCOL_VERSION },
       );
@@ -213,9 +265,8 @@ const make = Effect.gen(function* () {
             };
       const sessionKey = `${input.environmentId} ${resolved.url}`;
       const callOnce = (sessionId: string) =>
-        post(
-          resolved.url,
-          resolved.token,
+        postE2ee(
+          resolved,
           {
             jsonrpc: "2.0",
             id: 1,

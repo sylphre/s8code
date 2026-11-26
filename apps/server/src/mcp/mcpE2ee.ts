@@ -22,6 +22,7 @@ import { HttpRouter, HttpServerRequest, HttpServerResponse } from "effect/http";
 
 import { aeadDecrypt, aeadEncrypt } from "../e2ee/aead.ts";
 import type { E2eeSessionKeys } from "../e2ee/handshake.ts";
+import * as McpInvocationContext from "./McpInvocationContext.ts";
 import * as ServerE2ee from "../e2ee/layer.ts";
 
 const decodeEnvelope = Schema.decodeUnknownSync(McpE2eeEnvelope);
@@ -258,13 +259,16 @@ const makeMcpE2eeMiddleware = Effect.gen(function* () {
     const response = exit.value;
     const counter = session.sendCounter++;
     const messages = yield* responseMessages(response);
+    // The headers a linked environment's client reads: its session, and a
+    // link the call renewed.
+    const passthrough = ["mcp-session-id", McpInvocationContext.LINK_EXPIRES_AT_HEADER].filter(
+      (name) => response.headers[name] !== undefined,
+    );
     return envelopeResponse(
       session,
       counter,
       { t: "plain", message: Option.getOrElse(messages, () => null) },
-      response.headers["mcp-session-id"] === undefined
-        ? {}
-        : { "mcp-session-id": response.headers["mcp-session-id"] },
+      Object.fromEntries(passthrough.map((name) => [name, response.headers[name]!])),
     );
   }) satisfies McpE2eeMiddleware;
 });

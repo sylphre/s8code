@@ -82,6 +82,8 @@ export interface ResolvedPeerLink {
   readonly token: string;
   /** What the peer said it can do when it answered. */
   readonly capabilities: ExecutionEnvironmentCapabilities;
+  /** The peer descriptor's E2EE fingerprint, when it advertises one. */
+  readonly e2eeFingerprint?: string | undefined;
 }
 
 /** What a link's session is called in the peer's Connections, before this environment's label. */
@@ -785,6 +787,9 @@ const make = Effect.gen(function* () {
         url,
         token: new TextDecoder().decode(stored.value),
         capabilities: peer.capabilities,
+        ...(peer.capabilities.e2eeFingerprint === undefined
+          ? {}
+          : { e2eeFingerprint: peer.capabilities.e2eeFingerprint }),
       };
     },
   );

@@ -27,6 +27,7 @@ import type * as SqlClient from "effect/sql/SqlClient";
 import * as ServerSecretStore from "../auth/ServerSecretStore.ts";
 import * as CloudLink from "../cloud/CloudLink.ts";
 import * as ServerConfig from "../config.ts";
+import * as ServerE2ee from "../e2ee/layer.ts";
 import * as ServerEnvironment from "../environment/ServerEnvironment.ts";
 import * as ServerHttp from "../http.ts";
 import * as McpHttpServer from "../mcp/McpHttpServer.ts";
@@ -89,6 +90,7 @@ export const servePeer = <E, R, E2 = never, R2 = never>(
   Effect.gen(function* () {
     const descriptor = yield* Ref.make(initial);
     const bearers = yield* Ref.make<ReadonlyArray<string>>([]);
+    const mcpBodies = yield* Ref.make<ReadonlyArray<string>>([]);
     const probes = yield* Ref.make(0);
     const asleep = yield* Ref.make(false);
     const unanswered = yield* Queue.unbounded<void>();
@@ -97,7 +99,9 @@ export const servePeer = <E, R, E2 = never, R2 = never>(
       getEnvironmentId: Ref.get(descriptor).pipe(Effect.map((current) => current.environmentId)),
       getDescriptor: Ref.get(descriptor),
     });
-    const authContext = yield* Layer.build(layerEnvironmentAuth("t3-peer-link-peer-"));
+    const authContext = yield* Layer.build(
+      layerEnvironmentAuth("t3-peer-link-peer-").pipe(Layer.provideMerge(ServerE2ee.layer)),
+    );
     const layerRecordBearers = HttpRouter.middleware(
       (httpEffect) =>
         Effect.gen(function* () {
@@ -113,6 +117,10 @@ export const servePeer = <E, R, E2 = never, R2 = never>(
           const authorization = request.headers.authorization;
           if (authorization !== undefined) {
             yield* Ref.update(bearers, (seen) => [...seen, authorization]);
+          }
+          if (request.url === "/mcp") {
+            const body = yield* request.text;
+            yield* Ref.update(mcpBodies, (seen) => [...seen, body]);
           }
           return yield* httpEffect;
         }),
@@ -168,13 +176,18 @@ export const servePeer = <E, R, E2 = never, R2 = never>(
     if (address._tag === "UnixPathAddress") return yield* Effect.die("expected a TCP address");
     const url = `http://127.0.0.1:${address.port}`;
     const auth = Context.get(authContext, EnvironmentAuth.EnvironmentAuth);
+    const e2ee = Context.get(authContext, ServerE2ee.ServerE2ee);
     return {
       url,
       auth,
+      /** Its E2EE fingerprint, to pin from the environment that links to it. */
+      e2eeFingerprint: e2ee.fingerprint,
       /** Its settings, as for turning its Linked environments beta off. */
       settings: Context.get(authContext, ServerSettings.ServerSettingsService),
       descriptor,
       bearers,
+      /** The raw /mcp request bodies it received, to tell envelopes from plaintext. */
+      mcpBodies,
       /** How often its descriptor was asked for, as a probe of whether it answers. */
       probes,
       /** While set, its descriptor never answers, as a machine that is asleep. */

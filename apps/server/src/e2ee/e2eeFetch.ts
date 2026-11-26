@@ -168,6 +168,10 @@ export interface E2eeFetchOptions {
   readonly endpoint: string;
   /** Extra headers every POST carries: authorization, mode limits, session id. */
   readonly headers: () => Record<string, string>;
+  /** The host fetch, injectable for tests; the ambient one by default. */
+  readonly fetchImplementation?:
+    | ((url: string, init?: RequestInit) => Promise<Response>)
+    | undefined;
   /**
    * The fingerprint the descriptor advertised; the handshake refuses a server
    * whose identity does not match it.
@@ -182,6 +186,7 @@ export interface E2eeFetchOptions {
  * server that accepts keys every message after it into envelopes.
  */
 export const makeE2eeFetch = (options: E2eeFetchOptions) => {
+  const doFetch = options.fetchImplementation ?? fetch;
   const client = NodeCrypto.generateKeyPairSync("x25519");
   // Undefined until the hello resolves; "plain" once the server declines.
   let established: E2eeSession | "plain" | undefined;
@@ -189,15 +194,16 @@ export const makeE2eeFetch = (options: E2eeFetchOptions) => {
   // concurrency-safe; one writer at a time, as JSON-RPC HTTP clients go.
   const mutex = Semaphore.makeUnsafe(1);
 
-  const plainPost = (message: unknown) =>
+  const plainPost = (message: unknown, extraHeaders: Record<string, string>) =>
     Effect.tryPromise({
       try: async () => {
-        const response = await fetch(options.endpoint, {
+        const response = await doFetch(options.endpoint, {
           method: "POST",
           headers: {
             "content-type": "application/json",
             accept: "application/json, text/event-stream",
             ...options.headers(),
+            ...extraHeaders,
           },
           body: JSON.stringify(message),
         });
@@ -222,7 +228,7 @@ export const makeE2eeFetch = (options: E2eeFetchOptions) => {
           "base64url",
         ).toString("base64url"),
       };
-      const response = await fetch(options.endpoint, {
+      const response = await doFetch(options.endpoint, {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -240,7 +246,11 @@ export const makeE2eeFetch = (options: E2eeFetchOptions) => {
     catch: asError,
   });
 
-  const envelopePost = (session: E2eeSession, message: unknown) =>
+  const envelopePost = (
+    session: E2eeSession,
+    message: unknown,
+    extraHeaders: Record<string, string>,
+  ) =>
     Effect.tryPromise({
       try: async () => {
         const counter = session.sendCounter;
@@ -255,13 +265,14 @@ export const makeE2eeFetch = (options: E2eeFetchOptions) => {
             new TextEncoder().encode(JSON.stringify(message)),
           ).toString("base64url"),
         };
-        const response = await fetch(options.endpoint, {
+        const response = await doFetch(options.endpoint, {
           method: "POST",
           headers: {
             "content-type": "application/json",
             accept: "application/json, text/event-stream",
             [E2EE_HTTP_KEY_ID_HEADER]: session.keyId,
             ...options.headers(),
+            ...extraHeaders,
           },
           body: JSON.stringify(envelope),
         });
@@ -295,20 +306,25 @@ export const makeE2eeFetch = (options: E2eeFetchOptions) => {
     });
 
   return {
-    post: (message: unknown): Effect.Effect<E2eeFetchResult, Error> =>
+    // Per-call headers ride beside the fixed ones, as the session id does.
+    post: (
+      message: unknown,
+      extraHeaders: Record<string, string> = {},
+    ): Effect.Effect<E2eeFetchResult, Error> =>
       mutex.withPermits(1)(
         Effect.suspend(() => {
-          if (established === "plain") return plainPost(message);
+          if (established === "plain") return plainPost(message, extraHeaders);
           const session = established;
           if (session !== undefined) {
-            return Effect.flatMap(envelopePost(session, message), ({ response, counter }) =>
-              playResponse(session, response, counter),
+            return Effect.flatMap(
+              envelopePost(session, message, extraHeaders),
+              ({ response, counter }) => playResponse(session, response, counter),
             );
           }
           return Effect.flatMap(postHello, (accepted) => {
             if (accepted === undefined) {
               established = "plain";
-              return plainPost(message);
+              return plainPost(message, extraHeaders);
             }
             return Effect.flatMap(
               // A rejected accept — a bad signature or a missed pin — fails
@@ -325,8 +341,9 @@ export const makeE2eeFetch = (options: E2eeFetchOptions) => {
               }),
               (session) => {
                 established = session;
-                return Effect.flatMap(envelopePost(session, message), ({ response, counter }) =>
-                  playResponse(session, response, counter),
+                return Effect.flatMap(
+                  envelopePost(session, message, extraHeaders),
+                  ({ response, counter }) => playResponse(session, response, counter),
                 );
               },
             );
@@ -335,3 +352,50 @@ export const makeE2eeFetch = (options: E2eeFetchOptions) => {
       ),
   };
 };
+
+/**
+ * Wraps the bridge's fetch shape: every POST to `endpoint` rides the envelope
+ * once the server accepts the handshake, and its `Response` carries the
+ * decrypted JSON-RPC message as the body. Other URLs and other methods pass
+ * through untouched.
+ */
+export const e2eeFetchImplementation =
+  (pinnedFingerprint: string | undefined) =>
+  (
+    baseFetch: (url: string, init?: RequestInit) => Promise<Response>,
+    endpoint: string,
+    headers: () => Record<string, string>,
+  ): ((url: string, init?: RequestInit) => Promise<Response>) => {
+    const e2ee = makeE2eeFetch({
+      endpoint,
+      headers,
+      pinnedFingerprint,
+      fetchImplementation: baseFetch,
+    });
+    const asResponse = (result: E2eeFetchResult): Response =>
+      new Response(result.message === null ? "" : JSON.stringify(result.message), {
+        status: result.status,
+        headers: result.headers,
+      });
+    return (url, init) => {
+      if (url !== endpoint || (init?.method !== undefined && init.method !== "POST")) {
+        return baseFetch(url, init);
+      }
+      const run = Effect.runPromise(e2ee.post(parseJson(String(init?.body ?? ""))));
+      const signal = init?.signal;
+      if (signal === undefined || signal === null) {
+        return run.then(asResponse, (cause) => Promise.reject(asError(cause)));
+      }
+      // A cancelled caller settles at once; the POST it started finishes on its own.
+      const aborted = new Promise<never>((_, reject) => {
+        signal.addEventListener(
+          "abort",
+          () => reject(asError(new Error("The request was aborted."))),
+          { once: true },
+        );
+      });
+      return Promise.race([run, aborted]).then(asResponse, (cause) =>
+        Promise.reject(asError(cause)),
+      );
+    };
+  };

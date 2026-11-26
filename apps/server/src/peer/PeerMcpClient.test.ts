@@ -447,3 +447,51 @@ it.effect("bounds the session handshake, not a tool call that waits longer", () 
     expect(yield* Fiber.join(waiting)).toEqual({ modes: "approval-required/plan" });
   }),
 );
+
+it.effect("rides E2EE envelopes to a peer that advertises a fingerprint", () =>
+  Effect.scoped(
+    Effect.gen(function* () {
+      const handlers = McpToolAccess.toLayer(senderToolkit, {
+        sender: McpToolAccess.reads(() =>
+          McpInvocationContext.McpInvocationContext.pipe(
+            Effect.map((scope) => ({ senderThread: scope.client?.senderThread ?? null })),
+          ),
+        ),
+      });
+      const box = descriptorOf("environment-box", "Box");
+      const b = yield* servePeer(box, McpHttpServer.toolkitRegistration(senderToolkit, handlers));
+      // The peer advertises what its own identity answers with, so the link
+      // pins the descriptor's fingerprint against its handshake.
+      const fingerprint = Option.getOrThrow(yield* b.e2eeFingerprint);
+      yield* Ref.set(b.descriptor, {
+        ...box,
+        capabilities: { ...box.capabilities, e2eeFingerprint: fingerprint },
+      });
+      const context = yield* Layer.build(
+        layerLinkingEnvironment(descriptorOf("environment-a", "A")),
+      );
+      const links = Context.get(context, PeerLinks.PeerLinks);
+      const client = Context.get(context, PeerMcpClient.PeerMcpClient);
+      yield* linkTo(links, b);
+      const sender = {
+        environmentId: EnvironmentId.make("environment-a"),
+        threadId: ThreadId.make("thread-e2ee-peer"),
+        title: "e2ee peer",
+      };
+      expect(
+        yield* client.call({
+          environmentId: box.environmentId,
+          tool: "sender",
+          arguments: {},
+          limits: { runtimeMode: "full-access", interactionMode: "default" },
+          sender,
+          success: Schema.Struct({ senderThread: Schema.NullOr(OrchestrationV2LinkedSender) }),
+        }),
+      ).toEqual({ senderThread: sender });
+      // The handshake rode the key-id header, and no JSON-RPC body crossed in the clear.
+      const bodies = (yield* Ref.get(b.mcpBodies)).filter((body) => body.length > 0);
+      expect(bodies.length).toBeGreaterThan(0);
+      for (const body of bodies) expect(JSON.parse(body).t).toBe("e2ee");
+    }),
+  ).pipe(Effect.provide(NodeHttpServer.layerTest)),
+);
