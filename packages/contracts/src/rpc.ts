@@ -419,6 +419,12 @@ import {
   TextGeneratorError,
 } from "./settings.ts";
 import {
+  ImportKiloProvidersInput,
+  ImportKiloProvidersResult,
+  ReadKiloConfigSummaryInput,
+  ReadKiloConfigSummaryResult,
+} from "./kiloImport.ts";
+import {
   WorkflowAnswerInput,
   WorkflowRequestError,
   WorkflowDefinitionChangeResult,
@@ -606,6 +612,8 @@ export const WS_METHODS = {
   peerLinksPairLink: "peerLinks.pairLink",
   serverGetSettings: "server.getSettings",
   serverUpdateSettings: "server.updateSettings",
+  kiloImportReadSummary: "kiloImport.readSummary",
+  kiloImportProviders: "kiloImport.importProviders",
   serverDiscoverSourceControl: "server.discoverSourceControl",
   serverCheckSecretSource: "server.checkSecretSource",
   serverSearchAcpRegistry: "server.searchAcpRegistry",
@@ -1017,6 +1025,19 @@ const WsServerUpdateSettingsRpc = Rpc.make(WS_METHODS.serverUpdateSettings, {
     providerInstanceMutation: Schema.optionalKey(ProviderInstanceMutation),
   }),
   success: ServerSettings,
+  error: Schema.Union([ServerSettingsError, EnvironmentAuthorizationError]),
+});
+
+// The summary never carries a key value, so the file read stays safe for any provider manager.
+const WsKiloImportReadSummaryRpc = Rpc.make(WS_METHODS.kiloImportReadSummary, {
+  payload: ReadKiloConfigSummaryInput,
+  success: ReadKiloConfigSummaryResult,
+  error: EnvironmentAuthorizationError,
+});
+
+const WsKiloImportProvidersRpc = Rpc.make(WS_METHODS.kiloImportProviders, {
+  payload: ImportKiloProvidersInput,
+  success: ImportKiloProvidersResult,
   error: Schema.Union([ServerSettingsError, EnvironmentAuthorizationError]),
 });
 
@@ -2504,6 +2525,8 @@ export const WsRpcGroup = RpcGroup.make(
   WsServerGetSettingsRpc,
   WsServerReclaimDatabaseSpaceRpc,
   WsServerUpdateSettingsRpc,
+  WsKiloImportReadSummaryRpc,
+  WsKiloImportProvidersRpc,
   WsPeerLinksListRpc,
   WsPeerLinksNamesRpc,
   WsPeerLinksLinkRpc,
