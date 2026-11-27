@@ -268,7 +268,7 @@ export function AddCustomProviderDialog({
       }
       claimedIds.add(instanceId);
       createdCount += 1;
-      firstCreated ??= brandedId;
+      firstCreated = firstCreated ?? brandedId;
     }
     setIsSaving(false);
     toastManager.add({
