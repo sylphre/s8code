@@ -1,6 +1,6 @@
-# Updating T3 Code
+# Updating S8 Code
 
-T3 Code clients and servers can run on different machines and must share a compatible orchestration protocol. When a server or provider is behind, the sidebar update button and **Settings → Environments** handle updates.
+S8 Code clients and servers can run on different machines and must share a compatible orchestration protocol. When a server or provider is behind, the sidebar update button and **Settings → Environments** handle updates.
 
 ## Update everything at once
 
@@ -19,7 +19,7 @@ In the desktop app, change **Settings → About → Update track** to switch con
 
 ## Continue threads after restarts
 
-**Settings → Maintenance → Continue threads after restarts** is enabled by default. After an update, crash, or reboot (once T3 Code starts again), supported active threads automatically resume—and threads waiting on subagents or monitors are woken and notified that background work stopped.
+**Settings → Maintenance → Continue threads after restarts** is enabled by default. After an update, crash, or reboot (once S8 Code starts again), supported active threads automatically resume—and threads waiting on subagents or monitors are woken and notified that background work stopped.
 
 - Threads waiting for your approval/answer/secret—or archived, snoozed, or settled—are not auto-resumed.
 - After 3 consecutive crash recoveries of an unfinished turn, the thread waits for your next message.
@@ -49,5 +49,5 @@ Open **Settings → Providers** and click **Update now** on individual providers
 
 - **Version mismatch**: Update whichever side (app or server) the connection notice names.
 - **Failed update**: Retry once; confirm you updated the host machine (not just the client) and that only one server owns the T3 home directory.
-- **macOS Alpha → Beta**: Open `/Applications/T3 Code (Beta).app` manually and re-pin it to the Dock.
+- **macOS Alpha → Beta**: Open `/Applications/S8 Code (Beta).app` manually and re-pin it to the Dock.
 - **Desktop won't start**: Use the recovery window's **Update** button, install the linked last-working version, or **Copy details** for a bug report.

@@ -1,6 +1,6 @@
 # Remote access
 
-Drive T3 Code from your phone, browser (`app.t3.codes`), or another desktop app while your agents run on a host computer or server. The host must stay awake and running while you work.
+Drive S8 Code from your phone, browser (`app.t3.codes`), or another desktop app while your agents run on a host computer or server. The host must stay awake and running while you work.
 
 ## T3 Connect (recommended)
 
@@ -27,7 +27,7 @@ Free T3 Connect accounts can link up to **3 host machines** (phones and browsers
 
 ### Reach one machine several ways
 
-A host can have multiple routes (LAN, Tailscale, VPN, public URL, SSH, T3 Connect). T3 Code automatically learns LAN and Tailscale routes when network access is enabled, connects over the fastest working route, and switches back to higher-priority routes when you return home. Reorder or add routes in **Settings → Environments** (**Add route**).
+A host can have multiple routes (LAN, Tailscale, VPN, public URL, SSH, T3 Connect). S8 Code automatically learns LAN and Tailscale routes when network access is enabled, connects over the fastest working route, and switches back to higher-priority routes when you return home. Reorder or add routes in **Settings → Environments** (**Add route**).
 
 ### Tailscale HTTPS
 
@@ -42,7 +42,7 @@ On web and desktop with 2+ connected machines, enable **Settings → Environment
 
 ## Desktop-managed SSH
 
-In the desktop app, open **Settings → Environments → Add environment → SSH** and enter a host or SSH alias (e.g. `user@example.com`). T3 Code downloads its runtime to `~/.t3/runtime` on the Linux or Apple Silicon macOS host, starts or reuses a server, and manages port forwarding automatically.
+In the desktop app, open **Settings → Environments → Add environment → SSH** and enter a host or SSH alias (e.g. `user@example.com`). S8 Code downloads its runtime to `~/.t3/runtime` on the Linux or Apple Silicon macOS host, starts or reuses a server, and manages port forwarding automatically.
 
 - Provider CLIs must be on a non-interactive login shell's `PATH` (check with `ssh user@example.com 'sh -lc "command -v claude codex"'`).
 - For 2FA/Duo hosts on macOS/Linux, enable SSH `ControlMaster` in `~/.ssh/config` and open a terminal SSH session first.
@@ -57,7 +57,7 @@ Browser tabs belong to the host environment so you and your agents share them fr
 - **Open on this device (mobile)**: Tap **Open on this device** on a streamed `localhost` tab or long-press a `localhost` link in chat for native touch scrolling.
 - **Disable preview tunnel**: Turn off **Settings → Sharing & access → Preview tunnel** on the host (or via [managed policy](./managed-policy.md#other-capabilities)) to disable port forwarding and **Open on this device** (streamed tabs continue working).
 - **Take control**: Click **Take control** before typing into an agent's tab, and release control when done.
-- **Local servers**: T3 Code lists listening ports from your terminals and agents as `http://localhost:<port>` (set a script's **Preview URL** for HTTPS or subpaths). Disable discovery with `T3CODE_PORT_DISCOVERY=0`.
+- **Local servers**: S8 Code lists listening ports from your terminals and agents as `http://localhost:<port>` (set a script's **Preview URL** for HTTPS or subpaths). Disable discovery with `T3CODE_PORT_DISCOVERY=0`.
 
 ### Browser host setup
 
@@ -71,7 +71,7 @@ This installs an AppArmor profile for Chrome's sandbox plus missing libraries an
 
 ## Link another environment
 
-Link two T3 Code machines (beta) so agents on one can launch, message, delegate to, and manage threads on the other.
+Link two S8 Code machines (beta) so agents on one can launch, message, delegate to, and manage threads on the other.
 
 1. Enable **Settings → Labs → Linked environments** on **both** machines (or `"linkedEnvironmentsEnabled": true` in `userdata/settings.json`).
 2. On the source machine, open **Settings → Environments → Linked environments → Link** (or drag from one machine's `+` to another on the Environments map, or run `t3 environment link <address> --pairing-code <code> --access <mode>`). Use **Link several…** or `--from <file>` for batch linking.

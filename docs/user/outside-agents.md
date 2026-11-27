@@ -1,10 +1,10 @@
 # Outside agents
 
-Connect external agents (Claude Code or Codex in your terminal, ChatGPT, or any OAuth-capable MCP client) to your T3 Code environment over MCP to read projects/threads, launch and message threads, and monitor events.
+Connect external agents (Claude Code or Codex in your terminal, ChatGPT, or any OAuth-capable MCP client) to your S8 Code environment over MCP to read projects/threads, launch and message threads, and monitor events.
 
 ## Quick setup
 
-Open the command palette (`Cmd/Ctrl+K`) and run **Use T3 Code in another app (MCP)** (or open **Settings → Sharing & access**), pick your app, and follow the prompts.
+Open the command palette (`Cmd/Ctrl+K`) and run **Use S8 Code in another app (MCP)** (or open **Settings → Sharing & access**), pick your app, and follow the prompts.
 
 - Cloud assistants (like ChatGPT or Claude) require **T3 Connect** enabled on the environment.
 - To also reach other machines through the same connection, enable **Settings → Labs → Linked environments** and [link them](./remote-access.md#link-another-environment).
@@ -34,7 +34,7 @@ The first time an outside agent connects, approve its sign-in page (via your T3 
 
 ## Available tools and limits
 
-Tools that act as a running T3 thread (`delegate_task`, `create_threads`, `request_secret`, `html_render`, `preview_*`, `device_*`, `t3_worktree_handoff`) only work for agents running **inside** T3 Code.
+Tools that act as a running T3 thread (`delegate_task`, `create_threads`, `request_secret`, `html_render`, `preview_*`, `device_*`, `t3_worktree_handoff`) only work for agents running **inside** S8 Code.
 
 - Use `t3_thread_launch` + `t3_thread_wait` / `t3_thread_read` to run and follow work.
 - Pass `projectId` or `threadId` explicitly (or `allProjects: true` on `t3_thread_list`).

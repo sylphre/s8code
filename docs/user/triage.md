@@ -1,6 +1,6 @@
 # Triage an issue
 
-Let your own coding agent investigate a T3 Code problem—reading local logs/state, inspecting the source for your installed version, checking known issues, and helping draft a GitHub issue. The agent always asks before applying fixes or posting anything.
+Let your own coding agent investigate a S8 Code problem—reading local logs/state, inspecting the source for your installed version, checking known issues, and helping draft a GitHub issue. The agent always asks before applying fixes or posting anything.
 
 ## In the app
 

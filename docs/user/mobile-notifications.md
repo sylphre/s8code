@@ -17,4 +17,4 @@ Get push alerts, Live Activities, and home-screen widgets on iOS and Android whe
 ## Notes
 
 - Ordinary alerts are muted while the mobile app is in the foreground, though viewing a thread on another device does not silence your phone.
-- Force-stopping T3 Code in Android system Settings pauses push delivery until you reopen the app.
+- Force-stopping S8 Code in Android system Settings pauses push delivery until you reopen the app.

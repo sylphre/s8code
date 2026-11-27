@@ -1,23 +1,23 @@
 # FAQ
 
-## Is T3 Code a harness?
+## Is S8 Code a harness?
 
-No. A harness turns an LLM into an agent (tools, execution loop, and results)—like Claude Code's Agent SDK or Codex App Server. T3 Code drives those harnesses through one fast interface; it does not work without at least one installed agent.
+No. A harness turns an LLM into an agent (tools, execution loop, and results)—like Claude Code's Agent SDK or Codex App Server. S8 Code drives those harnesses through one fast interface; it does not work without at least one installed agent.
 
 Bring your own: Claude Code, Codex, Cursor, Grok Build, OpenCode, Google Antigravity, Kiro, Pi, Muse Code, fx, or any [ACP agent](./providers-acp.md). See [Provider setup](./install.md#providers). (Longer read: [What is a harness?](https://t3.gg/blog/post/what-is-a-harness))
 
-## Why use T3 Code instead of Claude Code or the Codex app?
+## Why use S8 Code instead of Claude Code or the Codex app?
 
 - **Bring your own subscription**: Use Claude, Codex, and every other agent you already have installed in one place.
 - **Remote-first**: Run `t3 up` on any box and drive it from anywhere.
 - **Native mobile app**: Approve steps, review PRs, and steer threads from iOS and Android.
 - **Open source (MIT)**: Fork the source code under your own branding if you ever want something different.
 
-## Can I use T3 Code with my Claude Code subscription?
+## Can I use S8 Code with my Claude Code subscription?
 
 Yes.
 
-## How much does T3 Code cost?
+## How much does S8 Code cost?
 
 Nothing. You pay your own model/agent providers. T3 Connect is free for up to 3 connected host machines per account (phones and browsers don't count). You can also self-host or use LAN/Tailscale.
 
@@ -31,13 +31,13 @@ Yes. Link a paid T3 Chat account from your account menu → **T3 Chat → Link T
 
 ## Why is my Claude 5-hour limit draining so fast?
 
-Since v0.1.7, Claude in T3 Code drains your 5-hour limit at the same rate as Claude Code directly (an earlier Anthropic Agent SDK discrepancy has been resolved). If you still see it, [update T3 Code](./updating.md) on the machine running your agents.
+Since v0.1.7, Claude in S8 Code drains your 5-hour limit at the same rate as Claude Code directly (an earlier Anthropic Agent SDK discrepancy has been resolved). If you still see it, [update S8 Code](./updating.md) on the machine running your agents.
 
-## How do I use T3 Code remotely?
+## How do I use S8 Code remotely?
 
-Your agents run wherever the T3 Code server runs (desktop, server, or VPS). Run `t3 up` on that machine and connect via T3 Connect, LAN, Tailscale, or [app.t3.codes](https://app.t3.codes). See [Remote access](./remote-access.md).
+Your agents run wherever the S8 Code server runs (desktop, server, or VPS). Run `t3 up` on that machine and connect via T3 Connect, LAN, Tailscale, or [app.t3.codes](https://app.t3.codes). See [Remote access](./remote-access.md).
 
-## How do I use T3 Code on my phone?
+## How do I use S8 Code on my phone?
 
 Install the [iOS](https://apps.apple.com/us/app/t3-code-remote-claude-more/id6787819824) or [Android](https://play.google.com/store/apps/details?id=com.t3tools.t3code) app and connect it to your computer with T3 Connect or a pairing link. The phone is a remote control—your host computer runs the agents and must stay on. See [Mobile app](./install.md#mobile-app) and [Remote access](./remote-access.md).
 
@@ -47,19 +47,19 @@ Open **Settings → Environments**, select the machine, and choose **Details**�
 
 ## Will I get banned for using my subscription?
 
-No. T3 Code stays within the TOS of Claude Code, Codex, Google Antigravity, Grok Build, Cursor, and official ACP bindings.
+No. S8 Code stays within the TOS of Claude Code, Codex, Google Antigravity, Grok Build, Cursor, and official ACP bindings.
 
 ## Can I add a bunch of accounts for one provider?
 
-T3 Code intentionally does not include an automatic multi-account switcher to avoid risking provider TOS bans. Adding a separate work/personal account is supported ([Codex](./providers-codex.md#use-multiple-accounts), [Claude](./providers-claude.md#multiple-accounts-and-presets)). For larger pools managed externally (e.g. via [CLIProxyAPI](https://github.com/router-for-me/CLIProxyAPI)), T3 Code can display pooled limits under Usage ([Connect a hub](./usage.md#connect-a-cliproxyapi-hub)).
+S8 Code intentionally does not include an automatic multi-account switcher to avoid risking provider TOS bans. Adding a separate work/personal account is supported ([Codex](./providers-codex.md#use-multiple-accounts), [Claude](./providers-claude.md#multiple-accounts-and-presets)). For larger pools managed externally (e.g. via [CLIProxyAPI](https://github.com/router-for-me/CLIProxyAPI)), S8 Code can display pooled limits under Usage ([Connect a hub](./usage.md#connect-a-cliproxyapi-hub)).
 
 ## Can I use an API key or OpenRouter instead of a subscription?
 
 Yes. Add another provider instance in **Settings → Providers** with its own environment variables and endpoint (your subscription setup stays untouched). See [OpenRouter for Claude](./providers-claude.md#openrouter-and-local-routers) and [Providers](./install.md#providers).
 
-## Does T3 Code support local models?
+## Does S8 Code support local models?
 
-No. T3 Code focuses on frontier coding agents.
+No. S8 Code focuses on frontier coding agents.
 
 ## Does my code go to T3 servers?
 

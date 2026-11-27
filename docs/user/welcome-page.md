@@ -7,7 +7,7 @@ The Welcome page runs on a fresh local installation to help you verify an agent,
 
 ## Agents
 
-T3 Code lists detected agents first (ready ones on top), followed by **Add more agents** for all other supported providers:
+S8 Code lists detected agents first (ready ones on top), followed by **Add more agents** for all other supported providers:
 
 - **Turn on**: Enables a disabled provider and checks its install and sign-in status.
 - **Claude Code**: **Install** or **Sign in** opens a setup terminal using the vendor's installer (so **Update now** keeps working in Settings).
@@ -23,10 +23,10 @@ Select **Set up** to scan the QR code for iOS or Android, then sign in to T3 Con
 
 ## Projects and conversation import
 
-T3 Code scans directories used by Claude Code, Codex, and Pi (turn on Pi under **Add more agents** to include Pi sessions).
+S8 Code scans directories used by Claude Code, Codex, and Pi (turn on Pi under **Add more agents** to include Pi sessions).
 
 - Git repositories active in the last 30 days with at least three conversations are pre-selected (excluding already-added projects, Codex scratch directories, and `Downloads`). Use **Review all** to customize the selection.
-- Conversations active in the last 30 days are imported so you can continue them in T3 Code.
+- Conversations active in the last 30 days are imported so you can continue them in S8 Code.
 
 ### Import limits
 

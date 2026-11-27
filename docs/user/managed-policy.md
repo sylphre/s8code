@@ -1,13 +1,13 @@
 # Managed policy
 
-A managed policy lets an administrator set defaults, lock settings, and restrict capabilities (such as maximum permission mode, allowed providers, or remote access) for every user on a machine. The T3 Code server enforces the policy for all connected clients (desktop, web, and mobile).
+A managed policy lets an administrator set defaults, lock settings, and restrict capabilities (such as maximum permission mode, allowed providers, or remote access) for every user on a machine. The S8 Code server enforces the policy for all connected clients (desktop, web, and mobile).
 
 ## Roll out a policy
 
 1. Author a JSON policy (see [Write a policy](#write-a-policy)). Do **not** include secrets—all local users can read the policy.
 2. Validate it: `t3 policy check policy.json`.
 3. Deploy via MDM/GPO or a file to [one supported location](#where-the-policy-goes).
-4. Restart T3 Code on the machine (policies load at startup only).
+4. Restart S8 Code on the machine (policies load at startup only).
 5. Verify with `t3 policy show`.
 
 ## Write a policy
@@ -33,7 +33,7 @@ A managed policy lets an administrator set defaults, lock settings, and restrict
 
 ## Where the policy goes
 
-Use **one** source per machine (having both a native policy and a policy file prevents T3 Code from starting):
+Use **one** source per machine (having both a native policy and a policy file prevents S8 Code from starting):
 
 | OS          | Native policy                                                                     | Policy file (admin-writable only)                 |
 | ----------- | --------------------------------------------------------------------------------- | ------------------------------------------------- |
@@ -42,14 +42,14 @@ Use **one** source per machine (having both a native policy and a policy file pr
 | **Linux**   | —                                                                                 | `/etc/t3code/policy.json`                         |
 
 - **macOS profile**: Generate `macos/t3code.mobileconfig` with `t3 policy templates <dir> --policy policy.json` (or `plutil -convert xml1 -o com.t3tools.t3code.plist policy.json`). Deploy as a single device profile (profiles cannot represent `null`; use a policy file if needed).
-- **Windows GPO**: Generate `windows/t3code.admx` and `windows/en-US/t3code.adml` with `t3 policy templates <dir>`, import into `PolicyDefinitions`/Intune under **Computer Configuration → Administrative Templates → T3 Code**, set **Organization**, run `gpupdate /target:computer /force`, and restart T3 Code.
+- **Windows GPO**: Generate `windows/t3code.admx` and `windows/en-US/t3code.adml` with `t3 policy templates <dir>`, import into `PolicyDefinitions`/Intune under **Computer Configuration → Administrative Templates → S8 Code**, set **Organization**, run `gpupdate /target:computer /force`, and restart S8 Code.
 - **Windows registry**: Set `Policy` (`REG_SZ`) to single-line JSON (do not mix with GPO template values).
 
 ## Check what the server loaded
 
-Run `t3 policy show` as the user running T3 Code to inspect the installed policy, fingerprint, and whether the running server has loaded it. After any policy change or removal, restart the desktop app or run `t3 service restart`. Removing a policy restores the user's own saved settings.
+Run `t3 policy show` as the user running S8 Code to inspect the installed policy, fingerprint, and whether the running server has loaded it. After any policy change or removal, restart the desktop app or run `t3 service restart`. Removing a policy restores the user's own saved settings.
 
-> Note: T3 Code **refuses to start** if a policy is unreadable, invalid, uses unknown keys from a newer version, or conflicts with another policy source. Always validate with `t3 policy check` and upgrade T3 Code before deploying newer keys.
+> Note: S8 Code **refuses to start** if a policy is unreadable, invalid, uses unknown keys from a newer version, or conflicts with another policy source. Always validate with `t3 policy check` and upgrade S8 Code before deploying newer keys.
 
 ## Settings
 
@@ -104,7 +104,7 @@ When `maxRuntimeMode` is set, users cannot modify provider launch settings (`bin
 
 `clients` allows any subset of `desktop`, `local-browser`, and `remote` (keep `desktop` on desktop machines).
 
-- Omitting `remote` restricts the server to loopback, revokes paired devices, disables LAN/Tailscale Serve/T3 Connect, and refuses startup if a Tailscale Serve route still forwards to T3 Code (or if a legacy service has LAN enabled—run `t3 up --no-lan`).
+- Omitting `remote` restricts the server to loopback, revokes paired devices, disables LAN/Tailscale Serve/T3 Connect, and refuses startup if a Tailscale Serve route still forwards to S8 Code (or if a legacy service has LAN enabled—run `t3 up --no-lan`).
 - Set `"connect": false` to disable T3 Connect while allowing LAN/Tailscale remote access.
 
 ### Other capabilities
@@ -130,4 +130,4 @@ When `maxRuntimeMode` is set, users cannot modify provider launch settings (`bin
 
 - **Provider CLIs**: Restrict underlying CLIs with their own managed settings (e.g., Claude Code managed settings).
 - **WSL**: Managed Windows desktop disables its WSL environment; a server started manually inside WSL reads `/etc/t3code/policy.json` in that distro.
-- **Local admins / port forwarding**: Administrators can modify policies or T3 Code binaries, and users can still port-forward loopback sockets with external tools. Use OS/MDM controls for binary integrity and network isolation.
+- **Local admins / port forwarding**: Administrators can modify policies or S8 Code binaries, and users can still port-forward loopback sockets with external tools. Use OS/MDM controls for binary integrity and network isolation.

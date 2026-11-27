@@ -1,6 +1,6 @@
 # Settings and project overrides
 
-T3 Code separates **device preferences** (saved locally per browser/device, like Appearance and Confirmations) from **server settings** (stored on each environment, like Threads, Worktrees, and Source control).
+S8 Code separates **device preferences** (saved locally per browser/device, like Appearance and Confirmations) from **server settings** (stored on each environment, like Threads, Worktrees, and Source control).
 
 ## Scope and inheritance
 
@@ -20,7 +20,7 @@ Use the **"Applying settings for …"** selector at the top of Settings (web/des
 
 ## Project icons and multi-repo projects
 
-- **Icons**: In **Settings → Projects**, set an icon, emoji, monogram, or image (applies across checkouts). Without one, T3 Code generates a two-character monogram (or single CJK character) from the project name.
+- **Icons**: In **Settings → Projects**, set an icon, emoji, monogram, or image (applies across checkouts). Without one, S8 Code generates a two-character monogram (or single CJK character) from the project name.
 - **Multiple repositories**: See [Projects with several repositories](./multi-repo-projects.md).
 
 ## Worktree settings
