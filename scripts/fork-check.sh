@@ -52,9 +52,10 @@ done < <(find . -name package.json -not -path '*/node_modules/*')
 # from the app-update.yml baked in at build time, so a stray upstream repo id in
 # the feed or the builder config would auto-update S8 Code into official T3 Code.
 # Desktop test fixtures mimic upstream feeds and pages, which is not a violation,
-# and the github.repository guards in .github/workflows are legitimate.
+# and the github.repository guards in .github/workflows are legitimate. dist-electron
+# holds generated bundles of source CI never scans here, so it stays out too.
 desktop_pingdot_allow_re='^(apps/desktop/src/snapShot/DesktopSnapShot\.test\.ts|apps/desktop/src/snapShot/snapShot\.test\.ts|apps/desktop/src/updates/DesktopUpdates\.test\.ts|apps/desktop/src/updates/releaseNotes\.test\.ts|apps/desktop/src/updates/githubUpdateFeed\.test\.ts):'
-if hits=$(grep -rni 'pingdotgg' apps/desktop --exclude-dir=node_modules 2>/dev/null | grep -Ev "$desktop_pingdot_allow_re"); then
+if hits=$(grep -rni 'pingdotgg' apps/desktop --exclude-dir=node_modules --exclude-dir=dist-electron 2>/dev/null | grep -Ev "$desktop_pingdot_allow_re"); then
   printf 'upstream repo id left in the desktop app:\n%s\n' "$hits"
   status=1
 fi
