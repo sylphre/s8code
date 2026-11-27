@@ -810,6 +810,73 @@ it.layer(layerTest)("checkOpenCodeProviderStatus", (it) => {
     }),
   );
 
+  it.effect("gives custom models the agents the engine lists, instead of the static defaults", () =>
+    Effect.gen(function* () {
+      runtimeMock.state.inventory = {
+        providerList: {
+          connected: [],
+          all: [],
+          default: {},
+        },
+        agents: [
+          { name: "build", hidden: false, mode: "primary" },
+          { name: "reviewer", hidden: false, mode: "primary" },
+          { name: "general", hidden: false, mode: "subagent" },
+        ],
+      };
+      const snapshot = yield* checkProvider(
+        makeOpenCodeSettings({
+          customModels: [{ slug: "s8-opencode_relay/dummy-model", name: "Dummy" }],
+        }),
+      );
+      const model = snapshot.models.find((entry) => entry.slug === "s8-opencode_relay/dummy-model");
+      NodeAssert.ok(model);
+      const descriptors = model.capabilities?.optionDescriptors;
+      NodeAssert.deepEqual(
+        descriptors?.map((descriptor) => descriptor.id),
+        ["variant", "agent"],
+      );
+      const agentDescriptor = descriptors?.find((descriptor) => descriptor.id === "agent");
+      NodeAssert.ok(agentDescriptor?.type === "select");
+      NodeAssert.deepEqual(
+        agentDescriptor.options.map((option) => option.id),
+        ["build", "reviewer"],
+      );
+      NodeAssert.equal(
+        agentDescriptor.options.find((option) => option.isDefault === true)?.id,
+        "build",
+      );
+    }),
+  );
+
+  it.effect("keeps the static agent fallback for custom models when the engine lists none", () =>
+    Effect.gen(function* () {
+      runtimeMock.state.inventory = {
+        providerList: {
+          connected: [],
+          all: [],
+          default: {},
+        },
+        agents: [],
+      };
+      const snapshot = yield* checkProvider(
+        makeOpenCodeSettings({
+          customModels: [{ slug: "s8-opencode_relay/dummy-model", name: "Dummy" }],
+        }),
+      );
+      const model = snapshot.models.find((entry) => entry.slug === "s8-opencode_relay/dummy-model");
+      NodeAssert.ok(model);
+      const agentDescriptor = model.capabilities?.optionDescriptors?.find(
+        (descriptor) => descriptor.id === "agent",
+      );
+      NodeAssert.ok(agentDescriptor?.type === "select");
+      NodeAssert.deepEqual(
+        agentDescriptor.options.map((option) => option.id),
+        ["build", "plan"],
+      );
+    }),
+  );
+
   it.effect("includes OpenCode skills in the provider snapshot", () =>
     Effect.gen(function* () {
       runtimeMock.state.inventory = {

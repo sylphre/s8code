@@ -246,32 +246,63 @@ function inferDefaultAgent(agents: ReadonlyArray<Agent>): string | undefined {
   return agents.find((agent) => agent.name === "build")?.name ?? agents[0]?.name ?? undefined;
 }
 
-const DEFAULT_OPENCODE_MODEL_CAPABILITIES: ModelCapabilities = createModelCapabilities({
-  optionDescriptors: [
-    {
-      id: "variant",
-      label: "Reasoning",
-      type: "select",
-      options: [
-        { id: "low", label: "Low" },
-        { id: "medium", label: "Medium", isDefault: true },
-        { id: "high", label: "High" },
-        { id: "xhigh", label: "Extra High" },
-      ],
-      currentValue: "medium",
-    },
-    {
-      id: "agent",
-      label: "Agent",
-      type: "select",
-      options: [
-        { id: "build", label: "Build", isDefault: true },
-        { id: "plan", label: "Plan" },
-      ],
-      currentValue: "build",
-    },
+function openCodeAgentDescriptor(
+  agents: ReadonlyArray<Agent>,
+): ProviderOptionDescriptor | undefined {
+  const primaryAgents = agents.filter(
+    (agent) => !agent.hidden && (agent.mode === "primary" || agent.mode === "all"),
+  );
+  if (primaryAgents.length === 0) return undefined;
+  const defaultAgent = inferDefaultAgent(primaryAgents);
+  return {
+    id: "agent",
+    label: "Agent",
+    type: "select",
+    options: primaryAgents.map((agent) =>
+      defaultAgent === agent.name
+        ? { id: agent.name, label: titleCaseSlug(agent.name), isDefault: true as const }
+        : { id: agent.name, label: titleCaseSlug(agent.name) },
+    ),
+    ...(defaultAgent ? { currentValue: defaultAgent } : {}),
+  };
+}
+
+const STATIC_VARIANT_DESCRIPTOR: ProviderOptionDescriptor = {
+  id: "variant",
+  label: "Reasoning",
+  type: "select",
+  options: [
+    { id: "low", label: "Low" },
+    { id: "medium", label: "Medium", isDefault: true },
+    { id: "high", label: "High" },
+    { id: "xhigh", label: "Extra High" },
   ],
+  currentValue: "medium",
+};
+
+const STATIC_AGENT_DESCRIPTOR: ProviderOptionDescriptor = {
+  id: "agent",
+  label: "Agent",
+  type: "select",
+  options: [
+    { id: "build", label: "Build", isDefault: true },
+    { id: "plan", label: "Plan" },
+  ],
+  currentValue: "build",
+};
+
+const DEFAULT_OPENCODE_MODEL_CAPABILITIES: ModelCapabilities = createModelCapabilities({
+  optionDescriptors: [STATIC_VARIANT_DESCRIPTOR, STATIC_AGENT_DESCRIPTOR],
 });
+
+/** A custom model has no catalog entry, so its agent choices come from what the engine lists. */
+function openCodeCustomModelCapabilities(agents: ReadonlyArray<Agent>): ModelCapabilities {
+  const agentDescriptor = openCodeAgentDescriptor(agents);
+  if (!agentDescriptor) return DEFAULT_OPENCODE_MODEL_CAPABILITIES;
+  return createModelCapabilities({
+    optionDescriptors: [STATIC_VARIANT_DESCRIPTOR, agentDescriptor],
+  });
+}
 
 function openCodeCapabilitiesForModel(input: {
   readonly providerID: string;
@@ -279,29 +310,11 @@ function openCodeCapabilitiesForModel(input: {
   readonly agents: ReadonlyArray<Agent>;
 }): ModelCapabilities {
   const variantValues = Object.keys(input.model.variants ?? {});
-  const primaryAgents = input.agents.filter(
-    (agent) => !agent.hidden && (agent.mode === "primary" || agent.mode === "all"),
-  );
-  const defaultAgent = inferDefaultAgent(primaryAgents);
-  const agentOptions = primaryAgents.map((agent) =>
-    defaultAgent === agent.name
-      ? { id: agent.name, label: titleCaseSlug(agent.name), isDefault: true as const }
-      : { id: agent.name, label: titleCaseSlug(agent.name) },
-  );
+  const agentDescriptor = openCodeAgentDescriptor(input.agents);
   return createModelCapabilities({
     optionDescriptors: [
       ...openCodeVariantDescriptors(input.providerID, variantValues),
-      ...(agentOptions.length > 0
-        ? [
-            {
-              id: "agent",
-              label: "Agent",
-              type: "select" as const,
-              options: agentOptions,
-              ...(defaultAgent ? { currentValue: defaultAgent } : {}),
-            },
-          ]
-        : []),
+      ...(agentDescriptor ? [agentDescriptor] : []),
     ],
   });
 }
@@ -431,7 +444,7 @@ export function openCodeProviderModels(
     : providerModelsFromSettings(
         models,
         settings.customModels,
-        DEFAULT_OPENCODE_MODEL_CAPABILITIES,
+        openCodeCustomModelCapabilities(catalog.agents),
       );
 }
 
@@ -1162,7 +1175,11 @@ export const checkOpenCodeProviderStatus = Effect.fn("checkOpenCodeProviderStatu
   const catalogModels = openCodeProviderModels(openCodeSettings, inventoryExit.value);
   const models =
     catalogModels ??
-    providerModelsFromSettings([], customModels, DEFAULT_OPENCODE_MODEL_CAPABILITIES);
+    providerModelsFromSettings(
+      [],
+      customModels,
+      openCodeCustomModelCapabilities(inventoryExit.value.agents),
+    );
   const skills = openCodeSkillsToServerProviderSkills(inventoryExit.value.skills);
   const connectedCount = inventoryExit.value.providerList.connected.length;
   const catalogReady = connectedCount > 0 && catalogModels !== undefined;
