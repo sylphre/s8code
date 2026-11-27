@@ -18,6 +18,11 @@ const OPENAI_COMPAT_DRIVER = ProviderDriverKind.make("opencode");
 export const customProviderDriver = (kind: CustomProviderKind): ProviderDriverKind =>
   kind === "anthropic" ? ANTHROPIC_COMPAT_DRIVER : OPENAI_COMPAT_DRIVER;
 
+export const CUSTOM_PROVIDER_DRIVERS: ReadonlyArray<ProviderDriverKind> = [
+  ANTHROPIC_COMPAT_DRIVER,
+  OPENAI_COMPAT_DRIVER,
+];
+
 // The OpenCode settings schema decodes an omitted binaryPath as "opencode", so a Kilo
 // instance must name the kilo binary itself.
 const KILO_DEFAULT_BINARY_PATH = "kilo";
