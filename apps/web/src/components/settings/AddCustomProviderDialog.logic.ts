@@ -6,6 +6,14 @@ import {
   type ProviderInstanceEnvironmentVariable,
   type SecretReference,
 } from "@s8code/contracts";
+import {
+  findNodeAtLocation,
+  getNodeValue,
+  parseTree,
+  printParseErrorCode,
+  type Node,
+  type ParseError,
+} from "jsonc-parser";
 import { msg } from "gt-react";
 
 import { m, type MessageResolver } from "../../i18n/messages";
@@ -155,5 +163,206 @@ export function buildCustomProviderInstance(input: {
       },
       ...(keyVariable ? [keyVariable] : []),
     ],
+  };
+}
+
+export interface ParsedKiloProvider {
+  readonly id: string;
+  readonly name: string;
+  readonly baseURL: string;
+  readonly models: ReadonlyArray<string>;
+  readonly block: Record<string, unknown>;
+  readonly literalApiKey: string | null;
+}
+
+export interface ParsedKiloConfig {
+  readonly providers: ReadonlyArray<ParsedKiloProvider>;
+  readonly agentNames: ReadonlyArray<string>;
+  readonly agentBlock: Record<string, unknown> | undefined;
+}
+
+export type KiloImportParseResult =
+  | { readonly ok: true; readonly config: ParsedKiloConfig }
+  | { readonly ok: false; readonly error: string };
+
+const readRecord = (value: unknown): Record<string, unknown> | undefined =>
+  value !== null && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : undefined;
+
+const lineAtOffset = (text: string, offset: number): number =>
+  text.slice(0, Math.max(0, Math.min(offset, text.length))).split("\n").length;
+
+const ENV_KEY_REFERENCE = /^\{env:.+\}$/;
+
+const kiloEntryLine = (text: string, tree: Node | undefined, id: string): number => {
+  const node = tree ? findNodeAtLocation(tree, ["provider", id]) : undefined;
+  return node ? lineAtOffset(text, node.offset) : 1;
+};
+
+const kiloProviderEntryProblem = (
+  text: string,
+  tree: Node | undefined,
+  id: string,
+  value: unknown,
+  resolve: MessageResolver,
+): string | null => {
+  const line = kiloEntryLine(text, tree, id);
+  const block = readRecord(value);
+  if (!block) {
+    return resolve(msg('Line {line}: provider "{id}" must be an object.', { line, id }));
+  }
+  const options = readRecord(block.options);
+  const baseURL = options?.baseURL;
+  if (typeof baseURL !== "string" || baseURL.trim().length === 0) {
+    return resolve(
+      msg('Line {line}: provider "{id}" needs a "baseURL" in its "options".', { line, id }),
+    );
+  }
+  const endpoint = URL.parse(baseURL.trim());
+  if (endpoint === null || !/^https?:$/.test(endpoint.protocol)) {
+    return resolve(
+      msg('Line {line}: provider "{id}" has a URL in "options.baseURL" that is not http(s).', {
+        line,
+        id,
+      }),
+    );
+  }
+  if (block.models !== undefined && readRecord(block.models) === undefined) {
+    return resolve(
+      msg('Line {line}: provider "{id}" has a "models" section that is not an object.', {
+        line,
+        id,
+      }),
+    );
+  }
+  return null;
+};
+
+/** Client-side JSONC read of a pasted kilo.jsonc (or opencode config), comments and trailing commas allowed. */
+export function parseKiloConfigContent(
+  text: string,
+  resolve: MessageResolver = m,
+): KiloImportParseResult {
+  const errors: ParseError[] = [];
+  const tree = parseTree(text, errors, { allowTrailingComma: true });
+  if (errors.length > 0) {
+    const first = errors[0]!;
+    return {
+      ok: false,
+      error: resolve(
+        msg("Line {line}: {error} in the pasted config.", {
+          line: lineAtOffset(text, first.offset),
+          error: printParseErrorCode(first.error),
+        }),
+      ),
+    };
+  }
+  if (tree === undefined) {
+    return { ok: false, error: resolve(msg("Paste the contents of kilo.jsonc.")) };
+  }
+  const root = readRecord(getNodeValue(tree));
+  if (!root) {
+    return {
+      ok: false,
+      error: resolve(msg("The pasted config must be a JSON object.")),
+    };
+  }
+  const agentBlock = readRecord(root.agent);
+  const providerSection = readRecord(root.provider);
+  if (!providerSection) {
+    return {
+      ok: false,
+      error: resolve(msg('The pasted config has no "provider" section to import.')),
+    };
+  }
+  const providers: ParsedKiloProvider[] = [];
+  for (const [id, value] of Object.entries(providerSection)) {
+    const problem = kiloProviderEntryProblem(text, tree, id, value, resolve);
+    if (problem !== null) return { ok: false, error: problem };
+    const block = readRecord(value)!;
+    const options = readRecord(block.options)!;
+    const baseURL = (options.baseURL as string).trim();
+    const models = block.models
+      ? Object.keys(block.models).filter((model) => model.trim().length > 0)
+      : [];
+    const rawApiKey = options.apiKey;
+    const literalApiKey =
+      typeof rawApiKey === "string" && !ENV_KEY_REFERENCE.test(rawApiKey.trim()) ? rawApiKey : null;
+    const name = typeof block.name === "string" && block.name.trim() ? block.name.trim() : id;
+    providers.push({ id, name, baseURL, models, block, literalApiKey });
+  }
+  return { ok: true, config: { providers, agentNames: Object.keys(agentBlock ?? {}), agentBlock } };
+}
+
+/** The spawned kilo serve only reads the pasted provider under its renamed key, so agent bindings follow. */
+const rewriteKiloAgentModels = (
+  agentBlock: Record<string, unknown>,
+  fromProviderId: string,
+  toProviderId: string,
+): Record<string, unknown> =>
+  Object.fromEntries(
+    Object.entries(agentBlock).map(([name, definition]) => {
+      const record = readRecord(definition);
+      if (!record || typeof record.model !== "string") return [name, definition];
+      return [
+        name,
+        record.model.startsWith(`${fromProviderId}/`)
+          ? { ...record, model: `${toProviderId}${record.model.slice(fromProviderId.length)}` }
+          : record,
+      ];
+    }),
+  );
+
+export function buildKiloImportInstance(input: {
+  readonly provider: ParsedKiloProvider;
+  readonly instanceId: string;
+  readonly agentBlock: Record<string, unknown> | undefined;
+  readonly binaryPath: string;
+}): { readonly instance: ProviderInstanceConfig; readonly apiKeyValue: string | null } {
+  const { provider, instanceId } = input;
+  const options = { ...readRecord(provider.block.options) };
+  const apiKeyValue = provider.literalApiKey?.trim() ?? null;
+  if (apiKeyValue) {
+    options.apiKey = `{env:${customApiKeyVariableName(instanceId)}}`;
+  }
+  const content = JSON.stringify({
+    $schema: "https://opencode.ai/config.json",
+    ...(input.agentBlock
+      ? {
+          agent: rewriteKiloAgentModels(input.agentBlock, provider.id, `s8-${instanceId}`),
+        }
+      : {}),
+    provider: {
+      [`s8-${instanceId}`]: {
+        ...provider.block,
+        npm: "@ai-sdk/openai-compatible",
+        options,
+      },
+    },
+  });
+  return {
+    apiKeyValue,
+    instance: {
+      driver: OPENAI_COMPAT_DRIVER,
+      enabled: true,
+      displayName: provider.name,
+      config: {
+        binaryPath: input.binaryPath.trim() || KILO_DEFAULT_BINARY_PATH,
+        customModels: provider.models,
+      },
+      environment: [
+        { name: "KILO_CONFIG_CONTENT", value: content, sensitive: false },
+        ...(apiKeyValue
+          ? [
+              {
+                name: customApiKeyVariableName(instanceId),
+                value: apiKeyValue,
+                sensitive: true,
+              },
+            ]
+          : []),
+      ],
+    },
   };
 }

@@ -23,6 +23,7 @@ import {
 } from "../../hooks/useSettings";
 import { readEnvironmentScope, useEnvironmentScope } from "../../state/session";
 import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 import {
   Dialog,
   DialogDescription,
@@ -40,7 +41,9 @@ import { toastManager } from "../ui/toast";
 import { SecretSourceInput, useSecretSources } from "./SecretSourceInput";
 import {
   buildCustomProviderInstance,
+  buildKiloImportInstance,
   customProviderDriver,
+  parseKiloConfigContent,
   validateCustomProviderDraft,
   type CustomProviderDraft,
   type CustomProviderKind,
@@ -74,6 +77,17 @@ export function AddCustomProviderDialog({
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
+  const [source, setSource] = useState<"manual" | "kiloImport">("manual");
+  const [kiloConfigText, setKiloConfigText] = useState("");
+  const [selectedKiloProviderIds, setSelectedKiloProviderIds] = useState<ReadonlySet<string>>(
+    new Set(),
+  );
+
+  const kiloParse =
+    source === "kiloImport" && kiloConfigText.trim().length > 0
+      ? parseKiloConfigContent(kiloConfigText)
+      : null;
+
   const draft: CustomProviderDraft = {
     displayName,
     kind,
@@ -94,8 +108,12 @@ export function AddCustomProviderDialog({
     displayName,
     existingIds,
   );
-  const validationError = validateCustomProviderDraft(draft);
+  const manualValidationError = validateCustomProviderDraft(draft);
+  const validationError = source === "manual" ? manualValidationError : null;
+  const kiloImportReady = kiloParse !== null && kiloParse.ok && selectedKiloProviderIds.size > 0;
   const showError = hasAttemptedSubmit && validationError !== null;
+  const showKiloSelectionError = hasAttemptedSubmit && source === "kiloImport" && !kiloImportReady;
+  const kiloDriver = customProviderDriver("openai");
 
   const save = async () => {
     setHasAttemptedSubmit(true);
@@ -132,6 +150,64 @@ export function AddCustomProviderDialog({
     onCreated?.(brandedId, driver);
   };
 
+  const saveKiloImport = async () => {
+    setHasAttemptedSubmit(true);
+    if (isSaving || !kiloParse || !kiloParse.ok || selectedKiloProviderIds.size === 0) return;
+    if (!readEnvironmentScope(environmentId, AuthProvidersManageScope)) return;
+    setIsSaving(true);
+    const claimedIds = new Set(existingIds);
+    let firstCreated: ProviderInstanceId | null = null;
+    let createdCount = 0;
+    for (const provider of kiloParse.config.providers) {
+      if (!selectedKiloProviderIds.has(provider.id)) continue;
+      const providerInstanceId = deriveAvailableInstanceId(
+        (candidate) => deriveInstanceId(kiloDriver, candidate) || `${kiloDriver}_provider`,
+        provider.id,
+        claimedIds,
+      );
+      const { instance } = buildKiloImportInstance({
+        provider,
+        instanceId: providerInstanceId,
+        agentBlock: kiloParse.config.agentBlock,
+        binaryPath,
+      });
+      const brandedId = ProviderInstanceId.make(providerInstanceId);
+      const result = await persistProviderInstance({
+        operation: "create",
+        instanceId: brandedId,
+        instance,
+      });
+      if (result._tag === "Failure") {
+        const error = squashAtomCommandFailure(result);
+        setIsSaving(false);
+        toastManager.add({
+          type: "error",
+          title: gt("Could not add provider instance"),
+          description: gt("The import stopped at ''{provider}''. {message}", {
+            provider: provider.name,
+            message:
+              error instanceof Error
+                ? (thrownErrorMessage(error, resolveMessage) ?? error.message)
+                : gt("The settings update failed."),
+          }),
+        });
+        return;
+      }
+      claimedIds.add(instanceId);
+      createdCount += 1;
+      firstCreated ??= brandedId;
+    }
+    setIsSaving(false);
+    toastManager.add({
+      type: "success",
+      title: gt("Provider instance added"),
+      description: gt("Imported {count} provider instance(s) from Kilo Code.", {
+        count: createdCount,
+      }),
+    });
+    if (firstCreated) onCreated?.(firstCreated, kiloDriver);
+  };
+
   return (
     <Dialog
       open
@@ -157,102 +233,218 @@ export function AddCustomProviderDialog({
             className="grid gap-4"
             onSubmit={(event) => {
               event.preventDefault();
-              void save();
+              void (source === "kiloImport" ? saveKiloImport() : save());
             }}
           >
             <div className="grid gap-1.5">
-              <Label htmlFor="custom-provider-name">
-                <T>Name</T>
-              </Label>
-              <Input
-                id="custom-provider-name"
-                placeholder={gt("e.g. My relay")}
-                value={displayName}
-                onChange={(event) => setDisplayName(event.target.value)}
-                autoFocus
-              />
-              {instanceId ? (
-                <p className="text-2xs text-muted-foreground">
-                  {gt("Instance ID {instanceId}", { instanceId })}
-                </p>
-              ) : null}
-            </div>
-            <div className="grid gap-1.5">
               <Label>
-                <T>Type</T>
+                <T>Source</T>
               </Label>
               <ToggleGroup
-                aria-label={gt("Type")}
-                value={[kind]}
+                aria-label={gt("Source")}
+                value={[source]}
                 onValueChange={(next) => {
                   const value = next[0];
-                  if (value === "anthropic" || value === "openai") setKind(value);
+                  if (value === "manual" || value === "kiloImport") {
+                    setSource(value);
+                    setHasAttemptedSubmit(false);
+                  }
                 }}
               >
-                <Toggle value="anthropic">
-                  <T>Anthropic compatible</T>
+                <Toggle value="manual">
+                  <T>Enter manually</T>
                 </Toggle>
-                <Toggle value="openai">
-                  <T>OpenAI compatible</T>
+                <Toggle value="kiloImport">
+                  <T>Import from Kilo Code</T>
                 </Toggle>
               </ToggleGroup>
-              <p className="text-2xs text-muted-foreground">
-                {kind === "anthropic" ? (
-                  <T>Runs a Claude instance against the relay.</T>
-                ) : (
-                  <T>Runs the Kilo CLI against the endpoint.</T>
-                )}
-              </p>
             </div>
-            <div className="grid gap-1.5">
-              <Label htmlFor="custom-provider-base-url">
-                <T>Base URL</T>
-              </Label>
-              <Input
-                id="custom-provider-base-url"
-                placeholder="https://relay.example.com"
-                value={baseUrl}
-                onChange={(event) => setBaseUrl(event.target.value)}
-                spellCheck={false}
-                autoComplete="off"
-              />
-            </div>
-            <div className="grid gap-1.5">
-              <Label htmlFor="custom-provider-api-key">
-                <T>API key</T>
-              </Label>
-              <SecretSourceInput
-                id="custom-provider-api-key"
-                aria-label={gt("API key")}
-                value={apiKey}
-                sources={secretSources}
-                environmentId={environmentId}
-                onChange={(event) => setApiKey(event.target.value)}
-                onSecretChange={(secret) => setApiKey(secret ?? "")}
-                placeholder={gt("Stored sensitive")}
-              />
-              <p className="text-2xs text-muted-foreground">
-                <T>Saved as a sensitive variable and never shown again.</T>
-              </p>
-            </div>
-            <div className="grid gap-1.5">
-              <Label htmlFor="custom-provider-models">
-                <T>Model IDs</T>
-              </Label>
-              <Textarea
-                id="custom-provider-models"
-                aria-label={gt("Model IDs")}
-                rows={3}
-                value={modelsText}
-                onChange={(event) => setModelsText(event.target.value)}
-                placeholder="my-model"
-                spellCheck={false}
-              />
-              <p className="text-2xs text-muted-foreground">
-                <T>One model ID per line.</T>
-              </p>
-            </div>
-            {kind === "openai" ? (
+            {source === "kiloImport" ? (
+              <>
+                <div className="grid gap-1.5">
+                  <Label htmlFor="custom-provider-kilo-config">
+                    <T>kilo.jsonc content</T>
+                  </Label>
+                  <Textarea
+                    id="custom-provider-kilo-config"
+                    aria-label={gt("kilo.jsonc content")}
+                    rows={8}
+                    value={kiloConfigText}
+                    onChange={(event) => {
+                      setKiloConfigText(event.target.value);
+                      setSelectedKiloProviderIds(new Set());
+                      setHasAttemptedSubmit(false);
+                    }}
+                    placeholder={gt('{ "provider": { ... } }')}
+                    spellCheck={false}
+                  />
+                  <p className="text-2xs text-muted-foreground">
+                    <T>
+                      Paste the contents of kilo.jsonc. Comments and trailing commas are allowed.
+                    </T>
+                  </p>
+                </div>
+                {kiloParse && !kiloParse.ok ? (
+                  <p className="text-2xs text-destructive" role="alert">
+                    {kiloParse.error}
+                  </p>
+                ) : null}
+                {kiloParse?.ok ? (
+                  <div className="grid gap-1.5">
+                    <Label>
+                      <T>Providers</T>
+                    </Label>
+                    <div className="grid gap-1">
+                      {kiloParse.config.providers.map((provider) => (
+                        <label
+                          key={provider.id}
+                          className="flex items-center gap-3 rounded-md px-2 py-1.5 text-sm hover:bg-muted"
+                        >
+                          <Checkbox
+                            aria-label={gt("Import provider {provider}", {
+                              provider: provider.name,
+                            })}
+                            checked={selectedKiloProviderIds.has(provider.id)}
+                            onCheckedChange={(checked) => {
+                              setSelectedKiloProviderIds((existing) => {
+                                const next = new Set(existing);
+                                if (checked) {
+                                  next.add(provider.id);
+                                } else {
+                                  next.delete(provider.id);
+                                }
+                                return next;
+                              });
+                            }}
+                          />
+                          <span className="min-w-0 flex-1 truncate font-medium text-foreground">
+                            {provider.name}
+                          </span>
+                          <span className="min-w-0 truncate text-xs text-muted-foreground">
+                            {provider.baseURL}
+                          </span>
+                          <span className="shrink-0 text-xs text-muted-foreground">
+                            {gt("{count} models", { count: provider.models.length })}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                    {kiloParse.config.agentNames.length > 0 ? (
+                      <p className="text-2xs text-muted-foreground">
+                        {gt("Agents in this config: {agents}", {
+                          agents: kiloParse.config.agentNames.join(", "),
+                        })}
+                      </p>
+                    ) : null}
+                  </div>
+                ) : null}
+                {showKiloSelectionError ? (
+                  <p className="text-2xs text-destructive">
+                    {kiloParse === null
+                      ? gt("Paste the contents of kilo.jsonc.")
+                      : kiloParse.ok
+                        ? gt("Select at least one provider.")
+                        : kiloParse.error}
+                  </p>
+                ) : null}
+              </>
+            ) : (
+              <>
+                <div className="grid gap-1.5">
+                  <Label htmlFor="custom-provider-name">
+                    <T>Name</T>
+                  </Label>
+                  <Input
+                    id="custom-provider-name"
+                    placeholder={gt("e.g. My relay")}
+                    value={displayName}
+                    onChange={(event) => setDisplayName(event.target.value)}
+                    autoFocus
+                  />
+                  {instanceId ? (
+                    <p className="text-2xs text-muted-foreground">
+                      {gt("Instance ID {instanceId}", { instanceId })}
+                    </p>
+                  ) : null}
+                </div>
+                <div className="grid gap-1.5">
+                  <Label>
+                    <T>Type</T>
+                  </Label>
+                  <ToggleGroup
+                    aria-label={gt("Type")}
+                    value={[kind]}
+                    onValueChange={(next) => {
+                      const value = next[0];
+                      if (value === "anthropic" || value === "openai") setKind(value);
+                    }}
+                  >
+                    <Toggle value="anthropic">
+                      <T>Anthropic compatible</T>
+                    </Toggle>
+                    <Toggle value="openai">
+                      <T>OpenAI compatible</T>
+                    </Toggle>
+                  </ToggleGroup>
+                  <p className="text-2xs text-muted-foreground">
+                    {kind === "anthropic" ? (
+                      <T>Runs a Claude instance against the relay.</T>
+                    ) : (
+                      <T>Runs the Kilo CLI against the endpoint.</T>
+                    )}
+                  </p>
+                </div>
+                <div className="grid gap-1.5">
+                  <Label htmlFor="custom-provider-base-url">
+                    <T>Base URL</T>
+                  </Label>
+                  <Input
+                    id="custom-provider-base-url"
+                    placeholder="https://relay.example.com"
+                    value={baseUrl}
+                    onChange={(event) => setBaseUrl(event.target.value)}
+                    spellCheck={false}
+                    autoComplete="off"
+                  />
+                </div>
+                <div className="grid gap-1.5">
+                  <Label htmlFor="custom-provider-api-key">
+                    <T>API key</T>
+                  </Label>
+                  <SecretSourceInput
+                    id="custom-provider-api-key"
+                    aria-label={gt("API key")}
+                    value={apiKey}
+                    sources={secretSources}
+                    environmentId={environmentId}
+                    onChange={(event) => setApiKey(event.target.value)}
+                    onSecretChange={(secret) => setApiKey(secret ?? "")}
+                    placeholder={gt("Stored sensitive")}
+                  />
+                  <p className="text-2xs text-muted-foreground">
+                    <T>Saved as a sensitive variable and never shown again.</T>
+                  </p>
+                </div>
+                <div className="grid gap-1.5">
+                  <Label htmlFor="custom-provider-models">
+                    <T>Model IDs</T>
+                  </Label>
+                  <Textarea
+                    id="custom-provider-models"
+                    aria-label={gt("Model IDs")}
+                    rows={3}
+                    value={modelsText}
+                    onChange={(event) => setModelsText(event.target.value)}
+                    placeholder="my-model"
+                    spellCheck={false}
+                  />
+                  <p className="text-2xs text-muted-foreground">
+                    <T>One model ID per line.</T>
+                  </p>
+                </div>
+              </>
+            )}
+            {source === "manual" ? null : (
               <div className="grid gap-1.5">
                 <Label htmlFor="custom-provider-binary-path">
                   <T>Kilo binary path</T>
@@ -269,7 +461,7 @@ export function AddCustomProviderDialog({
                   <T>Leave empty to use the kilo command on PATH.</T>
                 </p>
               </div>
-            ) : null}
+            )}
             {showError ? <p className="text-2xs text-destructive">{validationError}</p> : null}
           </form>
         </DialogPanel>
