@@ -1,6 +1,7 @@
 import type { RelayAgentActivityAggregateState } from "@s8code/contracts/relay";
+import { sha256 } from "@noble/hashes/sha2";
 import { compareSemverVersions, parseSemver } from "@s8code/shared/semver";
-import { hashTelemetryId } from "@s8code/shared/telemetryId";
+import * as Hex from "effect/encoding/Hex";
 import {
   activityPhasePriority,
   TERMINAL_AGENT_ACTIVITY_DISPLAY_TTL_MS,
@@ -11,6 +12,9 @@ import { agentActivityExpiresAt } from "./agentActivityPayloads.ts";
  * Lets the device ignore pushes for an account it no longer has without FCM
  * seeing the account id. Builds before 2.4.0 only match the raw `user_id`.
  */
+const userHash = (userId: string, deviceId: string): string =>
+  Hex.encode(sha256(new TextEncoder().encode(`${userId}:${deviceId}`)));
+
 export function androidRecipientData(userId: string, deviceId: string, appVersion: string | null) {
   const readsHash =
     appVersion !== null &&
@@ -18,7 +22,7 @@ export function androidRecipientData(userId: string, deviceId: string, appVersio
     compareSemverVersions(appVersion, "2.4.0") >= 0;
   return {
     device_id: deviceId,
-    user_hash: hashTelemetryId(`${userId}:${deviceId}`),
+    user_hash: userHash(userId, deviceId),
     ...(readsHash ? {} : { user_id: userId }),
   };
 }
