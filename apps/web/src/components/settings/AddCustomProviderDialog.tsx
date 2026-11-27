@@ -326,7 +326,9 @@ export function AddCustomProviderDialog({
     if (isSaving || kiloSummary === null || selectedKiloProviderIds.size === 0) return;
     if (!readEnvironmentScope(environmentId, AuthProvidersManageScope)) return;
     setIsSaving(true);
-    const response = await importKiloProviders(kiloSummary.path, [...selectedKiloProviderIds]);
+    const response = await importKiloProviders(kiloSummary.path, binaryPath, [
+      ...selectedKiloProviderIds,
+    ]);
     if (response._tag !== "Success") {
       setIsSaving(false);
       toastManager.add({
@@ -349,6 +351,13 @@ export function AddCustomProviderDialog({
         count: response.value.instanceIds.length,
       }),
     });
+    if (response.value.authStatus !== "ok") {
+      toastManager.add({
+        type: "warning",
+        title: gt("Kilo auth.json could not be read"),
+        description: gt("The imported providers have no API key."),
+      });
+    }
     onCreated?.(response.value.instanceIds[0]!, kiloDriver);
   };
 
@@ -508,6 +517,17 @@ export function AddCustomProviderDialog({
                         {gt("Agents in this config: {agents}", {
                           agents: kiloSummary.agentNames.join(", "),
                         })}
+                      </p>
+                    ) : null}
+                    {kiloSummary.authStatus !== "ok" ? (
+                      <p className="text-2xs text-destructive" role="alert">
+                        {kiloSummary.authStatus === "missing"
+                          ? gt(
+                              "No auth.json was found on the host. Imported providers get no API key.",
+                            )
+                          : gt(
+                              "auth.json on the host could not be read. Imported providers get no API key.",
+                            )}
                       </p>
                     ) : null}
                   </div>
@@ -749,7 +769,7 @@ export function AddCustomProviderDialog({
                 </div>
               </>
             )}
-            {source === "kiloImport" ? (
+            {source !== "manual" ? (
               <div className="grid gap-1.5">
                 <Label htmlFor="custom-provider-binary-path">
                   <T>Kilo binary path</T>

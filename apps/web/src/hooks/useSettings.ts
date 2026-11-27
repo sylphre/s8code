@@ -582,11 +582,18 @@ export function useKiloImportProvidersMutation(environmentId: EnvironmentId) {
   const importKiloProviders = useAtomCommand(serverEnvironment.importKiloProviders, {
     reportFailure: false,
   });
-  return (path: string | undefined, providerIds: ReadonlyArray<string>) =>
+  return (
+    path: string | undefined,
+    binaryPath: string | undefined,
+    providerIds: ReadonlyArray<string>,
+  ) =>
     importKiloProviders({
       environmentId,
       input: {
         ...(path !== undefined && path.trim().length > 0 ? { path: path.trim() } : {}),
+        ...(binaryPath !== undefined && binaryPath.trim().length > 0
+          ? { binaryPath: binaryPath.trim() }
+          : {}),
         providerIds,
       },
     });

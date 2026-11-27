@@ -323,5 +323,9 @@ export function kiloFileFailureMessage(
           id: failure.providerId ?? "",
         }),
       );
+    case "bad_binary_path":
+      return resolve(
+        msg("No Kilo binary was found at {path} on the host.", { path: failure.path ?? "" }),
+      );
   }
 }
