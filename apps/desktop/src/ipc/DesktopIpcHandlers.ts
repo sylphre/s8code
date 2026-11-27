@@ -41,7 +41,6 @@ import {
 } from "./methods/updates.ts";
 import {
   getAppBranding,
-  getDatabaseMigrationProgress,
   getLocalEnvironmentBootstraps,
   getLocalEnvironmentBearerToken,
   getSystemLocale,
