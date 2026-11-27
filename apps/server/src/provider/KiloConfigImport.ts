@@ -3,6 +3,7 @@
 import {
   ImportKiloProvidersInput,
   ImportKiloProvidersResult,
+  KiloConfigAuthStatus,
   ReadKiloConfigSummaryInput,
   ReadKiloConfigSummaryResult,
   ProviderInstanceId,
@@ -24,6 +25,7 @@ import * as FileSystem from "effect/FileSystem";
 import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
 import * as Path from "effect/Path";
+import * as Schema from "effect/Schema";
 
 import * as ServerSettings from "../serverSettings.ts";
 
@@ -44,6 +46,13 @@ const availableInstanceId = (label: string, existing: ReadonlySet<string>): Prov
     if (!existing.has(candidate)) return ProviderInstanceId.make(candidate);
   }
 };
+
+type AuthKeys = {
+  readonly status: KiloConfigAuthStatus;
+  readonly keys: ReadonlyMap<string, string>;
+};
+
+const AUTH_KEYLESS: AuthKeys = { status: "unreadable", keys: new Map<string, string>() };
 
 const problemFailure = (problem: KiloConfigProblem, path: string): KiloConfigReadFailure => {
   switch (problem.reason) {
@@ -75,19 +84,25 @@ const problemFailure = (problem: KiloConfigProblem, path: string): KiloConfigRea
   }
 };
 
-const summaryOf = (path: string, config: ParsedKiloConfig): KiloConfigSummary => ({
+const summaryOf = (
+  path: string,
+  config: ParsedKiloConfig,
+  auth: { readonly status: KiloConfigAuthStatus; readonly keys: ReadonlyMap<string, string> },
+): KiloConfigSummary => ({
   path,
   providers: config.providers.map((provider) => {
-    const apiKey = readRecord(provider.block.options)?.apiKey;
+    // An inline kilo.jsonc key still attaches on import, so it counts as a key too.
+    const inlineKey = provider.literalApiKey !== null && provider.literalApiKey.trim().length > 0;
     return {
       id: provider.id,
       name: provider.name,
       baseURL: provider.baseURL,
       models: [...provider.models],
-      hasApiKey: typeof apiKey === "string" && apiKey.trim().length > 0,
+      hasApiKey: auth.keys.has(provider.id) || inlineKey,
     };
   }),
   agentNames: [...config.agentNames],
+  authStatus: auth.status,
 });
 
 export class KiloConfigImport extends Context.Service<
@@ -120,19 +135,64 @@ const make = Effect.gen(function* () {
     );
   };
 
+  const defaultAuthPath = () => {
+    const xdgDataHome = hostEnv.XDG_DATA_HOME?.trim();
+    return path.join(
+      xdgDataHome && path.isAbsolute(xdgDataHome)
+        ? xdgDataHome
+        : path.join(home, ".local", "share"),
+      "kilo",
+      "auth.json",
+    );
+  };
+
+  const expandHome = (trimmed: string) => {
+    if (trimmed === "~" || trimmed.startsWith("~/")) return path.join(home, trimmed.slice(1));
+    return path.resolve(trimmed);
+  };
+
   const resolvePath = (raw: string | undefined) => {
     const trimmed = raw?.trim() ?? "";
     if (trimmed.length === 0) return defaultConfigPath();
     // A `~` prefix names the server host's home, where the file is read.
-    if (trimmed === "~" || trimmed.startsWith("~/")) {
-      return path.join(home, trimmed.slice(1));
-    }
-    return path.resolve(trimmed);
+    return expandHome(trimmed);
+  };
+
+  const resolveBinaryPath = (raw: string | undefined) => {
+    const trimmed = raw?.trim() ?? "";
+    if (trimmed.length === 0) return "";
+    return expandHome(trimmed);
   };
 
   type Read =
     | { readonly _tag: "Ok"; readonly config: ParsedKiloConfig; readonly path: string }
     | { readonly _tag: "Failed"; readonly failure: KiloConfigReadFailure };
+
+  const decodeAuthJson = Schema.decodeUnknownEffect(Schema.fromJsonString(Schema.Unknown));
+
+  // Kilo's credential store next to the config; a provider id maps to its key value only.
+  const readAuthKeys = Effect.fn("KiloConfigImport.readAuthKeys")(function* () {
+    const authPath = defaultAuthPath();
+    const stat = yield* Effect.option(fs.stat(authPath));
+    if (Option.isNone(stat)) {
+      const missing: AuthKeys = { status: "missing", keys: new Map() };
+      return missing;
+    }
+    if (stat.value.type !== "File") return AUTH_KEYLESS;
+    const text = yield* Effect.option(fs.readFileString(authPath));
+    if (Option.isNone(text)) return AUTH_KEYLESS;
+    const parsed = yield* Effect.option(decodeAuthJson(text.value));
+    if (Option.isNone(parsed)) return AUTH_KEYLESS;
+    const root = readRecord(parsed.value);
+    if (!root) return AUTH_KEYLESS;
+    const keys = new Map<string, string>();
+    for (const [id, entry] of Object.entries(root)) {
+      const key = readRecord(entry)?.key;
+      if (typeof key === "string" && key.trim().length > 0) keys.set(id, key);
+    }
+    const ok: AuthKeys = { status: "ok", keys };
+    return ok;
+  });
 
   const readConfig = Effect.fn("KiloConfigImport.readConfig")(function* (raw: string | undefined) {
     const resolved = resolvePath(raw);
@@ -181,9 +241,10 @@ const make = Effect.gen(function* () {
       const failed: ReadKiloConfigSummaryResult = { _tag: "Failed", ...read.failure };
       return failed;
     }
+    const auth = yield* readAuthKeys();
     const ok: ReadKiloConfigSummaryResult = {
       _tag: "Ok",
-      summary: summaryOf(read.path, read.config),
+      summary: summaryOf(read.path, read.config, auth),
     };
     return ok;
   });
@@ -196,6 +257,22 @@ const make = Effect.gen(function* () {
       const failed: ImportKiloProvidersResult = { _tag: "Failed", ...read.failure };
       return failed;
     }
+    const binaryPath = resolveBinaryPath(input.binaryPath);
+    if (binaryPath.length > 0) {
+      const binaryStat = yield* Effect.option(fs.stat(binaryPath));
+      if (Option.isNone(binaryStat) || binaryStat.value.type !== "File") {
+        const missingBinary: ImportKiloProvidersResult = {
+          _tag: "Failed",
+          reason: "bad_binary_path",
+          message: Option.isNone(binaryStat)
+            ? `No Kilo binary was found at ${binaryPath}.`
+            : `${binaryPath} is not a file.`,
+          path: binaryPath,
+        };
+        return missingBinary;
+      }
+    }
+    const auth = yield* readAuthKeys();
     const selected = new Set(input.providerIds);
     const parseable = new Set(read.config.providers.map((provider) => provider.id));
     const missing = [...selected].filter((id) => !parseable.has(id));
@@ -219,7 +296,8 @@ const make = Effect.gen(function* () {
         provider,
         instanceId,
         agentBlock: read.config.agentBlock,
-        binaryPath: "",
+        binaryPath,
+        authApiKey: auth.keys.get(provider.id) ?? null,
       });
       yield* serverSettings.updateProviderInstance({
         operation: "create",
@@ -229,7 +307,11 @@ const make = Effect.gen(function* () {
       claimed.add(instanceId);
       instanceIds.push(instanceId);
     }
-    const ok: ImportKiloProvidersResult = { _tag: "Ok", instanceIds };
+    const ok: ImportKiloProvidersResult = {
+      _tag: "Ok",
+      instanceIds,
+      authStatus: auth.status,
+    };
     return ok;
   });
 

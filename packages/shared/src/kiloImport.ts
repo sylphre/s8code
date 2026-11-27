@@ -162,10 +162,12 @@ export function buildKiloImportInstance(input: {
   readonly instanceId: string;
   readonly agentBlock: Record<string, unknown> | undefined;
   readonly binaryPath: string;
+  /** A key read from the host's kilo auth.json; an inline kilo.jsonc key still wins. */
+  readonly authApiKey?: string | null;
 }): { readonly instance: ProviderInstanceConfig; readonly apiKeyValue: string | null } {
   const { provider, instanceId } = input;
   const options = { ...readRecord(provider.block.options) };
-  const apiKeyValue = provider.literalApiKey?.trim() ?? null;
+  const apiKeyValue = provider.literalApiKey?.trim() || input.authApiKey?.trim() || null;
   if (apiKeyValue) {
     options.apiKey = `{env:${customApiKeyVariableName(instanceId)}}`;
   }

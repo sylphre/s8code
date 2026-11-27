@@ -42,6 +42,7 @@ const kiloConfigText = `{
 const setup = (
   options: {
     readonly configDir?: string;
+    readonly dataDir?: string;
     readonly settings?: Parameters<typeof ServerSettings.layerTest>[0];
   } = {},
 ) =>
@@ -50,6 +51,8 @@ const setup = (
     const root = yield* fs.makeTempDirectoryScoped({ prefix: "t3-kilo-import-" });
     const configDir = options.configDir ?? `${root}/config`;
     yield* fs.makeDirectory(configDir, { recursive: true });
+    const dataDir = options.dataDir ?? `${root}/data`;
+    yield* fs.makeDirectory(dataDir, { recursive: true });
     const services = KiloConfigImport.layer.pipe(
       Layer.provideMerge(ServerSettings.layerTest(options.settings)),
       Layer.provide(
@@ -59,6 +62,7 @@ const setup = (
           Layer.succeed(HostProcess.Environment, {
             ...process.env,
             XDG_CONFIG_HOME: configDir,
+            XDG_DATA_HOME: dataDir,
           }),
           Layer.succeed(HostProcess.HomeDirectory, root),
         ),
@@ -67,7 +71,7 @@ const setup = (
     return yield* Effect.gen(function* () {
       const kilo = yield* KiloConfigImport.KiloConfigImport;
       const settings = yield* ServerSettings.ServerSettingsService;
-      return { fs, root, configDir, kilo, settings };
+      return { fs, root, configDir, dataDir, kilo, settings };
     }).pipe(Effect.provide(services));
   }).pipe(Effect.provide(NodeFileSystem.layer));
 
@@ -76,11 +80,25 @@ const writeConfig = (fs: FileSystem.FileSystem, path: string, text: string) =>
     .makeDirectory(path.slice(0, path.lastIndexOf("/")), { recursive: true })
     .pipe(Effect.andThen(fs.writeFileString(path, text)));
 
+const writeAuth = (fs: FileSystem.FileSystem, dataDir: string, text: string) =>
+  fs
+    .makeDirectory(`${dataDir}/kilo`, { recursive: true })
+    .pipe(Effect.andThen(fs.writeFileString(`${dataDir}/kilo/auth.json`, text)));
+
 describe("KiloConfigImport", () => {
   it.effect("summary answers presence only, never a key value", () =>
     Effect.gen(function* () {
-      const { configDir, kilo, fs } = yield* setup();
+      const { configDir, dataDir, kilo, fs } = yield* setup();
       yield* writeConfig(fs, `${configDir}/kilo/kilo.jsonc`, kiloConfigText);
+      yield* writeAuth(
+        fs,
+        dataDir,
+        JSON.stringify({
+          plain: { type: "api", key: "sk-auth-plain" },
+          keyless: { type: "api", key: "sk-auth-keyless" },
+          "not-in-config": { type: "api", key: "sk-auth-extra" },
+        }),
+      );
 
       const result = yield* kilo.summary({});
       assert.deepStrictEqual(result._tag, "Ok");
@@ -91,8 +109,9 @@ describe("KiloConfigImport", () => {
       );
       assert.deepStrictEqual(
         result.summary.providers.map((provider) => provider.hasApiKey),
-        [true, true, false],
+        [true, true, true],
       );
+      assert.deepStrictEqual(result.summary.authStatus, "ok");
       assert.deepStrictEqual(result.summary.providers[0], {
         id: "deepseek",
         name: "DeepSeek",
@@ -103,6 +122,77 @@ describe("KiloConfigImport", () => {
       assert.deepStrictEqual(result.summary.agentNames, ["reviewer"]);
       assert.deepStrictEqual(result.summary.path, `${configDir}/kilo/kilo.jsonc`);
       assert.notInclude(JSON.stringify(result), "sk-pasted");
+      assert.notInclude(JSON.stringify(result), "sk-auth");
+    }).pipe(Effect.scoped),
+  );
+
+  it.effect("an auth.json key lands in the sensitive variable, not the generated config", () =>
+    Effect.gen(function* () {
+      const { configDir, dataDir, kilo, fs, settings } = yield* setup();
+      const configPath = `${configDir}/kilo/kilo.jsonc`;
+      yield* writeConfig(fs, configPath, kiloConfigText);
+      yield* writeAuth(
+        fs,
+        dataDir,
+        JSON.stringify({ plain: { type: "api", key: "sk-auth-plain" } }),
+      );
+
+      const result = yield* kilo.importProviders({ path: configPath, providerIds: ["plain"] });
+      assert.deepStrictEqual(result._tag, "Ok");
+      if (result._tag !== "Ok") return;
+      assert.deepStrictEqual(result.authStatus, "ok");
+
+      const stored = (yield* settings.getSettings).providerInstances[
+        "opencode_plain" as ProviderInstanceId
+      ]!;
+      const configContent = (stored.environment ?? [])[0]!;
+      assert.deepStrictEqual(configContent.sensitive, false);
+      assert.notInclude(configContent.value as string, "sk-auth-plain");
+      assert.deepStrictEqual(
+        JSON.parse(configContent.value as string).provider["s8-opencode_plain"].options,
+        {
+          baseURL: "https://plain.test",
+          apiKey: "{env:S8_CUSTOM_OPENCODE_PLAIN_API_KEY}",
+        },
+      );
+      assert.deepStrictEqual((stored.environment ?? [])[1], {
+        name: "S8_CUSTOM_OPENCODE_PLAIN_API_KEY",
+        value: "sk-auth-plain",
+        sensitive: true,
+      });
+    }).pipe(Effect.scoped),
+  );
+
+  it.effect("a missing or unreadable auth.json still imports, keyless", () =>
+    Effect.gen(function* () {
+      const { configDir, dataDir, kilo, fs } = yield* setup();
+      const configPath = `${configDir}/kilo/kilo.jsonc`;
+      yield* writeConfig(fs, configPath, kiloConfigText);
+
+      const withoutFile = yield* kilo.summary({});
+      assert.deepStrictEqual(withoutFile._tag, "Ok");
+      if (withoutFile._tag !== "Ok") return;
+      assert.deepStrictEqual(withoutFile.summary.authStatus, "missing");
+      assert.deepStrictEqual(
+        withoutFile.summary.providers.map((provider) => provider.hasApiKey),
+        [true, false, false],
+      );
+
+      const importMissing = yield* kilo.importProviders({
+        path: configPath,
+        providerIds: ["plain"],
+      });
+      assert.deepStrictEqual(importMissing, {
+        _tag: "Ok",
+        instanceIds: [ProviderInstanceId.make("opencode_plain")],
+        authStatus: "missing",
+      });
+
+      yield* writeAuth(fs, dataDir, "{ not json");
+      const unreadable = yield* kilo.summary({});
+      assert.deepStrictEqual(unreadable._tag, "Ok");
+      if (unreadable._tag !== "Ok") return;
+      assert.deepStrictEqual(unreadable.summary.authStatus, "unreadable");
     }).pipe(Effect.scoped),
   );
 
@@ -249,7 +339,41 @@ describe("KiloConfigImport", () => {
       const configPath = `${configDir}/kilo/kilo.jsonc`;
       yield* writeConfig(fs, configPath, kiloConfigText);
       const result = yield* kilo.importProviders({ path: configPath, providerIds: [] });
-      assert.deepStrictEqual(result, { _tag: "Ok", instanceIds: [] });
+      assert.deepStrictEqual(result, { _tag: "Ok", instanceIds: [], authStatus: "missing" });
+    }).pipe(Effect.scoped),
+  );
+
+  it.effect("a binary path is checked on the host and lands in the instance", () =>
+    Effect.gen(function* () {
+      const { configDir, kilo, fs, settings } = yield* setup();
+      const configPath = `${configDir}/kilo/kilo.jsonc`;
+      yield* writeConfig(fs, configPath, kiloConfigText);
+
+      const rejected = yield* kilo.importProviders({
+        path: configPath,
+        providerIds: ["deepseek"],
+        binaryPath: "~/bin/nowhere/kilo",
+      });
+      assert.deepStrictEqual(rejected._tag, "Failed");
+      if (rejected._tag !== "Failed") return;
+      assert.deepStrictEqual(rejected.reason, "bad_binary_path");
+
+      yield* fs.makeDirectory(`${configDir}/bin`, { recursive: true });
+      yield* fs.writeFileString(`${configDir}/bin/kilo`, "#!/bin/sh\n");
+      const imported = yield* kilo.importProviders({
+        path: configPath,
+        providerIds: ["deepseek"],
+        binaryPath: `${configDir}/bin/kilo`,
+      });
+      assert.deepStrictEqual(imported._tag, "Ok");
+
+      const stored = (yield* settings.getSettings).providerInstances[
+        "opencode_deepseek" as ProviderInstanceId
+      ]!;
+      assert.deepStrictEqual(stored.config, {
+        binaryPath: `${configDir}/bin/kilo`,
+        customModels: ["deepseek-chat", "deepseek-reasoner"],
+      });
     }).pipe(Effect.scoped),
   );
 });

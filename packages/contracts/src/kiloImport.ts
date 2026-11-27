@@ -14,10 +14,15 @@ export const KiloConfigProviderSummary = Schema.Struct({
 });
 export type KiloConfigProviderSummary = typeof KiloConfigProviderSummary.Type;
 
+/** Whether the host's kilo auth.json gave keys; missing or unreadable still imports, keyless. */
+export const KiloConfigAuthStatus = Schema.Literals(["ok", "missing", "unreadable"]);
+export type KiloConfigAuthStatus = typeof KiloConfigAuthStatus.Type;
+
 export const KiloConfigSummary = Schema.Struct({
   path: Schema.String,
   providers: Schema.Array(KiloConfigProviderSummary),
   agentNames: Schema.Array(Schema.String),
+  authStatus: KiloConfigAuthStatus,
 });
 export type KiloConfigSummary = typeof KiloConfigSummary.Type;
 
@@ -34,6 +39,7 @@ export const KiloConfigReadFailureReason = Schema.Literals([
   "bad_base_url",
   "models_not_object",
   "provider_not_found",
+  "bad_binary_path",
 ]);
 export type KiloConfigReadFailureReason = typeof KiloConfigReadFailureReason.Type;
 
@@ -62,12 +68,16 @@ export type ReadKiloConfigSummaryResult = typeof ReadKiloConfigSummaryResult.Typ
 
 export const ImportKiloProvidersInput = Schema.Struct({
   path: Schema.optionalKey(Schema.String),
+  binaryPath: Schema.optionalKey(Schema.String),
   providerIds: Schema.Array(Schema.String),
 });
 export type ImportKiloProvidersInput = typeof ImportKiloProvidersInput.Type;
 
 export const ImportKiloProvidersResult = Schema.Union([
-  Schema.TaggedStruct("Ok", { instanceIds: Schema.Array(ProviderInstanceId) }),
+  Schema.TaggedStruct("Ok", {
+    instanceIds: Schema.Array(ProviderInstanceId),
+    authStatus: KiloConfigAuthStatus,
+  }),
   Schema.TaggedStruct("Failed", KiloConfigReadFailureFields),
 ]);
 export type ImportKiloProvidersResult = typeof ImportKiloProvidersResult.Type;
