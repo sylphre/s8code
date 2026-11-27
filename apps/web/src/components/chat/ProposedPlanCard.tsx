@@ -14,9 +14,9 @@ import {
 import {
   buildCollapsedProposedPlanPreviewMarkdown,
   buildProposedPlanMarkdownFilename,
-  downloadPlanAsTextFile,
   normalizePlanMarkdownForExport,
 } from "../../proposedPlan";
+import { downloadTextFile } from "../../lib/downloadTextFile";
 import ChatMarkdown from "../ChatMarkdown";
 import { EllipsisIcon } from "lucide-react";
 import { Button } from "../ui/button";
@@ -96,7 +96,7 @@ export const ProposedPlanCard = memo(function ProposedPlanCard({
   const saveContents = normalizePlanMarkdownForExport(planMarkdown);
 
   const handleDownload = () => {
-    downloadPlanAsTextFile(downloadFilename, saveContents);
+    downloadTextFile(downloadFilename, saveContents);
   };
 
   const handleCopyPlan = () => {

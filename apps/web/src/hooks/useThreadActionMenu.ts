@@ -28,6 +28,8 @@ import {
 import { titleRegenerationToast } from "../components/threadTitleRegenerationToast";
 import { stackedThreadToast, toastManager } from "../components/ui/toast";
 import { copyThreadReference } from "../lib/copyThreadReference";
+import { downloadTextFile } from "../lib/downloadTextFile";
+import { markdownExportFileName } from "@s8code/shared/threadMarkdownExport";
 import { m } from "../i18n/messages";
 import { threadChipCopyTarget } from "@s8code/client-runtime/thread-reference";
 import { threadEnvironment } from "../state/threads";
@@ -98,6 +100,13 @@ export function useThreadActionMenu(input: {
   const regenerateThreadTitle = useOrchestrationCommand(threadEnvironment.regenerateTitle, {
     reportFailure: false,
   });
+  const exportMarkdown = useOrchestrationCommand(
+    threadEnvironment.exportMarkdown,
+    {
+      reportFailure: false,
+    },
+    () => true,
+  );
   const handleNewThread = useNewThreadHandler();
   const confirmThreadDelete = useClientSettings((s) => s.confirmThreadDelete);
   const confirmThreadArchive = useClientSettings((s) => s.confirmThreadArchive);
@@ -317,6 +326,20 @@ export function useThreadActionMenu(input: {
         case "copy-thread-id":
           copyThreadIdToClipboard(thread.id, { threadId: thread.id });
           return;
+        case "export-markdown": {
+          const result = await exportMarkdown({
+            environmentId: threadRef.environmentId,
+            input: { threadId: threadRef.threadId },
+          });
+          if (result._tag === "Failure") {
+            if (!isAtomCommandInterrupted(result)) {
+              failureToast(m(msg("Failed to export thread")), squashAtomCommandFailure(result));
+            }
+            return;
+          }
+          downloadTextFile(markdownExportFileName(thread.title), result.value.markdown);
+          return;
+        }
         case "archive": {
           if (confirmThreadArchive) {
             const confirmed = await settlePromise(() =>
