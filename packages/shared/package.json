@@ -23,6 +23,10 @@
       "types": "./src/orchestrationV2ThreadError.ts",
       "import": "./src/orchestrationV2ThreadError.ts"
     },
+    "./kiloImport": {
+      "types": "./src/kiloImport.ts",
+      "import": "./src/kiloImport.ts"
+    },
     "./delimitedPreview": {
       "types": "./src/delimitedPreview.ts",
       "import": "./src/delimitedPreview.ts"
@@ -701,6 +705,7 @@
     "get-east-asian-width": "^1.6.0",
     "gt-i18n": "1.0.40",
     "hast-util-sanitize": "^5.0.2",
+    "jsonc-parser": "3.3.1",
     "mdast-util-directive": "catalog:",
     "mdast-util-to-hast": "^13.2.1",
     "micromark-extension-directive": "catalog:",
