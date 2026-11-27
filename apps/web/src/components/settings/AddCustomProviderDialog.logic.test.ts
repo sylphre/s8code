@@ -7,11 +7,15 @@ import {
   buildCustomProviderInstance,
   buildKiloConfigContent,
   buildKiloImportInstance,
+  compatibleModelsEndpoint,
+  compatibleModelsHeaders,
   customApiKeyVariableName,
   customProviderDriver,
   customProviderHomePath,
+  mergeModelIds,
   parseCustomProviderModels,
   parseKiloConfigContent,
+  parseModelCatalogResponse,
   validateCustomProviderDraft,
   type CustomProviderDraft,
 } from "./AddCustomProviderDialog.logic";
@@ -34,6 +38,72 @@ describe("parseCustomProviderModels", () => {
       "dummy-3",
     ]);
     expect(parseCustomProviderModels(" \n,")).toEqual([]);
+  });
+});
+
+describe("mergeModelIds", () => {
+  it("appends candidates the user has not listed, keeping their lines", () => {
+    expect(mergeModelIds("mine-1\nmine-2", ["catalog-1", "mine-1", "catalog-2"])).toBe(
+      "mine-1\nmine-2\ncatalog-1\ncatalog-2",
+    );
+    expect(mergeModelIds("", ["catalog-1"])).toBe("catalog-1");
+    expect(mergeModelIds("mine-1", [])).toBe("mine-1");
+  });
+});
+
+describe("compatibleModelsEndpoint", () => {
+  it("appends the per-kind models path to the base URL", () => {
+    expect(compatibleModelsEndpoint("openai", "https://relay.example.test/v1")).toBe(
+      "https://relay.example.test/v1/models",
+    );
+    expect(compatibleModelsEndpoint("anthropic", "https://relay.example.test")).toBe(
+      "https://relay.example.test/v1/models",
+    );
+    expect(compatibleModelsEndpoint("openai", "https://relay.example.test/")).toBe(
+      "https://relay.example.test/models",
+    );
+  });
+
+  it("rejects an unusable Base URL", () => {
+    expect(compatibleModelsEndpoint("openai", "relay.example.test")).toBeUndefined();
+    expect(compatibleModelsEndpoint("openai", "ftp://relay.example.test")).toBeUndefined();
+  });
+});
+
+describe("compatibleModelsHeaders", () => {
+  it("sends the per-kind auth headers for a literal key", () => {
+    expect(compatibleModelsHeaders("openai", "sk-dummy")).toEqual({
+      Authorization: "Bearer sk-dummy",
+    });
+    expect(compatibleModelsHeaders("anthropic", "sk-dummy")).toEqual({
+      "x-api-key": "sk-dummy",
+      "anthropic-version": "2023-06-01",
+    });
+  });
+
+  it("sends no headers without a literal key", () => {
+    expect(compatibleModelsHeaders("openai", null)).toEqual({});
+    expect(compatibleModelsHeaders("anthropic", "")).toEqual({});
+  });
+});
+
+describe("parseModelCatalogResponse", () => {
+  it("reads OpenAI, Anthropic, and bare-array payloads", () => {
+    expect(parseModelCatalogResponse({ data: [{ id: " dummy-1 " }, { id: "dummy-2" }] })).toEqual([
+      "dummy-1",
+      "dummy-2",
+    ]);
+    expect(parseModelCatalogResponse({ data: [{ id: "dummy-1", display_name: "Dummy" }] })).toEqual(
+      ["dummy-1"],
+    );
+    expect(parseModelCatalogResponse(["dummy-1", { id: "dummy-2" }, { nope: true }, null])).toEqual(
+      ["dummy-2"],
+    );
+  });
+
+  it("returns nothing for payloads without model ids", () => {
+    expect(parseModelCatalogResponse({ error: { message: "nope" } })).toEqual([]);
+    expect(parseModelCatalogResponse(null)).toEqual([]);
   });
 });
 

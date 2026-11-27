@@ -56,6 +56,51 @@ export function parseCustomProviderModels(text: string): ReadonlyArray<string> {
   return models;
 }
 
+/** Appends candidates a user has not listed yet, keeping the lines they typed where they are. */
+export function mergeModelIds(existing: string, candidates: ReadonlyArray<string>): string {
+  const present = new Set(parseCustomProviderModels(existing));
+  const appended = candidates.filter(
+    (model) => model.trim().length > 0 && !present.has(model.trim()),
+  );
+  return [...parseCustomProviderModels(existing), ...appended].join("\n");
+}
+
+/** The endpoint the wizard can ask a relay for model ids; undefined when the Base URL is unusable. */
+export function compatibleModelsEndpoint(
+  kind: CustomProviderKind,
+  baseUrl: string,
+): string | undefined {
+  const endpoint = URL.parse(baseUrl.trim());
+  if (endpoint === null || !/^https?:$/.test(endpoint.protocol)) return undefined;
+  const path = kind === "anthropic" ? "v1/models" : "models";
+  return `${endpoint.origin}${endpoint.pathname.replace(/\/+$/, "")}/${path}${endpoint.search}`;
+}
+
+// A secret provider reference cannot be read in the browser, so these requests go out without it.
+export function compatibleModelsHeaders(
+  kind: CustomProviderKind,
+  apiKey: string | null,
+): Record<string, string> {
+  if (apiKey === null || apiKey.length === 0) return {};
+  return kind === "anthropic"
+    ? { "x-api-key": apiKey, "anthropic-version": "2023-06-01" }
+    : { Authorization: `Bearer ${apiKey}` };
+}
+
+/** Reads OpenAI `{data:[{id}]}`, Anthropic `{data:[{id}]}` and bare-array responses. */
+export function parseModelCatalogResponse(payload: unknown): ReadonlyArray<string> {
+  const entries = readRecord(payload)?.data ?? payload;
+  if (!Array.isArray(entries)) return [];
+  const ids: string[] = [];
+  for (const entry of entries) {
+    const id = readRecord(entry)?.id;
+    if (typeof id === "string" && id.trim().length > 0 && !ids.includes(id.trim())) {
+      ids.push(id.trim());
+    }
+  }
+  return ids;
+}
+
 /** One name shared by the key variable and the config JSON's `{env:}` reference. */
 export function customApiKeyVariableName(instanceId: string): string {
   return `S8_CUSTOM_${instanceId.toUpperCase().replaceAll(/[^A-Z0-9]/g, "_")}_API_KEY`;

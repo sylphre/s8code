@@ -42,8 +42,12 @@ import { SecretSourceInput, useSecretSources } from "./SecretSourceInput";
 import {
   buildCustomProviderInstance,
   buildKiloImportInstance,
+  compatibleModelsEndpoint,
+  compatibleModelsHeaders,
   customProviderDriver,
+  mergeModelIds,
   parseKiloConfigContent,
+  parseModelCatalogResponse,
   validateCustomProviderDraft,
   type CustomProviderDraft,
   type CustomProviderKind,
@@ -82,6 +86,11 @@ export function AddCustomProviderDialog({
   const [selectedKiloProviderIds, setSelectedKiloProviderIds] = useState<ReadonlySet<string>>(
     new Set(),
   );
+  const [relayProbe, setRelayProbe] = useState<{
+    kind: "fetch" | "test";
+    status: "loading" | "ok" | "error";
+    message: string;
+  } | null>(null);
 
   const kiloParse =
     source === "kiloImport" && kiloConfigText.trim().length > 0
@@ -148,6 +157,70 @@ export function AddCustomProviderDialog({
       }),
     });
     onCreated?.(brandedId, driver);
+  };
+
+  // A secret provider reference holds no literal here, so the probe then runs without a key.
+  const relayApiKey = typeof apiKey === "string" ? apiKey.trim() : null;
+
+  const runModelsRequest = async (mode: "fetch" | "test") => {
+    setRelayProbe({ kind: mode, status: "loading", message: "" });
+    const url = compatibleModelsEndpoint(kind, baseUrl);
+    if (!url) {
+      setRelayProbe({
+        kind: mode,
+        status: "error",
+        message: gt("Enter an http(s) Base URL first."),
+      });
+      return;
+    }
+    try {
+      const response = await fetch(url, { headers: compatibleModelsHeaders(kind, relayApiKey) });
+      if (!response.ok) {
+        const authRejected =
+          mode === "test" && (response.status === 401 || response.status === 403);
+        setRelayProbe({
+          kind: mode,
+          status: "error",
+          message: authRejected
+            ? gt("Reached {url}, but the API key was rejected (HTTP {status}).", {
+                url,
+                status: response.status,
+              })
+            : gt("HTTP {status} from {url}.", { url, status: response.status }),
+        });
+        return;
+      }
+      const payload = await response.json().catch(() => null);
+      if (mode === "test") {
+        setRelayProbe({
+          kind: mode,
+          status: "ok",
+          message: gt("Reached {url}. Authentication ok.", { url }),
+        });
+        return;
+      }
+      const modelIds = parseModelCatalogResponse(payload);
+      if (modelIds.length === 0) {
+        setRelayProbe({
+          kind: mode,
+          status: "error",
+          message: gt("The response had no model IDs."),
+        });
+        return;
+      }
+      setModelsText((existing) => mergeModelIds(existing, modelIds));
+      setRelayProbe({
+        kind: mode,
+        status: "ok",
+        message: gt("Found {count} models.", { count: modelIds.length }),
+      });
+    } catch {
+      setRelayProbe({
+        kind: mode,
+        status: "error",
+        message: gt("Could not reach {url} from the browser.", { url }),
+      });
+    }
   };
 
   const saveKiloImport = async () => {
@@ -395,9 +468,20 @@ export function AddCustomProviderDialog({
                   </p>
                 </div>
                 <div className="grid gap-1.5">
-                  <Label htmlFor="custom-provider-base-url">
-                    <T>Base URL</T>
-                  </Label>
+                  <div className="flex items-center justify-between gap-2">
+                    <Label htmlFor="custom-provider-base-url">
+                      <T>Base URL</T>
+                    </Label>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="xs"
+                      disabled={isSaving || relayProbe?.status === "loading"}
+                      onClick={() => void runModelsRequest("test")}
+                    >
+                      <T>Connection test</T>
+                    </Button>
+                  </div>
                   <Input
                     id="custom-provider-base-url"
                     placeholder="https://relay.example.com"
@@ -406,6 +490,17 @@ export function AddCustomProviderDialog({
                     spellCheck={false}
                     autoComplete="off"
                   />
+                  {relayProbe?.kind === "test" ? (
+                    <p
+                      className={
+                        relayProbe.status === "ok"
+                          ? "text-2xs text-muted-foreground"
+                          : "text-2xs text-destructive"
+                      }
+                    >
+                      {relayProbe.status === "loading" ? gt("Testing...") : relayProbe.message}
+                    </p>
+                  ) : null}
                 </div>
                 <div className="grid gap-1.5">
                   <Label htmlFor="custom-provider-api-key">
@@ -426,9 +521,20 @@ export function AddCustomProviderDialog({
                   </p>
                 </div>
                 <div className="grid gap-1.5">
-                  <Label htmlFor="custom-provider-models">
-                    <T>Model IDs</T>
-                  </Label>
+                  <div className="flex items-center justify-between gap-2">
+                    <Label htmlFor="custom-provider-models">
+                      <T>Model IDs</T>
+                    </Label>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="xs"
+                      disabled={isSaving || relayProbe?.status === "loading"}
+                      onClick={() => void runModelsRequest("fetch")}
+                    >
+                      <T>Fetch models</T>
+                    </Button>
+                  </div>
                   <Textarea
                     id="custom-provider-models"
                     aria-label={gt("Model IDs")}
@@ -438,6 +544,17 @@ export function AddCustomProviderDialog({
                     placeholder="my-model"
                     spellCheck={false}
                   />
+                  {relayProbe?.kind === "fetch" ? (
+                    <p
+                      className={
+                        relayProbe.status === "ok"
+                          ? "text-2xs text-muted-foreground"
+                          : "text-2xs text-destructive"
+                      }
+                    >
+                      {relayProbe.status === "loading" ? gt("Fetching...") : relayProbe.message}
+                    </p>
+                  ) : null}
                   <p className="text-2xs text-muted-foreground">
                     <T>One model ID per line.</T>
                   </p>
