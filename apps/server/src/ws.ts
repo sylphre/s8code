@@ -180,6 +180,7 @@ import {
   threadStreamEventItem,
 } from "./orchestration-v2/WireProjection.ts";
 import { dedupeSnapshotBodies } from "@s8code/shared/orchestrationV2DedupedBodies";
+import { threadMarkdownExport } from "@s8code/shared/threadMarkdownExport";
 import * as ProjectStore from "./orchestration-v2/ProjectStore.ts";
 import * as ThreadSearch from "./orchestration-v2/ThreadSearch.ts";
 import * as OrchestrationEventStore from "./persistence/OrchestrationEventStore.ts";
@@ -1902,6 +1903,33 @@ export const layerWsRpc = (
         return yield* mutateProjectWithClone(projectService, projectCloneTracker, mutation);
       });
 
+      const exportThreadMarkdown = Effect.fn("ws.threads.exportMarkdown")(function* (
+        threadId: ThreadId,
+      ) {
+        const projection = yield* threadManagement.getThreadProjection(threadId);
+        const thread = projection.thread;
+        // Meta lines degrade to less detail; only the thread itself may fail the export.
+        const project = Option.getOrUndefined(
+          yield* projectStore.get(thread.projectId).pipe(Effect.orElseSucceed(() => Option.none())),
+        );
+        const instance = yield* providerInstances.getInstance(thread.modelSelection.instanceId);
+        return {
+          markdown: threadMarkdownExport(
+            {
+              title: thread.title,
+              createdAt: DateTime.formatIso(thread.createdAt),
+              provider: instance
+                ? (instance.displayName ?? instance.driverKind)
+                : thread.modelSelection.instanceId,
+              model: thread.modelSelection.model,
+              project: project?.title ?? null,
+              folder: thread.worktreePath ?? project?.workspaceRoot ?? null,
+            },
+            projection.visibleTurnItems,
+          ),
+        };
+      });
+
       const handlers = ServerWsRpcGroup.of({
         [WS_METHODS.issuesList]: (input) => issues.list(input),
         [WS_METHODS.issuesDetail]: (input) => issues.detail(input),
@@ -2103,6 +2131,21 @@ export const layerWsRpc = (
                       }),
                   ),
                 ),
+            ),
+          ),
+        [ORCHESTRATION_V2_WS_METHODS.exportThreadMarkdown]: (input) =>
+          Effect.annotateCurrentSpan({ "orchestration_v2.thread_id": input.threadId }).pipe(
+            Effect.andThen(
+              exportThreadMarkdown(input.threadId).pipe(
+                Effect.mapError(
+                  (cause) =>
+                    new OrchestrationV2GetThreadProjectionError({
+                      threadId: input.threadId,
+                      message: "Failed to export the thread as Markdown",
+                      cause,
+                    }),
+                ),
+              ),
             ),
           ),
         [ORCHESTRATION_V2_WS_METHODS.launchThread]: (input) =>

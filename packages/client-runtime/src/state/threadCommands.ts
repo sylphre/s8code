@@ -4,6 +4,7 @@ import * as Effect from "effect/Effect";
 import * as Option from "effect/Option";
 import { AsyncResult, Atom, type AtomRegistry } from "effect/reactivity";
 import {
+  ORCHESTRATION_V2_WS_METHODS,
   WS_METHODS,
   type EnvironmentId,
   type OrchestrationV2ShellSnapshot,
@@ -512,6 +513,11 @@ export function createThreadEnvironmentAtoms<R, E>(
       tag: WS_METHODS.providerUploadFeedback,
       scheduler,
       concurrency,
+    }),
+    // A read the user downloads, outside the thread's serial command queue.
+    exportMarkdown: createEnvironmentRpcCommand(runtime, {
+      label: "environment-data:commands:thread:export-markdown",
+      tag: ORCHESTRATION_V2_WS_METHODS.exportThreadMarkdown,
     }),
     // Outside the thread's queue: finishing can wait on the agent, and messages must not.
     mcpSignInStart: createEnvironmentRpcCommand(runtime, {

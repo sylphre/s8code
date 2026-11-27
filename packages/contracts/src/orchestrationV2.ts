@@ -4121,6 +4121,7 @@ export const ORCHESTRATION_V2_WS_METHODS = {
   getWorktreeThreadIds: "orchestration.getWorktreeThreadIds",
   getOlderSettledThreads: "orchestration.getOlderSettledThreads",
   getThreadProjection: "orchestration.getThreadProjection",
+  exportThreadMarkdown: "orchestration.exportThreadMarkdown",
   getWorkflowScript: "orchestration.getWorkflowScript",
   getNativeChildWork: "orchestration.getNativeChildWork",
   stopWorkflow: "orchestration.stopWorkflow",
@@ -4220,6 +4221,18 @@ export const OrchestrationV2GetThreadProjectionInput = Schema.Struct({
 });
 export type OrchestrationV2GetThreadProjectionInput =
   typeof OrchestrationV2GetThreadProjectionInput.Type;
+
+export const OrchestrationV2ExportThreadMarkdownInput = Schema.Struct({
+  threadId: ThreadId,
+});
+export type OrchestrationV2ExportThreadMarkdownInput =
+  typeof OrchestrationV2ExportThreadMarkdownInput.Type;
+
+export const OrchestrationV2ExportThreadMarkdownResult = Schema.Struct({
+  markdown: Schema.String,
+});
+export type OrchestrationV2ExportThreadMarkdownResult =
+  typeof OrchestrationV2ExportThreadMarkdownResult.Type;
 
 export const OrchestrationV2SubscribeShellInput = Schema.Struct({
   afterSequence: Schema.optionalKey(NonNegativeInt),
@@ -4820,6 +4833,10 @@ export const OrchestrationV2RpcSchemas = {
   getThreadProjection: {
     input: OrchestrationV2GetThreadProjectionInput,
     output: OrchestrationV2ThreadProjection,
+  },
+  exportThreadMarkdown: {
+    input: OrchestrationV2ExportThreadMarkdownInput,
+    output: OrchestrationV2ExportThreadMarkdownResult,
   },
   stopWorkflow: {
     input: OrchestrationV2StopWorkflowInput,
