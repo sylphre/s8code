@@ -48,8 +48,17 @@ export const resolveDeviceHubAccess = Effect.fn("clientRuntime.state.resolveDevi
   }): Effect.fn.Return<DeviceHubAccess, RemoteEnvironmentRequestError, HttpClient.HttpClient> {
     const httpBase = environmentEndpointUrl(input.prepared.httpBaseUrl, input.hubBasePath);
     const wsBase = httpBase.replace(/^http/, "ws");
+    const capabilities = input.prepared.descriptor?.capabilities;
+    const e2eeFingerprint =
+      capabilities?.e2ee === true ? capabilities.e2eeFingerprint : undefined;
     if (input.prepared.httpAuthorization === null) {
-      return { httpBase, wsBase, query: {}, credentials: true };
+      return {
+        httpBase,
+        wsBase,
+        query: {},
+        credentials: true,
+        ...(e2eeFingerprint === undefined ? {} : { e2eeFingerprint }),
+      };
     }
     const ticket = yield* mintMediaTicket(input.prepared);
     return {
@@ -57,6 +66,7 @@ export const resolveDeviceHubAccess = Effect.fn("clientRuntime.state.resolveDevi
       wsBase,
       query: { wsTicket: Redacted.value(ticket.ticket) },
       credentials: false,
+      ...(e2eeFingerprint === undefined ? {} : { e2eeFingerprint }),
     };
   },
 );

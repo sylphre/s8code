@@ -10,6 +10,7 @@ import * as Schema from "effect/Schema";
 import * as Option from "effect/Option";
 import { createCanvasFrameSink, type DeviceFrameSink } from "./frame.ts";
 import { type DeviceHubAccess, withDeviceHubQuery } from "./hubAccess.ts";
+import { e2eeDeviceWebSocket } from "../connection/e2ee/deviceSocket.ts";
 import type { DevicePlatform } from "@s8code/contracts";
 import { mFallback, msg } from "gt-i18n";
 import type { MFunctionType } from "gt-i18n/types";
@@ -1139,7 +1140,19 @@ export function createDeviceStreamClient(
     const session = generation;
     if (!serveSimOnly) await primeIosHelper(session);
     if (stopped || generation !== session) return;
-    const ws = new WebSocket(wsUrl(`/helper/ws?device=${device}`));
+    if (access.e2eeFingerprint === undefined)
+      connectIosInputSocket(new WebSocket(wsUrl(`/helper/ws?device=${device}`)));
+    else void e2eeDeviceWebSocket(wsUrl(`/helper/ws?device=${device}`), access.e2eeFingerprint).then(
+      connectIosInputSocket,
+      () => scheduleRetry("input", () => void connectIosInput()),
+    );
+  };
+
+  const connectIosInputSocket = (ws: WebSocket) => {
+    if (stopped) {
+      ws.close();
+      return;
+    }
     ws.binaryType = "arraybuffer";
     socket = ws;
     iosInputAdmitted = false;
@@ -1230,78 +1243,91 @@ export function createDeviceStreamClient(
   /** `inputOnly` keeps a socket for input beside a WebRTC feed, so its reconnects leave video alone. */
   const connectAndroid = (inputOnly = false) => {
     if (stopped) return;
-    const ws = new WebSocket(
-      wsUrl(`/ws?device=${device}&${inputOnly ? "video=0" : "frame-meta=1"}`),
-    );
-    ws.binaryType = "arraybuffer";
-    socket = ws;
-    ws.onopen = () => {
-      if (stopped || socket !== ws) return;
-      if (!inputOnly) connecting();
-      events.onInputConnected(true);
-    };
-    ws.onmessage = (event) => {
-      if (stopped || socket !== ws || inputOnly) return;
-      if (typeof event.data === "string") {
-        // The encoder restarts at a new size when the device rotates; the
-        // next keyframe carries a fresh SPS, so the decoder is rebuilt from it.
-        if (isVideoSessionMessage(event.data)) {
-          closeDecoder();
-          configuring = false;
-          connecting();
-          requestKeyframe();
-        }
-        return;
-      }
-      if (!(event.data instanceof ArrayBuffer)) return;
-      const packet = parseSemuPacket(event.data);
-      const needsScan =
-        packet.isKey === null ||
-        (packet.isKey && (!videoDecoder || videoDecoder.state !== "configured"));
-      const scanned = needsScan ? scanAccessUnit(packet.data) : null;
-      const isKey = packet.isKey ?? scanned?.isKey ?? false;
-      if (scanned?.sps && (!videoDecoder || videoDecoder.state !== "configured")) {
-        if (configuring) return;
-        configuring = true;
-        const epoch = decoderEpoch;
-        const isCurrent = () => !stopped && socket === ws;
-        void configureDecoder({ codec: avcCodecString(scanned.sps) }, isCurrent).then(
-          (configured) => {
-            if (!isCurrent() || epoch !== decoderEpoch) return;
-            configuring = false;
-            awaitingKeyframe = true;
-            if (configured) requestKeyframe();
-          },
-        );
-        return;
-      }
-      if (!videoDecoder || videoDecoder.state !== "configured") {
-        if (!isKey) requestKeyframe();
-        return;
-      }
-      decode(isKey, packet.data, packet.timestamp);
-    };
-    ws.onclose = (event) => {
-      if (socket !== ws) return;
-      socket = null;
-      closeDecoder();
-      if (stopped) return;
-      events.onInputConnected(false, event.reason || `closed ${event.code}`);
-      if (
-        event.code === 1008 ||
-        event.code === 4401 ||
-        (event.code === 1006 && access.query.wsTicket)
-      )
-        return handleUnauthorized();
-      if (!inputOnly) {
-        configuring = false;
-        connecting(event.reason || undefined);
-      }
-      // A full socket re-probes, so one failed /api read does not pin SEMU on a WebRTC host.
-      scheduleRetry("input", () => (inputOnly ? connectAndroid(true) : void startAndroid()));
-    };
-    ws.onerror = () => ws.close();
+    const path = `/ws?device=${device}&${inputOnly ? "video=0" : "frame-meta=1"}`;
+    if (access.e2eeFingerprint === undefined) connectAndroidSocket(inputOnly)(new WebSocket(wsUrl(path)));
+    else
+      void e2eeDeviceWebSocket(wsUrl(path), access.e2eeFingerprint).then(
+        connectAndroidSocket(inputOnly),
+        () => scheduleRetry("input", () => (inputOnly ? connectAndroid(true) : void startAndroid())),
+      );
   };
+
+  const connectAndroidSocket =
+    (inputOnly: boolean) =>
+    (ws: WebSocket) => {
+      if (stopped) {
+        ws.close();
+        return;
+      }
+      ws.binaryType = "arraybuffer";
+      socket = ws;
+      ws.onopen = () => {
+        if (stopped || socket !== ws) return;
+        if (!inputOnly) connecting();
+        events.onInputConnected(true);
+      };
+      ws.onmessage = (event) => {
+        if (stopped || socket !== ws || inputOnly) return;
+        if (typeof event.data === "string") {
+          // The encoder restarts at a new size when the device rotates; the
+          // next keyframe carries a fresh SPS, so the decoder is rebuilt from it.
+          if (isVideoSessionMessage(event.data)) {
+            closeDecoder();
+            configuring = false;
+            connecting();
+            requestKeyframe();
+          }
+          return;
+        }
+        if (!(event.data instanceof ArrayBuffer)) return;
+        const packet = parseSemuPacket(event.data);
+        const needsScan =
+          packet.isKey === null ||
+          (packet.isKey && (!videoDecoder || videoDecoder.state !== "configured"));
+        const scanned = needsScan ? scanAccessUnit(packet.data) : null;
+        const isKey = packet.isKey ?? scanned?.isKey ?? false;
+        if (scanned?.sps && (!videoDecoder || videoDecoder.state !== "configured")) {
+          if (configuring) return;
+          configuring = true;
+          const epoch = decoderEpoch;
+          const isCurrent = () => !stopped && socket === ws;
+          void configureDecoder({ codec: avcCodecString(scanned.sps) }, isCurrent).then(
+            (configured) => {
+              if (!isCurrent() || epoch !== decoderEpoch) return;
+              configuring = false;
+              awaitingKeyframe = true;
+              if (configured) requestKeyframe();
+            },
+          );
+          return;
+        }
+        if (!videoDecoder || videoDecoder.state !== "configured") {
+          if (!isKey) requestKeyframe();
+          return;
+        }
+        decode(isKey, packet.data, packet.timestamp);
+      };
+      ws.onclose = (event) => {
+        if (socket !== ws) return;
+        socket = null;
+        closeDecoder();
+        if (stopped) return;
+        events.onInputConnected(false, event.reason || `closed ${event.code}`);
+        if (
+          event.code === 1008 ||
+          event.code === 4401 ||
+          (event.code === 1006 && access.query.wsTicket)
+        )
+          return handleUnauthorized();
+        if (!inputOnly) {
+          configuring = false;
+          connecting(event.reason || undefined);
+        }
+        // A full socket re-probes, so one failed /api read does not pin SEMU on a WebRTC host.
+        scheduleRetry("input", () => (inputOnly ? connectAndroid(true) : void startAndroid()));
+      };
+      ws.onerror = () => ws.close();
+    };
 
   const startAndroid = async () => {
     const session = generation;
