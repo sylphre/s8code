@@ -1339,6 +1339,14 @@ export function createServerEnvironmentAtoms<R, E>(
       label: "environment-data:server:check-secret-source",
       tag: WS_METHODS.serverCheckSecretSource,
     }),
+    readKiloConfigSummary: createEnvironmentRpcCommand(runtime, {
+      label: "environment-data:server:kilo-import:read-summary",
+      tag: WS_METHODS.kiloImportReadSummary,
+    }),
+    importKiloProviders: createEnvironmentRpcCommand(runtime, {
+      label: "environment-data:server:kilo-import:import-providers",
+      tag: WS_METHODS.kiloImportProviders,
+    }),
     listTextGeneratorModels: createEnvironmentRpcCommand(runtime, {
       label: "environment-data:server:list-text-generator-models",
       tag: WS_METHODS.serverListTextGeneratorModels,
