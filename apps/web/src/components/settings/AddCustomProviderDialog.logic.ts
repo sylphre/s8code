@@ -2,6 +2,7 @@
 // Copyright (c) 2014-2026 Laurier Sylph.
 import {
   ProviderDriverKind,
+  type KiloConfigReadFailure,
   type ProviderInstanceConfig,
   type ProviderInstanceEnvironmentVariable,
   type SecretReference,
@@ -266,4 +267,61 @@ export function parseKiloConfigContent(
   const result = parseKiloConfig(text);
   if (result.ok) return result;
   return { ok: false, error: kiloProblemMessage(result.problem, resolve) };
+}
+
+/** Phrases what the server answered about a host file read; the summary carries no key value. */
+export function kiloFileFailureMessage(
+  failure: KiloConfigReadFailure,
+  resolve: MessageResolver = m,
+): string {
+  switch (failure.reason) {
+    case "not_found":
+      return resolve(msg("No file was found at {path}.", { path: failure.path ?? "" }));
+    case "not_readable":
+      return resolve(msg("{path} could not be read.", { path: failure.path ?? "" }));
+    case "not_file":
+      return resolve(msg("{path} is not a file.", { path: failure.path ?? "" }));
+    case "empty":
+      return resolve(msg("{path} holds no JSON.", { path: failure.path ?? "" }));
+    case "parse_error":
+      return resolve(msg("Line {line}: not valid JSONC.", { line: failure.line ?? 0 }));
+    case "not_object":
+      return resolve(msg("The config must be a JSON object."));
+    case "no_provider_section":
+      return resolve(msg('The config has no "provider" section to import.'));
+    case "entry_not_object":
+      return resolve(
+        msg('Line {line}: provider "{id}" must be an object.', {
+          line: failure.line ?? 0,
+          id: failure.providerId ?? "",
+        }),
+      );
+    case "missing_base_url":
+      return resolve(
+        msg('Line {line}: provider "{id}" needs a "baseURL" in its "options".', {
+          line: failure.line ?? 0,
+          id: failure.providerId ?? "",
+        }),
+      );
+    case "bad_base_url":
+      return resolve(
+        msg('Line {line}: provider "{id}" has a URL in "options.baseURL" that is not http(s).', {
+          line: failure.line ?? 0,
+          id: failure.providerId ?? "",
+        }),
+      );
+    case "models_not_object":
+      return resolve(
+        msg('Line {line}: provider "{id}" has a "models" section that is not an object.', {
+          line: failure.line ?? 0,
+          id: failure.providerId ?? "",
+        }),
+      );
+    case "provider_not_found":
+      return resolve(
+        msg('The file no longer has provider "{id}". Read it again.', {
+          id: failure.providerId ?? "",
+        }),
+      );
+  }
 }

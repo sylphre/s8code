@@ -11,6 +11,7 @@ import {
   AuthProvidersManageScope,
   ProviderInstanceId,
   type EnvironmentId,
+  type KiloConfigSummary,
   type ProviderDriverKind,
   type SecretReference,
 } from "@s8code/contracts";
@@ -19,6 +20,8 @@ import { useId, useState } from "react";
 
 import {
   useEnvironmentSettings,
+  useKiloImportFileReadMutation,
+  useKiloImportProvidersMutation,
   usePersistEnvironmentProviderInstanceMutation,
 } from "../../hooks/useSettings";
 import { readEnvironmentScope, useEnvironmentScope } from "../../state/session";
@@ -45,6 +48,7 @@ import {
   compatibleModelsEndpoint,
   compatibleModelsHeaders,
   customProviderDriver,
+  kiloFileFailureMessage,
   mergeModelIds,
   parseKiloConfigContent,
   parseModelCatalogResponse,
@@ -52,6 +56,9 @@ import {
   type CustomProviderDraft,
   type CustomProviderKind,
 } from "./AddCustomProviderDialog.logic";
+
+// The kilo.jsonc location on the server host; a `~` there expands to the host's home.
+const KILO_DEFAULT_CONFIG_PATH = "~/.config/kilo/kilo.jsonc";
 
 /** Builds a Claude or Kilo (OpenCode-compatible) instance from one relay/endpoint form. */
 export function AddCustomProviderDialog({
@@ -72,6 +79,9 @@ export function AddCustomProviderDialog({
   const persistProviderInstance = usePersistEnvironmentProviderInstanceMutation(environmentId);
   const canManageProviders = useEnvironmentScope(environmentId, AuthProvidersManageScope);
 
+  const readKiloConfigFile = useKiloImportFileReadMutation(environmentId);
+  const importKiloProviders = useKiloImportProvidersMutation(environmentId);
+
   const [displayName, setDisplayName] = useState("");
   const [kind, setKind] = useState<CustomProviderKind>("openai");
   const [baseUrl, setBaseUrl] = useState("");
@@ -81,8 +91,12 @@ export function AddCustomProviderDialog({
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const [source, setSource] = useState<"manual" | "kiloImport">("manual");
+  const [source, setSource] = useState<"manual" | "kiloImport" | "kiloFile">("manual");
   const [kiloConfigText, setKiloConfigText] = useState("");
+  const [kiloFilePath, setKiloFilePath] = useState(KILO_DEFAULT_CONFIG_PATH);
+  const [kiloSummary, setKiloSummary] = useState<KiloConfigSummary | null>(null);
+  const [kiloFileError, setKiloFileError] = useState<string | null>(null);
+  const [isReading, setIsReading] = useState(false);
   const [selectedKiloProviderIds, setSelectedKiloProviderIds] = useState<ReadonlySet<string>>(
     new Set(),
   );
@@ -120,8 +134,11 @@ export function AddCustomProviderDialog({
   const manualValidationError = validateCustomProviderDraft(draft);
   const validationError = source === "manual" ? manualValidationError : null;
   const kiloImportReady = kiloParse !== null && kiloParse.ok && selectedKiloProviderIds.size > 0;
+  const kiloFileReady = kiloSummary !== null && selectedKiloProviderIds.size > 0;
   const showError = hasAttemptedSubmit && validationError !== null;
-  const showKiloSelectionError = hasAttemptedSubmit && source === "kiloImport" && !kiloImportReady;
+  const showKiloSelectionError =
+    hasAttemptedSubmit &&
+    (source === "kiloImport" ? !kiloImportReady : source === "kiloFile" ? !kiloFileReady : false);
   const kiloDriver = customProviderDriver("openai");
 
   const save = async () => {
@@ -281,6 +298,60 @@ export function AddCustomProviderDialog({
     if (firstCreated) onCreated?.(firstCreated, kiloDriver);
   };
 
+  const readKiloConfig = async () => {
+    if (isReading) return;
+    setIsReading(true);
+    setKiloFileError(null);
+    const response = await readKiloConfigFile(kiloFilePath);
+    setIsReading(false);
+    if (response._tag !== "Success") {
+      setKiloFileError(gt("Could not reach the server"));
+      return;
+    }
+    if (response.value._tag === "Failed") {
+      setKiloSummary(null);
+      setSelectedKiloProviderIds(new Set());
+      setKiloFileError(kiloFileFailureMessage(response.value));
+      return;
+    }
+    setKiloSummary(response.value.summary);
+    setKiloFilePath(response.value.summary.path);
+    setSelectedKiloProviderIds(new Set());
+    setHasAttemptedSubmit(false);
+  };
+
+  // The import composes the instances on the server, so no key value ever reaches this dialog.
+  const saveKiloFileImport = async () => {
+    setHasAttemptedSubmit(true);
+    if (isSaving || kiloSummary === null || selectedKiloProviderIds.size === 0) return;
+    if (!readEnvironmentScope(environmentId, AuthProvidersManageScope)) return;
+    setIsSaving(true);
+    const response = await importKiloProviders(kiloSummary.path, [...selectedKiloProviderIds]);
+    if (response._tag !== "Success") {
+      setIsSaving(false);
+      toastManager.add({
+        type: "error",
+        title: gt("Could not add provider instance"),
+        description: gt("The settings update failed."),
+      });
+      return;
+    }
+    if (response.value._tag === "Failed") {
+      setIsSaving(false);
+      setKiloFileError(kiloFileFailureMessage(response.value));
+      return;
+    }
+    setIsSaving(false);
+    toastManager.add({
+      type: "success",
+      title: gt("Provider instance added"),
+      description: gt("Imported {count} provider instance(s) from Kilo Code.", {
+        count: response.value.instanceIds.length,
+      }),
+    });
+    onCreated?.(response.value.instanceIds[0]!, kiloDriver);
+  };
+
   return (
     <Dialog
       open
@@ -306,7 +377,11 @@ export function AddCustomProviderDialog({
             className="grid gap-4"
             onSubmit={(event) => {
               event.preventDefault();
-              void (source === "kiloImport" ? saveKiloImport() : save());
+              void (source === "kiloImport"
+                ? saveKiloImport()
+                : source === "kiloFile"
+                  ? saveKiloFileImport()
+                  : save());
             }}
           >
             <div className="grid gap-1.5">
@@ -318,9 +393,10 @@ export function AddCustomProviderDialog({
                 value={[source]}
                 onValueChange={(next) => {
                   const value = next[0];
-                  if (value === "manual" || value === "kiloImport") {
+                  if (value === "manual" || value === "kiloImport" || value === "kiloFile") {
                     setSource(value);
                     setHasAttemptedSubmit(false);
+                    setKiloFileError(null);
                   }
                 }}
               >
@@ -330,9 +406,121 @@ export function AddCustomProviderDialog({
                 <Toggle value="kiloImport">
                   <T>Import from Kilo Code</T>
                 </Toggle>
+                <Toggle value="kiloFile">
+                  <T>
+                    Read a file on <Var>{environmentLabel}</Var>
+                  </T>
+                </Toggle>
               </ToggleGroup>
             </div>
-            {source === "kiloImport" ? (
+            {source === "kiloFile" ? (
+              <>
+                <div className="grid gap-1.5">
+                  <Label htmlFor="custom-provider-kilo-file-path">
+                    <T>kilo.jsonc path</T>
+                  </Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="custom-provider-kilo-file-path"
+                      aria-label={gt("kilo.jsonc path")}
+                      value={kiloFilePath}
+                      onChange={(event) => {
+                        setKiloFilePath(event.target.value);
+                        setKiloSummary(null);
+                        setSelectedKiloProviderIds(new Set());
+                        setKiloFileError(null);
+                        setHasAttemptedSubmit(false);
+                      }}
+                      placeholder={KILO_DEFAULT_CONFIG_PATH}
+                      spellCheck={false}
+                      autoComplete="off"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      disabled={!canManageProviders || isSaving || isReading}
+                      onClick={() => void readKiloConfig()}
+                    >
+                      {isReading
+                        ? gt("Reading...")
+                        : gt("Read file", {
+                            $context: "button, reads the Kilo config file from the server host",
+                          })}
+                    </Button>
+                  </div>
+                  <p className="text-2xs text-muted-foreground">
+                    <T>
+                      Read from the machine that runs <Var>{environmentLabel}</Var>. The default
+                      path is <Var>{KILO_DEFAULT_CONFIG_PATH}</Var>.
+                    </T>
+                  </p>
+                </div>
+                {kiloFileError ? (
+                  <p className="text-2xs text-destructive" role="alert">
+                    {kiloFileError}
+                  </p>
+                ) : null}
+                {kiloSummary ? (
+                  <div className="grid gap-1.5">
+                    <Label>
+                      <T>Providers</T>
+                    </Label>
+                    <div className="grid gap-1">
+                      {kiloSummary.providers.map((provider) => (
+                        <label
+                          key={provider.id}
+                          className="flex items-center gap-3 rounded-md px-2 py-1.5 text-sm hover:bg-muted"
+                        >
+                          <Checkbox
+                            aria-label={gt("Import provider {provider}", {
+                              provider: provider.name,
+                            })}
+                            checked={selectedKiloProviderIds.has(provider.id)}
+                            onCheckedChange={(checked) => {
+                              setSelectedKiloProviderIds((existing) => {
+                                const next = new Set(existing);
+                                if (checked) {
+                                  next.add(provider.id);
+                                } else {
+                                  next.delete(provider.id);
+                                }
+                                return next;
+                              });
+                            }}
+                          />
+                          <span className="min-w-0 flex-1 truncate font-medium text-foreground">
+                            {provider.name}
+                          </span>
+                          <span className="min-w-0 truncate text-xs text-muted-foreground">
+                            {provider.baseURL}
+                          </span>
+                          <span className="shrink-0 text-xs text-muted-foreground">
+                            {gt("{count} models", { count: provider.models.length })}
+                          </span>
+                          <span className="shrink-0 text-xs text-muted-foreground">
+                            {provider.hasApiKey ? gt("API key set") : gt("No API key")}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                    {kiloSummary.agentNames.length > 0 ? (
+                      <p className="text-2xs text-muted-foreground">
+                        {gt("Agents in this config: {agents}", {
+                          agents: kiloSummary.agentNames.join(", "),
+                        })}
+                      </p>
+                    ) : null}
+                  </div>
+                ) : null}
+                {showKiloSelectionError ? (
+                  <p className="text-2xs text-destructive">
+                    {kiloSummary === null
+                      ? gt("Read the config file first.")
+                      : gt("Select at least one provider.")}
+                  </p>
+                ) : null}
+              </>
+            ) : source === "kiloImport" ? (
               <>
                 <div className="grid gap-1.5">
                   <Label htmlFor="custom-provider-kilo-config">
@@ -561,7 +749,7 @@ export function AddCustomProviderDialog({
                 </div>
               </>
             )}
-            {source === "manual" ? null : (
+            {source === "kiloImport" ? (
               <div className="grid gap-1.5">
                 <Label htmlFor="custom-provider-binary-path">
                   <T>Kilo binary path</T>
@@ -578,7 +766,7 @@ export function AddCustomProviderDialog({
                   <T>Leave empty to use the kilo command on PATH.</T>
                 </p>
               </div>
-            )}
+            ) : null}
             {showError ? <p className="text-2xs text-destructive">{validationError}</p> : null}
           </form>
         </DialogPanel>

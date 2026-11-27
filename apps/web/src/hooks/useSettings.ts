@@ -567,6 +567,31 @@ export function usePersistEnvironmentProviderInstanceMutation(environmentId: Env
     });
 }
 
+export function useKiloImportFileReadMutation(environmentId: EnvironmentId) {
+  const readKiloConfigSummary = useAtomCommand(serverEnvironment.readKiloConfigSummary, {
+    reportFailure: false,
+  });
+  return (path: string | undefined) =>
+    readKiloConfigSummary({
+      environmentId,
+      input: path !== undefined && path.trim().length > 0 ? { path: path.trim() } : {},
+    });
+}
+
+export function useKiloImportProvidersMutation(environmentId: EnvironmentId) {
+  const importKiloProviders = useAtomCommand(serverEnvironment.importKiloProviders, {
+    reportFailure: false,
+  });
+  return (path: string | undefined, providerIds: ReadonlyArray<string>) =>
+    importKiloProviders({
+      environmentId,
+      input: {
+        ...(path !== undefined && path.trim().length > 0 ? { path: path.trim() } : {}),
+        providerIds,
+      },
+    });
+}
+
 export function usePrimarySettings<T = UnifiedSettings>(
   selector?: (settings: UnifiedSettings) => T,
 ): T {
