@@ -12,13 +12,13 @@ import * as Result from "effect/Result";
 import * as Stream from "effect/Stream";
 import * as ChildProcess from "effect/process/ChildProcess";
 import * as ChildProcessSpawner from "effect/process/ChildProcessSpawner";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import * as HostProcess from "@s8code/shared/HostProcess";
 
 import * as SpawnWorker from "./SpawnWorker.ts";
 
 const envChdir = vi.hoisted(() => ({ supported: true }));
-vi.mock("@t3tools/shared/envTrampoline", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@t3tools/shared/envTrampoline")>()),
+vi.mock("@s8code/shared/envTrampoline", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@s8code/shared/envTrampoline")>()),
   supportsEnvChdir: () => Promise.resolve(envChdir.supported),
 }));
 

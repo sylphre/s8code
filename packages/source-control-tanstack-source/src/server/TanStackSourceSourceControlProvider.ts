@@ -4,17 +4,17 @@ import {
   type ChangeRequest,
   type SourceControlProviderAuth,
   type SourceControlProviderDiscoveryItem,
-} from "@t3tools/contracts";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+} from "@s8code/contracts";
+import * as HostProcess from "@s8code/shared/HostProcess";
 import {
   isExecutableOnPath,
   isMissingExecutable,
   providerAuth,
   type SourceControlManagedCliDiscoverySpec,
-} from "@t3tools/source-control-core/server/discovery";
-import * as SourceControlHost from "@t3tools/source-control-core/server/SourceControlHost";
-import * as SourceControlProvider from "@t3tools/source-control-core/server/SourceControlProvider";
-import { readSourceControlHostSettings } from "@t3tools/source-control-core/shared/definition";
+} from "@s8code/source-control-core/server/discovery";
+import * as SourceControlHost from "@s8code/source-control-core/server/SourceControlHost";
+import * as SourceControlProvider from "@s8code/source-control-core/server/SourceControlProvider";
+import { readSourceControlHostSettings } from "@s8code/source-control-core/shared/definition";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";

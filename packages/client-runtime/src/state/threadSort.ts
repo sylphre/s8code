@@ -1,13 +1,13 @@
-import type { ProjectId } from "@t3tools/contracts";
-import type { SidebarProjectSortOrder, SidebarThreadSortOrder } from "@t3tools/contracts/settings";
+import type { ProjectId } from "@s8code/contracts";
+import type { SidebarProjectSortOrder, SidebarThreadSortOrder } from "@s8code/contracts/settings";
 import {
   generateSpreadPinOrderKeys,
   LEADING_ORDER_TIER,
   pinOrderKeyBetween,
-} from "@t3tools/shared/pinOrderKey";
+} from "@s8code/shared/pinOrderKey";
 import type { EnvironmentThreadShell } from "./models.ts";
 
-export { generateSpreadPinOrderKeys, pinOrderKeyBetween } from "@t3tools/shared/pinOrderKey";
+export { generateSpreadPinOrderKeys, pinOrderKeyBetween } from "@s8code/shared/pinOrderKey";
 
 export interface ThreadSortInput {
   readonly createdAt: string;

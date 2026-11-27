@@ -8,9 +8,9 @@ import {
   SimlockDeviceHostConfig,
   TextGeneratorConfig,
   UsageLimitSourceConfig,
-} from "@t3tools/contracts";
-import { getProviderClient } from "@t3tools/client-runtime/provider-clients";
-import { sourceControlClients } from "@t3tools/client-runtime/source-control-clients";
+} from "@s8code/contracts";
+import { getProviderClient } from "@s8code/client-runtime/provider-clients";
+import { sourceControlClients } from "@s8code/client-runtime/source-control-clients";
 import { msg } from "gt-react";
 
 import { m, type MessageResolver } from "../../i18n/messages";

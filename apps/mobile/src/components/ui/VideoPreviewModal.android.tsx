@@ -1,5 +1,5 @@
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
-import { videoMimeType } from "@t3tools/shared/video";
+import { errorDisplayMessage } from "@s8code/client-runtime/errors";
+import { videoMimeType } from "@s8code/shared/video";
 import { T, useGT, useMessages } from "gt-react-native";
 import { Modal, Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";

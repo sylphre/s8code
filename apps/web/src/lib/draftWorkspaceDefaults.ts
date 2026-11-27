@@ -1,4 +1,4 @@
-import type { ScopedProjectRef } from "@t3tools/contracts";
+import type { ScopedProjectRef } from "@s8code/contracts";
 import { flushSync } from "react-dom";
 
 import { type DraftId, type DraftSessionState, useComposerDraftStore } from "../composerDraftStore";

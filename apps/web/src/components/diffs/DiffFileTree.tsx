@@ -26,7 +26,7 @@ import {
   diffFileTreeModel,
   type DiffFileTreeEntry,
 } from "./diffFileTree.logic";
-import { diffFileTreePositions } from "@t3tools/client-runtime/diff-file-order";
+import { diffFileTreePositions } from "@s8code/client-runtime/diff-file-order";
 import { SharedTooltipTrigger } from "../ui/shared-tooltip";
 
 export type { DiffFileTreeEntry } from "./diffFileTree.logic";

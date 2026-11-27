@@ -1,5 +1,5 @@
-import type { ServerProviderSkill } from "@t3tools/contracts";
-import { scoreQueryMatch } from "@t3tools/shared/searchRanking";
+import type { ServerProviderSkill } from "@s8code/contracts";
+import { scoreQueryMatch } from "@s8code/shared/searchRanking";
 
 /** Lower is better; `null` when the skill does not match. */
 export function scoreSlashSkillQuery(skill: ServerProviderSkill, query: string): number | null {

@@ -1,4 +1,4 @@
-import type { ShortcutKeyboardLayoutMap } from "@t3tools/shared/keybindings";
+import type { ShortcutKeyboardLayoutMap } from "@s8code/shared/keybindings";
 
 interface KeyboardLayoutSource extends Partial<
   Pick<EventTarget, "addEventListener" | "removeEventListener">

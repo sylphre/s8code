@@ -1,5 +1,5 @@
-import { PullRequestContextMetadata } from "@t3tools/contracts";
-import { serializeComposerFileLink } from "@t3tools/shared/composerTrigger";
+import { PullRequestContextMetadata } from "@s8code/contracts";
+import { serializeComposerFileLink } from "@s8code/shared/composerTrigger";
 import { Option, Schema } from "effect";
 
 export const COMPOSER_MENTION_DRAG_TYPE = "application/x-t3code-composer-mention";

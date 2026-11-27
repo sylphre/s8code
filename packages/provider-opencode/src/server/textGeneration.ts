@@ -6,13 +6,13 @@ import {
   ProviderDriverKind,
   settingsSecretLiteral,
   TextGenerationError,
-} from "@t3tools/contracts";
-import { brokenVersionDetail } from "@t3tools/provider-core/server/compatibility";
+} from "@s8code/contracts";
+import { brokenVersionDetail } from "@s8code/provider-core/server/compatibility";
 import type { OpenCodeSettings } from "../settings.ts";
-import { getModelSelectionStringOptionValue } from "@t3tools/shared/model";
+import { getModelSelectionStringOptionValue } from "@s8code/shared/model";
 
-import * as ProviderHost from "@t3tools/provider-core/server/ProviderHost";
-import * as TextGenerationOperations from "@t3tools/provider-core/server/textGenerationOperations";
+import * as ProviderHost from "@s8code/provider-core/server/ProviderHost";
+import * as TextGenerationOperations from "@s8code/provider-core/server/textGenerationOperations";
 import * as OpenCodeRuntime from "./OpenCodeRuntime.ts";
 import * as OpenCodeServerOwner from "./OpenCodeServerOwner.ts";
 

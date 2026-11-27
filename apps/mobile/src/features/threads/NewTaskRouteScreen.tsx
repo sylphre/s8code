@@ -1,5 +1,5 @@
 import { isDraftThreadRoute } from "./thread-route-state";
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
+import { errorDisplayMessage } from "@s8code/client-runtime/errors";
 import { msg, T, useGT, useMessages } from "gt-react-native";
 import * as Dialog from "../../components/ui/Dialog";
 import { AppActivityIndicator } from "../../components/ui/AppActivityIndicator";
@@ -13,13 +13,13 @@ import {
   type StaticScreenProps,
 } from "@react-navigation/native";
 import { SymbolView } from "../../components/ui/AppSymbol";
-import { pickableProjectGroups } from "@t3tools/client-runtime/state/project-grouping";
-import { isScratchProject } from "@t3tools/client-runtime/state/projects";
+import { pickableProjectGroups } from "@s8code/client-runtime/state/project-grouping";
+import { isScratchProject } from "@s8code/client-runtime/state/projects";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
-import type { EnvironmentProject } from "@t3tools/client-runtime/state/shell";
+} from "@s8code/client-runtime/state/runtime";
+import type { EnvironmentProject } from "@s8code/client-runtime/state/shell";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Platform, Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";

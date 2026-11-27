@@ -5,12 +5,12 @@ import {
   DEFAULT_SERVER_SETTINGS,
   ProviderInstanceId,
   type ServerProvider,
-} from "@t3tools/contracts";
-import * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
-import * as McpProviderSessions from "@t3tools/provider-core/server/McpProviderSessions";
-import * as ProviderEventLoggers from "@t3tools/provider-core/server/ProviderEventLoggers";
-import * as TestProviderHost from "@t3tools/provider-testing/TestProviderHost";
-import { toCustomModelSetting } from "@t3tools/shared/model";
+} from "@s8code/contracts";
+import * as IdAllocator from "@s8code/provider-core/server/IdAllocator";
+import * as McpProviderSessions from "@s8code/provider-core/server/McpProviderSessions";
+import * as ProviderEventLoggers from "@s8code/provider-core/server/ProviderEventLoggers";
+import * as TestProviderHost from "@s8code/provider-testing/TestProviderHost";
+import { toCustomModelSetting } from "@s8code/shared/model";
 import { AcpRegistrySettings } from "../settings.ts";
 import { describe, expect, it } from "@effect/vitest";
 import * as Deferred from "effect/Deferred";

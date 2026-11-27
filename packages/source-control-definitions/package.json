@@ -1,5 +1,5 @@
 {
-  "name": "@t3tools/source-control-definitions",
+  "name": "@s8code/source-control-definitions",
   "private": true,
   "type": "module",
   "exports": {
@@ -12,14 +12,14 @@
     "typecheck": "effect-tsgo tsrs --noEmit"
   },
   "dependencies": {
-    "@t3tools/source-control-azure-devops": "workspace:*",
-    "@t3tools/source-control-bitbucket": "workspace:*",
-    "@t3tools/source-control-core": "workspace:*",
-    "@t3tools/source-control-cursor-origin": "workspace:*",
-    "@t3tools/source-control-forgejo": "workspace:*",
-    "@t3tools/source-control-gitcafe": "workspace:*",
-    "@t3tools/source-control-github": "workspace:*",
-    "@t3tools/source-control-gitlab": "workspace:*",
-    "@t3tools/source-control-tanstack-source": "workspace:*"
+    "@s8code/source-control-azure-devops": "workspace:*",
+    "@s8code/source-control-bitbucket": "workspace:*",
+    "@s8code/source-control-core": "workspace:*",
+    "@s8code/source-control-cursor-origin": "workspace:*",
+    "@s8code/source-control-forgejo": "workspace:*",
+    "@s8code/source-control-gitcafe": "workspace:*",
+    "@s8code/source-control-github": "workspace:*",
+    "@s8code/source-control-gitlab": "workspace:*",
+    "@s8code/source-control-tanstack-source": "workspace:*"
   }
 }

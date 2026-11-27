@@ -1,7 +1,7 @@
 import {
   makeThreadTriageOutboxStore,
   ThreadTriageOutboxStorageError,
-} from "@t3tools/client-runtime/platform";
+} from "@s8code/client-runtime/platform";
 import * as Effect from "effect/Effect";
 
 import { writeFileAtomically } from "../lib/atomic-file";

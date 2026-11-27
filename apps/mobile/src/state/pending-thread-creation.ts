@@ -1,11 +1,11 @@
 import {
   presentThreadShell,
   type EnvironmentThreadShell,
-} from "@t3tools/client-runtime/state/shell";
+} from "@s8code/client-runtime/state/shell";
 import type { LocalThreadMessage } from "../lib/threadActivity";
-import { DEFAULT_PROVIDER_INTERACTION_MODE, DEFAULT_RUNTIME_MODE } from "@t3tools/contracts";
-import { threadKey } from "@t3tools/client-runtime/state/entities";
-import { asLaunchingThread } from "@t3tools/client-runtime/state/thread-inbox";
+import { DEFAULT_PROVIDER_INTERACTION_MODE, DEFAULT_RUNTIME_MODE } from "@s8code/contracts";
+import { threadKey } from "@s8code/client-runtime/state/entities";
+import { asLaunchingThread } from "@s8code/client-runtime/state/thread-inbox";
 import { Atom } from "effect/reactivity";
 import * as DateTime from "effect/DateTime";
 

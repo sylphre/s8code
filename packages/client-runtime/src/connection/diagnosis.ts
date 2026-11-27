@@ -1,8 +1,8 @@
 import {
   t3ConnectTroubleshootingUrl,
   type T3ConnectTroubleshootingSection,
-} from "@t3tools/contracts";
-import type { RelayEnvironmentStatusResponse } from "@t3tools/contracts/relay";
+} from "@s8code/contracts";
+import type { RelayEnvironmentStatusResponse } from "@s8code/contracts/relay";
 import * as DateTime from "effect/DateTime";
 
 import type {

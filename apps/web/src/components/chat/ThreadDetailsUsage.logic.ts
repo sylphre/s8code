@@ -4,7 +4,7 @@ import {
   type ServerProvider,
   type ServerProviderUsageLimits,
   type UsageLimitSourceSnapshots,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import {
   collectLimitAccounts,
   collectLimitPools,
@@ -13,8 +13,8 @@ import {
   hubRoutes,
   instanceHubs,
   type LimitPoolWindow,
-} from "@t3tools/shared/usageLimits";
-import { limitsNotice } from "@t3tools/shared/usageLimitsCopy";
+} from "@s8code/shared/usageLimits";
+import { limitsNotice } from "@s8code/shared/usageLimitsCopy";
 
 export type ThreadDetailsLimits =
   | { readonly kind: "instance"; readonly limits: ServerProviderUsageLimits }

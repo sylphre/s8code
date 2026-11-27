@@ -1,8 +1,8 @@
 import { assert, describe, it } from "@effect/vitest";
-import { VcsProcessExitError } from "@t3tools/contracts";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import type * as SourceControlHost from "@t3tools/source-control-core/server/SourceControlHost";
-import * as TestSourceControlHost from "@t3tools/source-control-testing/TestSourceControlHost";
+import { VcsProcessExitError } from "@s8code/contracts";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import type * as SourceControlHost from "@s8code/source-control-core/server/SourceControlHost";
+import * as TestSourceControlHost from "@s8code/source-control-testing/TestSourceControlHost";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Redacted from "effect/Redacted";

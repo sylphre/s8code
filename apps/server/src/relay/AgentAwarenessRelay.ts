@@ -7,22 +7,22 @@ import {
   type Project,
   type RuntimeRequestId,
   type ThreadId,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import {
   RelayApi,
   type RelayAgentActivityPublishProofPayload,
   type RelayAgentActivityState,
-} from "@t3tools/contracts/relay";
+} from "@s8code/contracts/relay";
 import {
   type SubagentRequestAwareness,
   projectThreadAwarenessV2,
   subagentAwaitsUser,
   turnItemCanChangeUserWait,
-} from "@t3tools/shared/agentAwareness";
-import { turnItemUpdateCanEndBackgroundWork } from "@t3tools/shared/orchestrationV2PendingBackgroundWork";
-import { makeDrainableWorker } from "@t3tools/shared/DrainableWorker";
-import { withRelayClientTracing } from "@t3tools/shared/relayTracing";
-import { normalizeRelayIssuer, RELAY_ACTIVITY_PUBLISH_TYP } from "@t3tools/shared/relayJwt";
+} from "@s8code/shared/agentAwareness";
+import { turnItemUpdateCanEndBackgroundWork } from "@s8code/shared/orchestrationV2PendingBackgroundWork";
+import { makeDrainableWorker } from "@s8code/shared/DrainableWorker";
+import { withRelayClientTracing } from "@s8code/shared/relayTracing";
+import { normalizeRelayIssuer, RELAY_ACTIVITY_PUBLISH_TYP } from "@s8code/shared/relayJwt";
 import * as Cause from "effect/Cause";
 import * as Context from "effect/Context";
 import * as SecureRandom from "effect/crypto/SecureRandom";

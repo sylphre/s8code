@@ -7,7 +7,7 @@ import {
   ScheduledTaskId,
   type ScheduledTask,
   ThreadId,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
 import type {

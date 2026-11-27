@@ -1,6 +1,6 @@
-import type { PullRequestReviewCommentDraft } from "@t3tools/contracts";
+import type { PullRequestReviewCommentDraft } from "@s8code/contracts";
 import * as Schema from "effect/Schema";
-import { PullRequestReviewCommentDraft as CommentSchema } from "@t3tools/contracts";
+import { PullRequestReviewCommentDraft as CommentSchema } from "@s8code/contracts";
 import type { PullRequestParams } from "./usePullRequestDiff";
 
 export type PendingReviewComment = PullRequestReviewCommentDraft & {

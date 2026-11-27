@@ -1,1 +1,1 @@
-export { providerClients } from "@t3tools/client-runtime/provider-clients";
+export { providerClients } from "@s8code/client-runtime/provider-clients";

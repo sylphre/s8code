@@ -1,5 +1,5 @@
-import type { ScopedThreadRef } from "@t3tools/contracts";
-import { threadContextRecord } from "@t3tools/shared/composerContextReferences";
+import type { ScopedThreadRef } from "@s8code/contracts";
+import { threadContextRecord } from "@s8code/shared/composerContextReferences";
 
 export type ThreadContextDropRef = ScopedThreadRef & { readonly title?: string };
 

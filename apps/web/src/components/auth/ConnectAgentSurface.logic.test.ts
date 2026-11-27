@@ -1,5 +1,5 @@
 import { expect, it } from "vite-plus/test";
-import { AuthMcpClientAccess, RuntimeMode } from "@t3tools/contracts";
+import { AuthMcpClientAccess, RuntimeMode } from "@s8code/contracts";
 
 import {
   agentRedirectUrl,

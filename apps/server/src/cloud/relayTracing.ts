@@ -1,11 +1,11 @@
-import type { ManagedPolicySummary } from "@t3tools/contracts";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import type { ManagedPolicySummary } from "@s8code/contracts";
+import * as HostProcess from "@s8code/shared/HostProcess";
 import {
   nodeProcessRuntimeAttributes,
   processServiceInstanceId,
-} from "@t3tools/shared/observability";
-import { isRelayTracingEnabled } from "@t3tools/shared/otelEnvironment";
-import * as RelayTracing from "@t3tools/shared/relayTracing";
+} from "@s8code/shared/observability";
+import { isRelayTracingEnabled } from "@s8code/shared/otelEnvironment";
+import * as RelayTracing from "@s8code/shared/relayTracing";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 

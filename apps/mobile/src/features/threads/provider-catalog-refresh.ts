@@ -1,10 +1,10 @@
-import type { EnvironmentId } from "@t3tools/contracts";
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
-import type { AtomCommandResult } from "@t3tools/client-runtime/state/runtime";
+import type { EnvironmentId } from "@s8code/contracts";
+import { errorDisplayMessage } from "@s8code/client-runtime/errors";
+import type { AtomCommandResult } from "@s8code/client-runtime/state/runtime";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@s8code/client-runtime/state/runtime";
 import { msg } from "gt-react-native";
 
 import { m } from "../../i18n/messages";

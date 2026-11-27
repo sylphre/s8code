@@ -1,9 +1,9 @@
 import type {
   SourceControlDriver,
   SourceControlDriverInstance,
-} from "@t3tools/source-control-core/server/driver";
-import * as SourceControlRateLimit from "@t3tools/source-control-core/server/SourceControlRateLimit";
-import * as FeatureFlags from "@t3tools/shared/FeatureFlags";
+} from "@s8code/source-control-core/server/driver";
+import * as SourceControlRateLimit from "@s8code/source-control-core/server/SourceControlRateLimit";
+import * as FeatureFlags from "@s8code/shared/FeatureFlags";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";

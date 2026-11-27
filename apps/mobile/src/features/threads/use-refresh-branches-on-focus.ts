@@ -1,7 +1,7 @@
 import { RegistryContext } from "@effect/atom-react";
 import { useFocusEffect } from "@react-navigation/native";
-import { runAtomCommand } from "@t3tools/client-runtime/state/runtime";
-import type { EnvironmentId } from "@t3tools/contracts";
+import { runAtomCommand } from "@s8code/client-runtime/state/runtime";
+import type { EnvironmentId } from "@s8code/contracts";
 import { useCallback, useContext } from "react";
 
 import { vcsEnvironment } from "../../state/vcs";

@@ -2,8 +2,8 @@ import * as NodeSqlite from "node:sqlite";
 import * as NodeCrypto from "@effect/platform-node/NodeCrypto";
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import { assert, describe, it } from "@effect/vitest";
-import { BrowserImportSource } from "@t3tools/contracts";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import { BrowserImportSource } from "@s8code/contracts";
+import * as HostProcess from "@s8code/shared/HostProcess";
 import type { Session } from "electron";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
@@ -15,12 +15,12 @@ import * as Kdf from "effect/crypto/Kdf";
 import { vi } from "vite-plus/test";
 
 import * as BrowserSession from "../BrowserSession.ts";
-import { readManagedPolicyFile } from "@t3tools/shared/managedPolicyFile";
+import { readManagedPolicyFile } from "@s8code/shared/managedPolicyFile";
 import * as DesktopManagedPolicy from "../../app/DesktopManagedPolicy.ts";
 import * as BrowserImport from "./BrowserImport.ts";
 import { LinuxBrowserSecretPath } from "./LinuxBrowserSecret.ts";
 import { BROWSER_IMPORT_SOURCES, sourcePathContext } from "./Sources.ts";
-import { symlinksSupported } from "@t3tools/shared/testing/symlinks";
+import { symlinksSupported } from "@s8code/shared/testing/symlinks";
 
 const helium = BROWSER_IMPORT_SOURCES.find((source) => source.id === "helium")!;
 const decodeImportSource = Schema.decodeEffect(BrowserImportSource);

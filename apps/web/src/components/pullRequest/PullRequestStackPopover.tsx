@@ -1,4 +1,4 @@
-import type { EnvironmentId, PullRequestRef, PullRequestStackMembership } from "@t3tools/contracts";
+import type { EnvironmentId, PullRequestRef, PullRequestStackMembership } from "@s8code/contracts";
 import { T, useGT, Var } from "gt-react";
 import { useState } from "react";
 import { usePullRequestStack } from "~/state/usePullRequestStack";

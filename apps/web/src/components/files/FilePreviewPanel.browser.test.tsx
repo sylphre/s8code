@@ -1,5 +1,5 @@
 import { DEFAULT_THEMES, preloadHighlighter } from "@pierre/diffs";
-import { EnvironmentId, ThreadId, type ProjectReadFileResult } from "@t3tools/contracts";
+import { EnvironmentId, ThreadId, type ProjectReadFileResult } from "@s8code/contracts";
 import { AsyncResult } from "effect/reactivity";
 import { StrictMode, type ReactNode } from "react";
 import { describe, expect, it, vi } from "vite-plus/test";
@@ -18,14 +18,14 @@ const state = vi.hoisted(() => ({
   optimistic: null as ProjectReadFileResult | null,
   writeFile: vi.fn(),
   assetUrl: { _tag: "Loading" } as import("~/assets/assetUrls").AssetUrlState,
-  assetResources: [] as Array<import("@t3tools/contracts").AssetResource>,
+  assetResources: [] as Array<import("@s8code/contracts").AssetResource>,
   mintUrl: vi.fn<() => Promise<string | null>>(),
   browserAssetMints: 0,
   openedBrowserUrls: [] as string[],
   diffWorkersReady: true,
 }));
 
-vi.mock(import("@t3tools/client-runtime/state/runtime"), async (original) => ({
+vi.mock(import("@s8code/client-runtime/state/runtime"), async (original) => ({
   ...(await original()),
   runAtomCommand: ((_registry: unknown, _command: unknown, request: unknown) =>
     state.writeFile(request)) as never,
@@ -70,7 +70,7 @@ vi.mock(import("~/assets/assetUrls"), async (original) => ({
   useAssetUrlRefresh: () => state.mintUrl,
   useAssetUrlState: (
     _environmentId: unknown,
-    resource: import("@t3tools/contracts").AssetResource | null,
+    resource: import("@s8code/contracts").AssetResource | null,
   ) => {
     if (resource) state.assetResources.push(resource);
     return state.assetUrl;
@@ -175,7 +175,7 @@ vi.mock(import("./projectFilesQueryState"), async (original) => ({
 
 import FilePreviewPanel from "./FilePreviewPanel";
 import { ChunkedMarkdown } from "./ChunkedMarkdown";
-import { splitMarkdown } from "@t3tools/shared/markdownChunks";
+import { splitMarkdown } from "@s8code/shared/markdownChunks";
 
 const environmentId = EnvironmentId.make("markdown-preview-test");
 const threadRef = { environmentId, threadId: ThreadId.make("thread") };

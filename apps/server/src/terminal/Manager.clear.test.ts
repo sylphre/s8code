@@ -1,8 +1,8 @@
 import * as NodeCrypto from "@effect/platform-node/NodeCrypto";
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import { it } from "@effect/vitest";
-import { DEFAULT_TERMINAL_ID, ThreadId } from "@t3tools/contracts";
-import { SpawnExecutableResolution } from "@t3tools/shared/shell";
+import { DEFAULT_TERMINAL_ID, ThreadId } from "@s8code/contracts";
+import { SpawnExecutableResolution } from "@s8code/shared/shell";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";

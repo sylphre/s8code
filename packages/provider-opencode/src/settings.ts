@@ -6,7 +6,7 @@ import {
   secretSetting,
   SettingsSecretValue,
   TrimmedString,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as Effect from "effect/Effect";
 import * as Schema from "effect/Schema";
 

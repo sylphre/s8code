@@ -6,9 +6,9 @@ import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
 import * as Path from "effect/Path";
 
-import { symlinksSupported } from "@t3tools/shared/testing/symlinks";
-import * as SourceControlHost from "@t3tools/source-control-core/server/SourceControlHost";
-import * as TestSourceControlHost from "@t3tools/source-control-testing/TestSourceControlHost";
+import { symlinksSupported } from "@s8code/shared/testing/symlinks";
+import * as SourceControlHost from "@s8code/source-control-core/server/SourceControlHost";
+import * as TestSourceControlHost from "@s8code/source-control-testing/TestSourceControlHost";
 
 import * as GitHubChangeRequestTemplate from "./gitHubChangeRequestTemplate.ts";
 

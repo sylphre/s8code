@@ -4,7 +4,7 @@ import {
   EnvironmentId,
   MessageId,
   ThreadId,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { useState, type ReactNode } from "react";
 import { describe, expect, it, vi } from "vite-plus/test";
 import { page, userEvent } from "vite-plus/test/browser";
@@ -48,7 +48,7 @@ vi.mock(import("../../state/environments"), async (importOriginal) => ({
 vi.mock(import("../../speech/runEnvironmentSpeech"), () => ({
   runEnvironmentSpeech: Effect.runPromise as never,
 }));
-vi.mock(import("@t3tools/client-runtime/voice-input"), async (importOriginal) => ({
+vi.mock(import("@s8code/client-runtime/voice-input"), async (importOriginal) => ({
   ...(await importOriginal()),
   getEnvironmentSpeechStatus: (() =>
     Effect.succeed({

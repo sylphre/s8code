@@ -1,4 +1,4 @@
-import type { ProviderDriverKind } from "@t3tools/contracts";
+import type { ProviderDriverKind } from "@s8code/contracts";
 
 import type { ModelEsque } from "./providerIconUtils";
 

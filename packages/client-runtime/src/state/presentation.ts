@@ -5,7 +5,7 @@ import {
   type EnvironmentId,
   type ServerConfig,
   type ServerProvider,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as Option from "effect/Option";
 import { AsyncResult, Atom } from "effect/reactivity";
 

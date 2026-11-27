@@ -1,4 +1,4 @@
-import { isZipError } from "@t3tools/client-runtime/zip/error";
+import { isZipError } from "@s8code/client-runtime/zip/error";
 import * as Schema from "effect/Schema";
 import type { PreviewFailureCode } from "./previewFailureMessages";
 

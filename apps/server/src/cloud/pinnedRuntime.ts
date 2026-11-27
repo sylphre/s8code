@@ -20,12 +20,12 @@ import {
   cliReleaseAssetUrl,
   type CliArchivePlatformKey,
   parseChecksums,
-} from "@t3tools/shared/cliRelease";
+} from "@s8code/shared/cliRelease";
 
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import * as HostProcess from "@s8code/shared/HostProcess";
 
 import * as ProcessRunner from "../processRunner.ts";
-import { windowsPowerShellPath } from "@t3tools/shared/windowsSystem";
+import { windowsPowerShellPath } from "@s8code/shared/windowsSystem";
 import { isExactServiceVersion, parseServiceState, SERVICE_STATE_FILE } from "./serviceProtocol.ts";
 
 const PINNED_RUNTIME_DIR = "runtime";

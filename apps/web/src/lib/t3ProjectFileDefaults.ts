@@ -3,9 +3,9 @@ import {
   type EnvironmentId,
   type ProjectReadFileResult,
   type T3ProjectFile,
-} from "@t3tools/contracts";
-import { parseT3ProjectFile } from "@t3tools/shared/t3ProjectFile";
-import { executeAtomQuery } from "@t3tools/client-runtime/state/runtime";
+} from "@s8code/contracts";
+import { parseT3ProjectFile } from "@s8code/shared/t3ProjectFile";
+import { executeAtomQuery } from "@s8code/client-runtime/state/runtime";
 import { AsyncResult } from "effect/reactivity";
 
 import {

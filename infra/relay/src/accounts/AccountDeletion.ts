@@ -1,4 +1,4 @@
-import { RelayApi } from "@t3tools/contracts/relay";
+import { RelayApi } from "@s8code/contracts/relay";
 import { and, asc, eq, isNull, sql } from "drizzle-orm";
 import * as Clock from "effect/Clock";
 import * as Context from "effect/Context";

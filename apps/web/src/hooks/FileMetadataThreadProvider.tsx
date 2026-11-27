@@ -1,7 +1,7 @@
 import { useAtomValue } from "@effect/atom-react";
-import type { OrchestrationV2ThreadProjection, ScopedThreadRef } from "@t3tools/contracts";
-import { isRepositoryCheckpointScope } from "@t3tools/client-runtime/state/thread-repositories";
-import { resolveWorkspaceFilePath } from "@t3tools/shared/path";
+import type { OrchestrationV2ThreadProjection, ScopedThreadRef } from "@s8code/contracts";
+import { isRepositoryCheckpointScope } from "@s8code/client-runtime/state/thread-repositories";
+import { resolveWorkspaceFilePath } from "@s8code/shared/path";
 import { Atom } from "effect/reactivity";
 import { createContext, useEffect, useRef, type ReactNode } from "react";
 

@@ -1,5 +1,5 @@
 /// <reference lib="dom" />
-import { DEFAULT_TERMINAL_ID, ThreadId } from "@t3tools/contracts";
+import { DEFAULT_TERMINAL_ID, ThreadId } from "@s8code/contracts";
 import { expect } from "e2e";
 import * as Effect from "effect/Effect";
 import * as Fiber from "effect/Fiber";

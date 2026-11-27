@@ -1,11 +1,11 @@
-import { EnvironmentId, MessageId, ThreadId, type AssistantCitation } from "@t3tools/contracts";
+import { EnvironmentId, MessageId, ThreadId, type AssistantCitation } from "@s8code/contracts";
 import {
   createMemoryHistory,
   createRootRoute,
   createRoute,
   createRouter,
 } from "@tanstack/react-router";
-import { scopeThreadRef } from "@t3tools/client-runtime/environment";
+import { scopeThreadRef } from "@s8code/client-runtime/environment";
 import { describe, expect, it } from "vite-plus/test";
 
 import { selectActiveRightPanelSurface, useRightPanelStore } from "../rightPanelStore";

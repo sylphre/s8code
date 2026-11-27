@@ -1,4 +1,4 @@
-import type { DeviceServiceState, EnvironmentId } from "@t3tools/contracts";
+import type { DeviceServiceState, EnvironmentId } from "@s8code/contracts";
 import { T, useGT } from "gt-react";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";

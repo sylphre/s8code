@@ -1,4 +1,4 @@
-import type { EnvironmentConnectionPhase } from "@t3tools/client-runtime/connection";
+import type { EnvironmentConnectionPhase } from "@s8code/client-runtime/connection";
 
 import { cn } from "~/lib/utils";
 import { SharedTooltipTrigger } from "~/components/ui/shared-tooltip";

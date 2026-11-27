@@ -1,8 +1,8 @@
 import {
   clerkFrontendApiHostnameFromPublishableKey,
   relayClerkTokenOptions,
-} from "@t3tools/shared/relayAuth";
-import { normalizeSecureRelayUrl } from "@t3tools/shared/relayUrl";
+} from "@s8code/shared/relayAuth";
+import { normalizeSecureRelayUrl } from "@s8code/shared/relayUrl";
 import * as Schema from "effect/Schema";
 
 import { isHostedStaticApp } from "../hostedPairing";

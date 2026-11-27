@@ -1,9 +1,9 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
-import type { ThreadReferenceCopyTarget } from "@t3tools/client-runtime/thread-reference";
+import { thrownErrorMessage } from "@s8code/client-runtime/errors";
+import type { ThreadReferenceCopyTarget } from "@s8code/client-runtime/thread-reference";
 import {
   COMPOSER_CONTEXT_CLIPBOARD_MIME,
   encodeComposerContextFragment,
-} from "@t3tools/shared/composerContextClipboard";
+} from "@s8code/shared/composerContextClipboard";
 import { msg } from "gt-react";
 
 import { stackedThreadToast, toastManager } from "../components/ui/toast";

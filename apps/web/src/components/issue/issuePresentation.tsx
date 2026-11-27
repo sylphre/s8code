@@ -1,5 +1,5 @@
-import type { IssueState, IssueTrackerKind } from "@t3tools/contracts";
-import { sourceControlClients } from "@t3tools/client-runtime/source-control-clients";
+import type { IssueState, IssueTrackerKind } from "@s8code/contracts";
+import { sourceControlClients } from "@s8code/client-runtime/source-control-clients";
 import { CircleCheckIcon, CircleDotIcon, CircleSlashIcon, TicketIcon } from "lucide-react";
 
 import { cn } from "~/lib/utils";

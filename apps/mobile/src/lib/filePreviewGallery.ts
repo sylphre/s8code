@@ -1,4 +1,4 @@
-import type { EnvironmentId } from "@t3tools/contracts";
+import type { EnvironmentId } from "@s8code/contracts";
 import type { FilePreviewItem, FilePreviewSource } from "../components/ui/FilePreviewModal.types";
 
 export function remoteAttachmentImageSource(

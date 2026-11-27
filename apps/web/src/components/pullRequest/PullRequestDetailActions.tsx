@@ -3,7 +3,7 @@ import type {
   PullRequestAction,
   PullRequestMergeMethod,
   PullRequestUpdateMethod,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { CheckIcon, ChevronDownIcon, FolderGit2Icon, GitBranchIcon, PlayIcon } from "lucide-react";
 import { Branch, T, useGT } from "gt-react";
 import type { ReactNode } from "react";

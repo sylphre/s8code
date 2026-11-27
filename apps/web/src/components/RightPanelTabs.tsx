@@ -1,12 +1,12 @@
 import { msg, T, useGT, useMessages } from "gt-react";
 import { contextMenuSourceOf } from "../contextMenuSource";
 import { m, type MessageResolver } from "../i18n/messages";
-import { sourceControlClients } from "@t3tools/client-runtime/source-control-clients";
-import { scopeThreadRef } from "@t3tools/client-runtime/environment";
+import { sourceControlClients } from "@s8code/client-runtime/source-control-clients";
+import { scopeThreadRef } from "@s8code/client-runtime/environment";
 import {
   threadRuntimeIsActive,
   type EnvironmentThreadShell,
-} from "@t3tools/client-runtime/state/shell";
+} from "@s8code/client-runtime/state/shell";
 import {
   useProjects,
   useQuietThreadShell,
@@ -16,7 +16,7 @@ import {
 import {
   threadPullRequestKeysEqual,
   visibleThreadPullRequests,
-} from "@t3tools/client-runtime/thread-pull-requests";
+} from "@s8code/client-runtime/thread-pull-requests";
 import type {
   ContextMenuItem,
   EnvironmentId,
@@ -26,9 +26,9 @@ import type {
   PullRequestState,
   ResolvedKeybindingsConfig,
   ThreadId,
-} from "@t3tools/contracts";
-import { getTerminalLabel } from "@t3tools/shared/terminalLabelsCopy";
-import { formatSubagentDisplayTitle } from "@t3tools/client-runtime/state/subagent-display";
+} from "@s8code/contracts";
+import { getTerminalLabel } from "@s8code/shared/terminalLabelsCopy";
+import { formatSubagentDisplayTitle } from "@s8code/client-runtime/state/subagent-display";
 import {
   closestCenter,
   DndContext,
@@ -93,7 +93,7 @@ import {
 import { useBrowserDefaults } from "~/browser/browserDefaults";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { PanelTabCloseButton } from "~/components/ui/panel-tab-close-button";
-import { faviconUrlForOrigin } from "@t3tools/shared/favicon";
+import { faviconUrlForOrigin } from "@s8code/shared/favicon";
 import { useTheme } from "~/hooks/useTheme";
 import { useDeviceState } from "~/state/device";
 import type { PreviewPanelInlineSize } from "~/hooks/usePreviewPanelInlineSize";

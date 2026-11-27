@@ -10,7 +10,7 @@ import {
   type Project as ProjectRecord,
   type ServerProvider,
   T3_PROJECT_FILE_NAME,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as Digest from "effect/crypto/Digest";
 import * as Effect from "effect/Effect";
 import * as Hex from "effect/encoding/Hex";
@@ -31,13 +31,13 @@ import * as GitVcsDriver from "../../../vcs/GitVcsDriver.ts";
 import * as ServerSettings from "../../../serverSettings.ts";
 import * as ProviderRegistry from "../../../provider/ProviderRegistry.ts";
 import * as DateTime from "effect/DateTime";
-import { resolveNewThreadModelSelection } from "@t3tools/shared/usageLimits";
+import { resolveNewThreadModelSelection } from "@s8code/shared/usageLimits";
 import {
   resolveProjectFileBackedSetting,
   resolveProjectSettings,
-} from "@t3tools/shared/projectSettings";
-import { resolveProjectScripts } from "@t3tools/shared/projectScripts";
-import { parseT3ProjectFile } from "@t3tools/shared/t3ProjectFile";
+} from "@s8code/shared/projectSettings";
+import { resolveProjectScripts } from "@s8code/shared/projectScripts";
+import { parseT3ProjectFile } from "@s8code/shared/t3ProjectFile";
 import {
   providerOptionDescriptors,
   refuseAgentModePick,

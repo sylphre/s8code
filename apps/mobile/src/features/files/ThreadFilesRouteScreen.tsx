@@ -1,6 +1,6 @@
-import { formatFilePathForClipboard } from "@t3tools/client-runtime/media-actions";
-import { resolvePathLinkTarget } from "@t3tools/shared/fileLinks";
-import { resolveFilesystemReadAccess } from "@t3tools/client-runtime/state/filesystem";
+import { formatFilePathForClipboard } from "@s8code/client-runtime/media-actions";
+import { resolvePathLinkTarget } from "@s8code/shared/fileLinks";
+import { resolveFilesystemReadAccess } from "@s8code/client-runtime/state/filesystem";
 import { environmentSession } from "../../state/session";
 import {
   StackActions,
@@ -19,19 +19,19 @@ import {
   ProjectReadFileError,
   type ProjectReadFileResult,
   ThreadId,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { AsyncResult } from "effect/reactivity";
 import * as Schema from "effect/Schema";
-import { videoMimeType } from "@t3tools/shared/video";
+import { videoMimeType } from "@s8code/shared/video";
 import {
   isWorkspaceBrowserPreviewPath,
   isWorkspaceImagePreviewPath,
   mediaMimeTypeFromExtension,
-} from "@t3tools/shared/filePreview";
-import { mediaFileReference } from "@t3tools/client-runtime/media-reference";
+} from "@s8code/shared/filePreview";
+import { mediaFileReference } from "@s8code/client-runtime/media-reference";
 
 import { ScreenContent } from "../../components/ui/ScreenContent";
-import { filePreviewDelimiter, parseDelimitedPreview } from "@t3tools/shared/delimitedPreview";
+import { filePreviewDelimiter, parseDelimitedPreview } from "@s8code/shared/delimitedPreview";
 import { DelimitedFilePreview } from "./DelimitedFilePreview";
 import { AudioFilePreview } from "./AudioFilePreview";
 import { EmptyState } from "../../components/ui/EmptyState";

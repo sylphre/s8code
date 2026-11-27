@@ -7,9 +7,9 @@ import type {
   UsageModelSelector,
   UsageResolution,
   UsageTokenTotals,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 
-import { EMPTY_TOTALS, type UsageRecord } from "@t3tools/provider-core/server/usage";
+import { EMPTY_TOTALS, type UsageRecord } from "@s8code/provider-core/server/usage";
 import { cacheSavingsUsd, lookupRate, priceUsage, type RateTable } from "./usagePricing.ts";
 
 // en-CA gives ISO-ordered parts in the requested zone; Date getters are host-local.

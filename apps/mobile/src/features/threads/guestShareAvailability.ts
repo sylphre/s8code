@@ -1,4 +1,4 @@
-import { managedCapabilityDenial, type ServerConfig } from "@t3tools/contracts";
+import { managedCapabilityDenial, type ServerConfig } from "@s8code/contracts";
 
 export function canShareWithGuest(
   permitted: boolean,

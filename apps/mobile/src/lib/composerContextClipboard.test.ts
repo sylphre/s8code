@@ -4,12 +4,12 @@ import {
   ComposerContextId,
   EnvironmentId,
   ThreadId,
-} from "@t3tools/contracts";
-import { encodeComposerContextFragment } from "@t3tools/shared/composerContextClipboard";
+} from "@s8code/contracts";
+import { encodeComposerContextFragment } from "@s8code/shared/composerContextClipboard";
 import {
   collectComposerContextReferences,
   formatComposerContextReference,
-} from "@t3tools/shared/composerContextReferences";
+} from "@s8code/shared/composerContextReferences";
 
 const mocks = vi.hoisted(() => ({
   execute: vi.fn(),
@@ -49,7 +49,7 @@ vi.mock("../state/use-composer-drafts", () => ({
   waitForComposerDraftsLoaded: async () => {},
   findLocalComposerClipboardAttachment: mocks.local,
 }));
-vi.mock("@t3tools/client-runtime/state/runtime", () => ({
+vi.mock("@s8code/client-runtime/state/runtime", () => ({
   executeAtomQuery: mocks.execute,
   squashAtomCommandFailure: () => new Error("offline"),
 }));

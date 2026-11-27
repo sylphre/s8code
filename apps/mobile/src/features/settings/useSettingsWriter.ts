@@ -1,9 +1,9 @@
 import { useGT } from "gt-react-native";
-import type { EnvironmentId, ServerSettingsPatch } from "@t3tools/contracts";
+import type { EnvironmentId, ServerSettingsPatch } from "@s8code/contracts";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@s8code/client-runtime/state/runtime";
 
 import * as Dialog from "../../components/ui/Dialog";
 import { serverEnvironment } from "../../state/server";

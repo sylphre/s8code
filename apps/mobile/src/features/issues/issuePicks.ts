@@ -1,5 +1,5 @@
-import { noIssuePicks } from "@t3tools/client-runtime/issue-selection";
-import type { IssueAssigneeCandidate, IssueLabelCandidate } from "@t3tools/contracts";
+import { noIssuePicks } from "@s8code/client-runtime/issue-selection";
+import type { IssueAssigneeCandidate, IssueLabelCandidate } from "@s8code/contracts";
 import { Atom } from "effect/reactivity";
 
 // Outside the sheets: a sheet is gone before its write lands, and one reopened in between must

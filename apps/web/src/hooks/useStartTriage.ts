@@ -1,11 +1,11 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
-import { scopeProjectRef } from "@t3tools/client-runtime/environment";
+import { thrownErrorMessage } from "@s8code/client-runtime/errors";
+import { scopeProjectRef } from "@s8code/client-runtime/environment";
 import {
   type AtomCommandResult,
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
-import type { EnvironmentId } from "@t3tools/contracts";
+} from "@s8code/client-runtime/state/runtime";
+import type { EnvironmentId } from "@s8code/contracts";
 import { useRouter } from "@tanstack/react-router";
 import { msg } from "gt-react";
 

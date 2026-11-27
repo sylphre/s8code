@@ -1,5 +1,5 @@
 import { assert, it, describe } from "@effect/vitest";
-import { searchableMessageSegments } from "@t3tools/shared/threadFindText";
+import { searchableMessageSegments } from "@s8code/shared/threadFindText";
 import {
   EventId,
   MessageId,
@@ -14,7 +14,7 @@ import {
   ProviderInstanceId,
   ThreadId,
   type OrchestrationV2DomainEvent,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -35,7 +35,7 @@ import {
 } from "./threadHistoryPaging.ts";
 import { projectTurnItemForWire } from "./WireProjection.ts";
 
-vi.mock("@t3tools/shared/threadFindText", { spy: true });
+vi.mock("@s8code/shared/threadFindText", { spy: true });
 
 const layerTest = Layer.mergeAll(EventStore.layer, ProjectionStore.layer, ProjectStore.layer).pipe(
   Layer.provideMerge(SqlitePersistence.layerMemory),

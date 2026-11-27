@@ -3,7 +3,7 @@
  * mobile:metrics' interactions. Each measured step opens a probe window, makes one real tap,
  * swipe or typed string through agent-device, waits until the app is quiet, and reads the window.
  */
-import type { ThreadId } from "@t3tools/contracts";
+import type { ThreadId } from "@s8code/contracts";
 import * as Clock from "effect/Clock";
 import type * as SecureRandom from "effect/crypto/SecureRandom";
 import * as Effect from "effect/Effect";

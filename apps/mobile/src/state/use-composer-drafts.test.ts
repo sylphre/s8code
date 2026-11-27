@@ -1,14 +1,14 @@
-import { PrimaryConnectionTarget } from "@t3tools/client-runtime/connection";
+import { PrimaryConnectionTarget } from "@s8code/client-runtime/connection";
 import * as Effect from "effect/Effect";
 import * as Fiber from "effect/Fiber";
-import { createEnvironmentThreadShellAtoms } from "@t3tools/client-runtime/state/threads";
+import { createEnvironmentThreadShellAtoms } from "@s8code/client-runtime/state/threads";
 import {
   applyShellStreamEvent,
   createEnvironmentSnapshotAtom,
   EMPTY_SHELL_STATE,
   type EnvironmentShellState,
   type EnvironmentShellStatus,
-} from "@t3tools/client-runtime/state/shell";
+} from "@s8code/client-runtime/state/shell";
 import {
   v2ShellSnapshot,
   v2ThreadShell,
@@ -28,7 +28,7 @@ import {
   type OrchestrationV2ThreadShell,
   type OrchestrationV2ShellSnapshot,
   type ModelSelection,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { onTestFinished, vi } from "vite-plus/test";
 
 import { buildIncomingShareDraft } from "../features/sharing/incoming-share-model";
@@ -160,7 +160,7 @@ vi.mock("../lib/uuid", () => ({ uuidv4: () => "uuid", randomHex: () => "0000" })
 vi.mock("./assets", () => ({ assetEnvironment: {} }));
 vi.mock("./attachments", () => ({ attachmentEnvironment: {} }));
 vi.mock("./session", () => ({ environmentSession: {} }));
-vi.mock("@t3tools/client-runtime/state/runtime", () => ({
+vi.mock("@s8code/client-runtime/state/runtime", () => ({
   createEnvironmentRpcCommand: () => Symbol("rpc-command"),
   executeAtomQuery: () => {
     throw new Error("Unexpected network query in the inline read test");
@@ -183,7 +183,7 @@ import type { DraftComposerAttachment } from "../lib/composerImages";
 import {
   collectComposerContextReferences,
   formatComposerContextReference,
-} from "@t3tools/shared/composerContextReferences";
+} from "@s8code/shared/composerContextReferences";
 import { appAtomRegistry } from "./atom-registry";
 import { startComposerDraftOperation } from "./composerDraftOperations";
 import { questionAttachmentDraftKey } from "./question-attachments";

@@ -1,4 +1,4 @@
-import { MCP_APP_DOCUMENT_MESSAGE } from "@t3tools/shared/mcpApp";
+import { MCP_APP_DOCUMENT_MESSAGE } from "@s8code/shared/mcpApp";
 
 // Android exposes `ReactNativeWebView` to every frame, so a frame nested in the
 // app could post to React Native directly. The outer page therefore wraps what

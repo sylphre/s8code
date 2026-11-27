@@ -11,7 +11,7 @@ import * as Schema from "effect/Schema";
 import * as Semaphore from "effect/Semaphore";
 
 import * as ServerConfig from "../config.ts";
-import { routineSpan } from "@t3tools/shared/observability";
+import { routineSpan } from "@s8code/shared/observability";
 
 const secretStoreErrorContext = {
   resource: Schema.String,

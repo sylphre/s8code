@@ -4,8 +4,8 @@ import * as FileSystem from "effect/FileSystem";
 import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
 
-import { writeFileStringAtomically } from "@t3tools/shared/atomicWrite";
-import { formatHostForUrl, isWildcardHost } from "@t3tools/shared/hostClassification";
+import { writeFileStringAtomically } from "@s8code/shared/atomicWrite";
+import { formatHostForUrl, isWildcardHost } from "@s8code/shared/hostClassification";
 import packageJson from "../package.json" with { type: "json" };
 import type * as ServerConfig from "./config.ts";
 

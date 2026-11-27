@@ -1,16 +1,16 @@
-import { scopeThreadRef } from "@t3tools/client-runtime/environment";
+import { scopeThreadRef } from "@s8code/client-runtime/environment";
 import {
   resolveSideThreadOpenTarget,
   type SideThreadOpenIntent,
-} from "@t3tools/client-runtime/side-thread";
+} from "@s8code/client-runtime/side-thread";
 import type {
   OrchestrationV2ThreadShell,
   ScopedThreadRef,
   SideThreadOpenTarget,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 
 import type { ToolCallDiffTarget } from "../diffPanelStore";
-import type { LinkedThreadTarget } from "@t3tools/client-runtime/linked-thread";
+import type { LinkedThreadTarget } from "@s8code/client-runtime/linked-thread";
 import type { useNavigate } from "@tanstack/react-router";
 
 import { getClientSettings } from "../hooks/useSettings";

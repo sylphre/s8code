@@ -1,5 +1,5 @@
-import { workflowReferenceThreadId } from "@t3tools/client-runtime/workflows";
-import { EnvironmentId, type WorkflowRunSubject } from "@t3tools/contracts";
+import { workflowReferenceThreadId } from "@s8code/client-runtime/workflows";
+import { EnvironmentId, type WorkflowRunSubject } from "@s8code/contracts";
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { T, useGT } from "gt-react";
 import { FileCode2Icon } from "lucide-react";

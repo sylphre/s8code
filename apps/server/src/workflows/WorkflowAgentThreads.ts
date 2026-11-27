@@ -7,10 +7,10 @@ import {
   ProviderInstanceId,
   type RunId,
   ThreadId,
-} from "@t3tools/contracts";
-import { subagentResultForRun } from "@t3tools/provider-core/server/subagentProjection";
-import { resolveProjectSettings } from "@t3tools/shared/projectSettings";
-import { resolveNewThreadModelSelection } from "@t3tools/shared/usageLimits";
+} from "@s8code/contracts";
+import { subagentResultForRun } from "@s8code/provider-core/server/subagentProjection";
+import { resolveProjectSettings } from "@s8code/shared/projectSettings";
+import { resolveNewThreadModelSelection } from "@s8code/shared/usageLimits";
 import * as Digest from "effect/crypto/Digest";
 import * as Clock from "effect/Clock";
 import * as DateTime from "effect/DateTime";
@@ -36,7 +36,7 @@ import {
 } from "./WorkflowAgents.ts";
 import { noteReference } from "./runReferences.ts";
 import { type IssueAddress, linkedPullRequestReferences, WorkflowForge } from "./WorkflowForge.ts";
-import { withoutRoutineSpans } from "@t3tools/shared/observability";
+import { withoutRoutineSpans } from "@s8code/shared/observability";
 
 // A turn can run for hours. Each look is bounded so a wait that lost its event is asked again.
 const WAIT_SLICE = Duration.minutes(10);

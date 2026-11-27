@@ -1,4 +1,4 @@
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
+import { errorDisplayMessage } from "@s8code/client-runtime/errors";
 import { T, useGT, useLocale, Var } from "gt-react-native";
 import { useAtomRefresh, useAtomValue } from "@effect/atom-react";
 import { useNavigation } from "@react-navigation/native";
@@ -6,13 +6,13 @@ import {
   cancelEnvironmentSpeechModelDownload,
   installEnvironmentSpeechModel,
   selectEnvironmentSpeechModel,
-} from "@t3tools/client-runtime/voice-input";
+} from "@s8code/client-runtime/voice-input";
 import {
   AuthSettingsWriteScope,
   type EnvironmentId,
   type EnvironmentSpeechModel,
-} from "@t3tools/contracts";
-import { speechModelDownloadPercent } from "@t3tools/shared/speech";
+} from "@s8code/contracts";
+import { speechModelDownloadPercent } from "@s8code/shared/speech";
 import { AsyncResult } from "effect/reactivity";
 import { type ReactNode, useEffect, useState } from "react";
 import { Platform, Text as NativeText, View } from "react-native";

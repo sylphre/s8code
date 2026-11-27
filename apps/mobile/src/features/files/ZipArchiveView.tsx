@@ -1,19 +1,19 @@
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
-import { formatAttachmentSize } from "@t3tools/client-runtime/state/attachments";
+import { errorDisplayMessage } from "@s8code/client-runtime/errors";
+import { formatAttachmentSize } from "@s8code/client-runtime/state/attachments";
 import {
   ARCHIVE_ENTRY_MAX_BYTES,
   ARCHIVE_MAX_BYTES,
   boundedZip,
-} from "@t3tools/client-runtime/zip/bounded-zip";
-import { isZipError } from "@t3tools/client-runtime/zip/error";
-import { zipErrorText } from "@t3tools/client-runtime/zip/error-messages";
-import type { EnvironmentId } from "@t3tools/contracts";
-import { filePreviewDelimiter, parseDelimitedPreview } from "@t3tools/shared/delimitedPreview";
+} from "@s8code/client-runtime/zip/bounded-zip";
+import { isZipError } from "@s8code/client-runtime/zip/error";
+import { zipErrorText } from "@s8code/client-runtime/zip/error-messages";
+import type { EnvironmentId } from "@s8code/contracts";
+import { filePreviewDelimiter, parseDelimitedPreview } from "@s8code/shared/delimitedPreview";
 import {
   decodeFilePreviewText,
   filePreviewKind,
   hostPreviewMimeTypeFromExtension,
-} from "@t3tools/shared/filePreview";
+} from "@s8code/shared/filePreview";
 import { LegendList } from "@legendapp/list/react-native";
 import * as Schema from "effect/Schema";
 import { fetch } from "expo/fetch";

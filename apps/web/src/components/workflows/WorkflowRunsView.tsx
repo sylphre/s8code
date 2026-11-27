@@ -1,4 +1,4 @@
-import { type EnvironmentId, type WorkflowRunSubject } from "@t3tools/contracts";
+import { type EnvironmentId, type WorkflowRunSubject } from "@s8code/contracts";
 import { msg, T, useGT, useMessages } from "gt-react";
 import { WorkflowIcon } from "lucide-react";
 import * as Schema from "effect/Schema";
@@ -38,7 +38,7 @@ import {
   type WorkflowListTab,
   type WorkflowRunNode,
   workflowRunInvolves,
-} from "@t3tools/client-runtime/workflows";
+} from "@s8code/client-runtime/workflows";
 
 const WORKFLOWS_GUIDE_URL = "https://github.com/pingdotgg/t3code/blob/main/docs/user/workflows.md";
 const EVERY_WORKFLOW = "";

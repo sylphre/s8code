@@ -4,12 +4,12 @@ import type {
   AtomCommandFailure,
   AtomCommandResult,
   AtomCommandSuccess,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@s8code/client-runtime/state/runtime";
 import {
   VcsActionUnavailableError,
   type VcsActionOperation,
   type RunVcsStackedActionInput,
-} from "@t3tools/client-runtime/state/vcs";
+} from "@s8code/client-runtime/state/vcs";
 import {
   AuthOrchestrationOperateScope,
   AuthSourceControlWriteScope,
@@ -20,7 +20,7 @@ import {
   type SourceControlProviderKind,
   type SourceControlRepositoryVisibility,
   type ThreadId,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as Cause from "effect/Cause";
 import { AsyncResult } from "effect/reactivity";
 

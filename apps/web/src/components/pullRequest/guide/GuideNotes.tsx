@@ -1,5 +1,5 @@
 import { T, useGT } from "gt-react";
-import type { PullRequestReviewGuideNote } from "@t3tools/contracts";
+import type { PullRequestReviewGuideNote } from "@s8code/contracts";
 
 import { cn } from "~/lib/utils";
 

@@ -1,5 +1,5 @@
-import { AgentFeedbackKind, AgentFeedbackTrace } from "@t3tools/contracts";
-import { resolveT3McpToolId } from "@t3tools/shared/t3McpToolPresentation";
+import { AgentFeedbackKind, AgentFeedbackTrace } from "@s8code/contracts";
+import { resolveT3McpToolId } from "@s8code/shared/t3McpToolPresentation";
 import * as Effect from "effect/Effect";
 import * as Schema from "effect/Schema";
 import * as Struct from "effect/Struct";

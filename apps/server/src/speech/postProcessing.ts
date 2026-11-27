@@ -1,12 +1,12 @@
 import {
   DEFAULT_SPEECH_POST_PROCESSING_PROMPT,
   type EnvironmentSpeechPostProcessingRequest,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
 import * as Layer from "effect/Layer";
-import { resolveSpeechPostProcessingModelSelection } from "@t3tools/shared/serverSettings";
+import { resolveSpeechPostProcessingModelSelection } from "@s8code/shared/serverSettings";
 
 import * as ProviderRegistry from "../provider/ProviderRegistry.ts";
 import * as ServerSettings from "../serverSettings.ts";

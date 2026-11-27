@@ -7,8 +7,8 @@ import {
   type SecretRequestAnswerInput,
   type ServerConfig,
   type ServerSettings,
-} from "@t3tools/contracts";
-import { builtInSecretProviderDefinitions } from "@t3tools/secret-provider-definitions/registry";
+} from "@s8code/contracts";
+import { builtInSecretProviderDefinitions } from "@s8code/secret-provider-definitions/registry";
 import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
 import { mFallback, msg } from "gt-i18n";

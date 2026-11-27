@@ -1,4 +1,4 @@
-import type { ScopedThreadRef } from "@t3tools/contracts";
+import type { ScopedThreadRef } from "@s8code/contracts";
 import { useEffect } from "react";
 
 import { restoreFocusOnThreadEnter } from "../../lib/terminalFocus";

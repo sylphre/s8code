@@ -1,12 +1,12 @@
 import type { ToolCallDiffTarget } from "../../diffPanelStore";
-import type { SideThreadOpenIntent } from "@t3tools/client-runtime/side-thread";
-import type { ThreadRunSummary } from "@t3tools/client-runtime/state/models";
+import type { SideThreadOpenIntent } from "@s8code/client-runtime/side-thread";
+import type { ThreadRunSummary } from "@s8code/client-runtime/state/models";
 import type {
   ProviderApprovalDecision,
   ResponseContextRecord,
   RuntimeRequestId,
   WorktreeSetupSnapshot,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import {
   type EnvironmentId,
   type MessageId,
@@ -17,19 +17,19 @@ import {
   type RunId,
   ThreadId,
   type TurnItemId,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import type { AsyncResult, Atom } from "effect/reactivity";
-import type { CommandOutputView } from "@t3tools/client-runtime/state/command-output";
-import type { WorkflowOpening } from "@t3tools/client-runtime/state/subagentRuntime";
+import type { CommandOutputView } from "@s8code/client-runtime/state/command-output";
+import type { WorkflowOpening } from "@s8code/client-runtime/state/subagentRuntime";
 import { useEffect, useRef, createContext, type MouseEvent, type ReactNode } from "react";
 import { type LegendListRef } from "@legendapp/list/react";
-import type { CodexArtifactTemplate } from "@t3tools/shared/codexArtifactTemplates";
+import type { CodexArtifactTemplate } from "@s8code/shared/codexArtifactTemplates";
 import type { PendingApproval } from "../../session-logic";
 import { type ChatFileAttachment } from "../../types";
 import { type ExpandedImageItem, ExpandedImagePreview } from "./ExpandedImagePreview";
 import { type AssistantCitationTarget } from "./AssistantCitationSource";
 import { type MessagesTimelineRow, type WorkGroupScrollAnchor } from "./MessagesTimeline.logic";
-import { type TimestampFormat } from "@t3tools/contracts/settings";
+import { type TimestampFormat } from "@s8code/contracts/settings";
 import type { TurnItemDetailSource } from "../../state/queries";
 import { type HandoffTimelineRun } from "./V2LifecycleRow";
 

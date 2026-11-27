@@ -1,4 +1,4 @@
-import { SourceControlProviderKind } from "@t3tools/contracts";
+import { SourceControlProviderKind } from "@s8code/contracts";
 import type {
   ProjectCloneSnapshot,
   ProjectCloneStage,
@@ -7,14 +7,14 @@ import type {
   ProjectId,
   SourceControlCloneProtocol,
   SourceControlRepositoryInfo,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import {
   OrchestrationDispatchCommandError,
   PROJECT_CLONE_DETAIL_MAX_LENGTH,
   PROJECT_CLONE_ERROR_MAX_LENGTH,
   SourceControlRepositoryError,
-} from "@t3tools/contracts";
-import { splitsSurrogatePair } from "@t3tools/shared/assistantCitations";
+} from "@s8code/contracts";
+import { splitsSurrogatePair } from "@s8code/shared/assistantCitations";
 import * as Cause from "effect/Cause";
 import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";

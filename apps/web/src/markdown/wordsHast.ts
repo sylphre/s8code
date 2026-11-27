@@ -7,18 +7,18 @@ import {
 import wordsWasm from "@pierre/words/wasm";
 import { decodeHTML, decodeHTMLAttribute } from "entities";
 import { find, html as htmlSchema, svg as svgSchema } from "property-information";
-import { resolveCodexArtifactTemplate } from "@t3tools/shared/codexArtifactTemplates";
-import { resolveCodexFileCitationLink } from "@t3tools/shared/codexFileCitations";
-import type { ReferenceAutolink } from "@t3tools/client-runtime/source-control-clients";
-import { expandGithubEmojiAliases } from "@t3tools/client-runtime/pull-request-markdown";
-import { resolveChangeRequestMediaUrl } from "@t3tools/client-runtime/pull-request-references";
-import { GITHUB_ALERT_MARKER } from "@t3tools/shared/markdownGithubAlerts";
-import { absoluteFilePathMatches } from "@t3tools/shared/markdownLinks";
+import { resolveCodexArtifactTemplate } from "@s8code/shared/codexArtifactTemplates";
+import { resolveCodexFileCitationLink } from "@s8code/shared/codexFileCitations";
+import type { ReferenceAutolink } from "@s8code/client-runtime/source-control-clients";
+import { expandGithubEmojiAliases } from "@s8code/client-runtime/pull-request-markdown";
+import { resolveChangeRequestMediaUrl } from "@s8code/client-runtime/pull-request-references";
+import { GITHUB_ALERT_MARKER } from "@s8code/shared/markdownGithubAlerts";
+import { absoluteFilePathMatches } from "@s8code/shared/markdownLinks";
 import {
   rehypeNormalizeLocalFileLinks,
   rehypePreserveImageSourceMeta,
   sanitizeChatHast,
-} from "@t3tools/shared/markdownHast";
+} from "@s8code/shared/markdownHast";
 
 import { rehypeChipPunctuation } from "../components/chat/markdownChipPunctuation";
 import { rehypeHeadingIds } from "../components/chat/markdownFragments";

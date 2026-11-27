@@ -1,4 +1,4 @@
-import { hostFreezeNotice } from "@t3tools/client-runtime/connection";
+import { hostFreezeNotice } from "@s8code/client-runtime/connection";
 import { m } from "../i18n/messages";
 
 import { appAtomRegistry } from "../rpc/atomRegistry";

@@ -5,9 +5,9 @@ import * as Layer from "effect/Layer";
 import * as PlatformError from "effect/PlatformError";
 import { ChildProcessSpawner } from "effect/process";
 
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import type * as SourceControlHost from "@t3tools/source-control-core/server/SourceControlHost";
-import * as TestSourceControlHost from "@t3tools/source-control-testing/TestSourceControlHost";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import type * as SourceControlHost from "@s8code/source-control-core/server/SourceControlHost";
+import * as TestSourceControlHost from "@s8code/source-control-testing/TestSourceControlHost";
 import { makeGhProcess } from "./gitHubCliProcess.ts";
 
 function spawnedBusAddress(input: {

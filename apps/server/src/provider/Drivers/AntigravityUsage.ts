@@ -1,12 +1,12 @@
-import { type AntigravitySettings, UsageReadError } from "@t3tools/contracts";
-import { expandHomePath } from "@t3tools/provider-core/server/pathExpansion";
-import * as ProviderHost from "@t3tools/provider-core/server/ProviderHost";
+import { type AntigravitySettings, UsageReadError } from "@s8code/contracts";
+import { expandHomePath } from "@s8code/provider-core/server/pathExpansion";
+import * as ProviderHost from "@s8code/provider-core/server/ProviderHost";
 import type {
   ProviderUsageInstance,
   ProviderUsageReader,
   ProviderUsageScan,
-} from "@t3tools/provider-core/server/usage";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+} from "@s8code/provider-core/server/usage";
+import * as HostProcess from "@s8code/shared/HostProcess";
 import * as Context from "effect/Context";
 import * as Digest from "effect/crypto/Digest";
 import * as Effect from "effect/Effect";

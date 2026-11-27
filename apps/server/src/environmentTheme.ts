@@ -11,14 +11,14 @@ import {
   EnvironmentThemeId,
   environmentThemeFileHasColors,
   THEME_CSS_MAX_LENGTH,
-} from "@t3tools/contracts";
-import { fromJsonStringPretty } from "@t3tools/shared/schemaJson";
-import { themeCssLoadsRemoteFiles } from "@t3tools/shared/themeCss";
+} from "@s8code/contracts";
+import { fromJsonStringPretty } from "@s8code/shared/schemaJson";
+import { themeCssLoadsRemoteFiles } from "@s8code/shared/themeCss";
 import {
   MOBILE_DEFAULT_THEME_ID,
   MOBILE_THEME_IDS,
   UNPUBLISHABLE_THEME_IDS,
-} from "@t3tools/shared/themePalettes";
+} from "@s8code/shared/themePalettes";
 import * as Cause from "effect/Cause";
 import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";

@@ -1,12 +1,12 @@
-import { PrimaryConnectionTarget } from "@t3tools/client-runtime/connection";
-import { createEnvironmentThreadShellAtoms } from "@t3tools/client-runtime/state/threads";
+import { PrimaryConnectionTarget } from "@s8code/client-runtime/connection";
+import { createEnvironmentThreadShellAtoms } from "@s8code/client-runtime/state/threads";
 import {
   applyShellStreamEvent,
   createEnvironmentSnapshotAtom,
   EMPTY_SHELL_STATE,
   type EnvironmentShellState,
   type EnvironmentShellStatus,
-} from "@t3tools/client-runtime/state/shell";
+} from "@s8code/client-runtime/state/shell";
 import { makeThreadProjectionFixture } from "./test-fixtures";
 import * as Option from "effect/Option";
 import { AsyncResult, Atom, AtomRegistry } from "effect/reactivity";
@@ -15,8 +15,8 @@ import {
   scopedThreadKey,
   scopeProjectRef,
   scopeThreadRef,
-} from "@t3tools/client-runtime/environment";
-import { DEFAULT_UNIFIED_SETTINGS } from "@t3tools/contracts/settings";
+} from "@s8code/client-runtime/environment";
+import { DEFAULT_UNIFIED_SETTINGS } from "@s8code/contracts/settings";
 import {
   defaultInstanceIdForDriver,
   DEFAULT_MODEL,
@@ -35,8 +35,8 @@ import {
   type ProviderOptionSelection,
   type ScopedThreadRef,
   type ServerProvider,
-} from "@t3tools/contracts";
-import { createModelSelection } from "@t3tools/shared/model";
+} from "@s8code/contracts";
+import { createModelSelection } from "@s8code/shared/model";
 
 const CODEX_INSTANCE = ProviderInstanceId.make("codex");
 const CODEX_SECONDARY_INSTANCE = ProviderInstanceId.make("codex_secondary");
@@ -104,7 +104,7 @@ import {
   environmentContextRecord,
   terminalContextReference,
 } from "./lib/composerContextRecords";
-import { threadContextRecord } from "@t3tools/shared/composerContextReferences";
+import { threadContextRecord } from "@s8code/shared/composerContextReferences";
 import {
   copiedComposerAttachmentFile,
   rememberCopiedComposerAttachments,

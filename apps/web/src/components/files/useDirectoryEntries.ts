@@ -1,7 +1,7 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
-import type { EnvironmentId, ProjectEntry } from "@t3tools/contracts";
+import { thrownErrorMessage } from "@s8code/client-runtime/errors";
+import type { EnvironmentId, ProjectEntry } from "@s8code/contracts";
 import { useAtomMount, useAtomSubscribe } from "@effect/atom-react";
-import { executeAtomQuery } from "@t3tools/client-runtime/state/runtime";
+import { executeAtomQuery } from "@s8code/client-runtime/state/runtime";
 import * as Cause from "effect/Cause";
 import { msg } from "gt-react";
 import { useEffect, useRef, useState } from "react";

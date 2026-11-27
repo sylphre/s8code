@@ -1,9 +1,9 @@
-import type { ProjectFaviconTarget } from "@t3tools/client-runtime/project-favicon-cache";
+import type { ProjectFaviconTarget } from "@s8code/client-runtime/project-favicon-cache";
 import {
   createAssetEnvironmentAtoms,
   createProjectFaviconUrlAtomFamily,
   projectFaviconResource,
-} from "@t3tools/client-runtime/state/assets";
+} from "@s8code/client-runtime/state/assets";
 import { Atom } from "effect/reactivity";
 
 import { connectionAtomRuntime } from "../connection/runtime";

@@ -1,8 +1,8 @@
-import { WS_METHODS } from "@t3tools/contracts";
+import { WS_METHODS } from "@s8code/contracts";
 import {
   createEnvironmentRpcCommand,
   createEnvironmentRpcQueryAtomFamily,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@s8code/client-runtime/state/runtime";
 
 import { connectionAtomRuntime } from "../connection/runtime";
 

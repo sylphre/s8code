@@ -4,9 +4,9 @@ import {
   ProviderInstanceId,
   RunId,
   type VcsRef,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { describe, expect, it } from "vite-plus/test";
-import { dedupeRemoteBranchesWithLocalMatches } from "@t3tools/shared/git";
+import { dedupeRemoteBranchesWithLocalMatches } from "@s8code/shared/git";
 import {
   deriveLocalBranchNameFromRemoteRef,
   isWorktreeChangeBlocked,

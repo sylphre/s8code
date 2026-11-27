@@ -1,4 +1,4 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@s8code/client-runtime/errors";
 import { m } from "~/i18n/messages";
 import {
   cancelEnvironmentSpeechModelDownload,
@@ -10,9 +10,9 @@ import {
   selectEnvironmentSpeechModel,
   updateEnvironmentSpeechAcceleration,
   updateEnvironmentSpeechModelUnloadTimeout,
-} from "@t3tools/client-runtime/voice-input";
-import type { PreparedConnection } from "@t3tools/client-runtime/connection";
-import { openRouterIcon } from "@t3tools/client-runtime/provider-clients";
+} from "@s8code/client-runtime/voice-input";
+import type { PreparedConnection } from "@s8code/client-runtime/connection";
+import { openRouterIcon } from "@s8code/client-runtime/provider-clients";
 import {
   AuthFilesystemReadScope,
   AuthSettingsWriteScope,
@@ -29,15 +29,15 @@ import {
   type SpeechCustomWords,
   type SpeechModelUnloadTimeout,
   type VoiceShortcutMode,
-} from "@t3tools/contracts";
-import { createModelSelection, pickModelSelection } from "@t3tools/shared/model";
-import { resolveSpeechPostProcessingModelSelection } from "@t3tools/shared/serverSettings";
+} from "@s8code/contracts";
+import { createModelSelection, pickModelSelection } from "@s8code/shared/model";
+import { resolveSpeechPostProcessingModelSelection } from "@s8code/shared/serverSettings";
 import {
   cloudSpeechLanguages,
   recommendSpeechModels,
   speechModelDownloadPercent,
   type SpeechRecommendationRole,
-} from "@t3tools/shared/speech";
+} from "@s8code/shared/speech";
 import {
   ArrowDownUpIcon,
   AudioLinesIcon,

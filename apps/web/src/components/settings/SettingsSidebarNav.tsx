@@ -33,7 +33,7 @@ import {
   WrenchIcon,
   XIcon,
 } from "lucide-react";
-import { resolveEventKeys } from "@t3tools/shared/keybindings";
+import { resolveEventKeys } from "@s8code/shared/keybindings";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { T, useGT, useMessages } from "gt-react";
 

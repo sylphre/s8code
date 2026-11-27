@@ -1,5 +1,5 @@
-import { PrimaryConnectionTarget } from "@t3tools/client-runtime/connection";
-import { EnvironmentId } from "@t3tools/contracts";
+import { PrimaryConnectionTarget } from "@s8code/client-runtime/connection";
+import { EnvironmentId } from "@s8code/contracts";
 import * as Option from "effect/Option";
 import { expect, it, vi } from "vite-plus/test";
 import { page, userEvent } from "vite-plus/test/browser";

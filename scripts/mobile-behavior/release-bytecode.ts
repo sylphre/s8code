@@ -9,7 +9,7 @@ import * as NodeHttp from "node:http";
 import * as NodeModule from "node:module";
 import * as NodeNet from "node:net";
 import * as NodePath from "node:path";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import * as HostProcess from "@s8code/shared/HostProcess";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
 

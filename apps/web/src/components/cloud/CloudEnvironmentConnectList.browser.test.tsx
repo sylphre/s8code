@@ -1,6 +1,6 @@
-import { BearerConnectionTarget } from "@t3tools/client-runtime/connection";
-import type { Discovery } from "@t3tools/client-runtime/relay";
-import { EnvironmentId } from "@t3tools/contracts";
+import { BearerConnectionTarget } from "@s8code/client-runtime/connection";
+import type { Discovery } from "@s8code/client-runtime/relay";
+import { EnvironmentId } from "@s8code/contracts";
 import * as Option from "effect/Option";
 import { describe, expect, it, vi } from "vite-plus/test";
 

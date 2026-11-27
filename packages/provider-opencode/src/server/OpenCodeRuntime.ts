@@ -1,7 +1,7 @@
-import { resolveProviderProbeTimeoutMs } from "@t3tools/provider-core/server/snapshotProbe";
+import { resolveProviderProbeTimeoutMs } from "@s8code/provider-core/server/snapshotProbe";
 import * as NodeURL from "node:url";
 
-import type { ChatAttachment, ModelSelection, ProviderApprovalDecision } from "@t3tools/contracts";
+import type { ChatAttachment, ModelSelection, ProviderApprovalDecision } from "@s8code/contracts";
 import {
   createOpencodeClient,
   type Agent,
@@ -32,19 +32,19 @@ import * as Base64Url from "effect/encoding/Base64Url";
 import * as ChildProcess from "effect/process/ChildProcess";
 import * as ChildProcessSpawner from "effect/process/ChildProcessSpawner";
 
-import { signalProcessGroup } from "@t3tools/provider-core/server/processGroup";
-import { isWindowsCommandNotFound } from "@t3tools/provider-core/server/snapshotProbe";
+import { signalProcessGroup } from "@s8code/provider-core/server/processGroup";
+import { isWindowsCommandNotFound } from "@s8code/provider-core/server/snapshotProbe";
 import * as OpenCodeServerLedger from "./OpenCodeServerLedger.ts";
-import { collectStreamAsString } from "@t3tools/provider-core/server/snapshotProbe";
-import * as NetService from "@t3tools/shared/Net";
-import { AgentScope } from "@t3tools/shared/AgentScope";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import { collectStreamAsString } from "@s8code/provider-core/server/snapshotProbe";
+import * as NetService from "@s8code/shared/Net";
+import { AgentScope } from "@s8code/shared/AgentScope";
+import * as HostProcess from "@s8code/shared/HostProcess";
 import {
   DEFAULT_VARIANT_CHOICE_ID,
   getModelSelectionStringOptionValue,
-} from "@t3tools/shared/model";
-import { parseSemver } from "@t3tools/shared/semver";
-import { resolveSpawnCommand } from "@t3tools/shared/shell";
+} from "@s8code/shared/model";
+import { parseSemver } from "@s8code/shared/semver";
+import { resolveSpawnCommand } from "@s8code/shared/shell";
 const encodeUnknownJsonStringExit = Schema.encodeUnknownExit(Schema.fromJsonString(Schema.Unknown));
 const OPENCODE_EMPTY_CONFIG_CONTENT = "{}";
 
@@ -369,7 +369,7 @@ export class OpenCodeRuntime extends Context.Service<
       client: OpencodeClient,
     ) => Effect.Effect<ReadonlyArray<OpenCodeSkill>, OpenCodeRuntimeError>;
   }
->()("@t3tools/provider-opencode/server/OpenCodeRuntime") {}
+>()("@s8code/provider-opencode/server/OpenCodeRuntime") {}
 
 export function parseServerUrlFromOutput(output: string): string | null {
   // The last element is an unfinished line; a chunk can end mid-URL.

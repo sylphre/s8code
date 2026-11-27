@@ -1,4 +1,4 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@s8code/client-runtime/errors";
 import { m as resolveMessage } from "~/i18n/messages";
 import { ProviderInstanceIcon } from "../chat/ProviderInstanceIcon";
 
@@ -10,9 +10,9 @@ import type { MessageResolver } from "../../i18n/messages";
 import {
   deriveAvailableInstanceId,
   deriveInstanceId,
-} from "@t3tools/client-runtime/provider-instance-ids";
-import { squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
-import type { ProviderClientDefinition } from "@t3tools/provider-core/client";
+} from "@s8code/client-runtime/provider-instance-ids";
+import { squashAtomCommandFailure } from "@s8code/client-runtime/state/runtime";
+import type { ProviderClientDefinition } from "@s8code/provider-core/client";
 import {
   type AcpRegistrySearchAgent,
   AuthProvidersManageScope,
@@ -22,7 +22,7 @@ import {
   type ProviderInstanceConfig,
   type ProviderInstanceEnvironmentVariable,
   isManagedDriverAllowed,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 
 import {
   useEnvironmentSettings,

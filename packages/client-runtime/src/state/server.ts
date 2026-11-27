@@ -24,7 +24,7 @@ import {
   type UsageSummary,
   type WorkflowRunsSnapshot,
   WS_METHODS,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as Cause from "effect/Cause";
 import * as Duration from "effect/Duration";
 import * as Equal from "effect/Equal";

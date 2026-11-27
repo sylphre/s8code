@@ -8,9 +8,9 @@ import {
   ProjectScript,
   ProjectTrackedFolders,
   ThreadEnvMode,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as Context from "effect/Context";
-import * as NodeSqliteClient from "@t3tools/shared/nodeSqliteClient";
+import * as NodeSqliteClient from "@s8code/shared/nodeSqliteClient";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";

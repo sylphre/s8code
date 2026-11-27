@@ -4,7 +4,7 @@ import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
 
-import type { DesktopUpdateChannel } from "@t3tools/contracts";
+import type { DesktopUpdateChannel } from "@s8code/contracts";
 import * as Electron from "electron";
 import { msg } from "gt-i18n";
 
@@ -35,7 +35,7 @@ export class DesktopApplicationMenu extends Context.Service<
   {
     readonly configure: Effect.Effect<void>;
   }
->()("@t3tools/desktop/window/DesktopApplicationMenu") {}
+>()("@s8code/desktop/window/DesktopApplicationMenu") {}
 
 type DesktopApplicationMenuRuntimeServices =
   | DesktopUpdates.DesktopUpdates

@@ -1,4 +1,4 @@
-import type { EnvironmentId, ScopedThreadRef } from "@t3tools/contracts";
+import type { EnvironmentId, ScopedThreadRef } from "@s8code/contracts";
 import { useNavigate } from "@tanstack/react-router";
 import { useGT, useMessages } from "gt-react";
 import { MessagesSquareIcon } from "lucide-react";
@@ -7,9 +7,9 @@ import {
   guessThreadLinkRef,
   threadLinkCandidates,
   type ThreadLink,
-} from "@t3tools/shared/threadLinks";
-import { unknownThreadLinkLabel } from "@t3tools/shared/threadLinksCopy";
-import { resolveLinkedThreadOpen } from "@t3tools/client-runtime/linked-thread";
+} from "@s8code/shared/threadLinks";
+import { unknownThreadLinkLabel } from "@s8code/shared/threadLinksCopy";
+import { resolveLinkedThreadOpen } from "@s8code/client-runtime/linked-thread";
 
 import { configuredHostedAppUrl } from "../../hostedPairing";
 import { useThreadRefs, useThreadShell } from "../../state/entities";

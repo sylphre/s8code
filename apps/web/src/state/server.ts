@@ -8,16 +8,16 @@ import {
   type ServerLifecycleWelcomePayload,
   type ServerProvider,
   type ServerSettings,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import {
   AVAILABLE_CONNECTION_STATE,
   presentConnectionState,
   type EnvironmentPresentation,
-} from "@t3tools/client-runtime/connection";
-import { createServerEnvironmentAtoms } from "@t3tools/client-runtime/state/server";
-import { createOutdatedServerUpdateCommand } from "@t3tools/client-runtime/state/outdatedServerUpdate";
-import { createEnvironmentServerConfigsAtom } from "@t3tools/client-runtime/state/shell";
-import { mergeWithDefaultKeybindings } from "@t3tools/shared/keybindings";
+} from "@s8code/client-runtime/connection";
+import { createServerEnvironmentAtoms } from "@s8code/client-runtime/state/server";
+import { createOutdatedServerUpdateCommand } from "@s8code/client-runtime/state/outdatedServerUpdate";
+import { createEnvironmentServerConfigsAtom } from "@s8code/client-runtime/state/shell";
+import { mergeWithDefaultKeybindings } from "@s8code/shared/keybindings";
 import * as Option from "effect/Option";
 import { AsyncResult, Atom } from "effect/reactivity";
 

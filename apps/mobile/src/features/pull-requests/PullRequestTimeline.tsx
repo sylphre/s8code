@@ -1,7 +1,7 @@
 import {
   parsePullRequestAnchor,
   pullRequestAnchorMatchesUrl,
-} from "@t3tools/shared/pullRequestAnchor";
+} from "@s8code/shared/pullRequestAnchor";
 import { PullRequestEntryRow } from "./PullRequestEntryRow";
 import Svg, { Defs, LinearGradient, Rect, Stop } from "react-native-svg";
 import { useAppearancePreferences } from "../settings/appearance/AppearancePreferencesProvider";
@@ -10,7 +10,7 @@ import {
   pullRequestConversationThreads,
   type PullRequestActivity,
   type PullRequestComment,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { StackActions, type NavigationProp } from "@react-navigation/native";
 import { msg, T, useGT, useMessages, Var } from "gt-react-native";
 import { useMemo, useState, type ComponentProps, type ReactNode } from "react";

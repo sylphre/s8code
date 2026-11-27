@@ -2,14 +2,14 @@ import type {
   AssetResource,
   OrchestrationV2FileSearchResult,
   OrchestrationV2TurnItem,
-} from "@t3tools/contracts";
-import { commandItemOutput } from "@t3tools/shared/commandOutput";
-import { MCP_APP_OUTPUT_KEY } from "@t3tools/shared/mcpApp";
+} from "@s8code/contracts";
+import { commandItemOutput } from "@s8code/shared/commandOutput";
+import { MCP_APP_OUTPUT_KEY } from "@s8code/shared/mcpApp";
 import {
   mcpToolResultOutput,
   toolOutputImageBlocks,
   toolOutputImages,
-} from "@t3tools/shared/toolOutput";
+} from "@s8code/shared/toolOutput";
 import * as DateTime from "effect/DateTime";
 
 const MAX_TEXT_BLOCK_DEPTH = 4;

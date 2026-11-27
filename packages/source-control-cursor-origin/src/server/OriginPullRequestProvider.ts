@@ -12,8 +12,8 @@ import type {
   PullRequestMergeability,
   PullRequestReviewThread,
   PullRequestViewerPermissions,
-} from "@t3tools/contracts";
-import { SourceControlProviderKind } from "@t3tools/contracts";
+} from "@s8code/contracts";
+import { SourceControlProviderKind } from "@s8code/contracts";
 import {
   PullRequestProviderError,
   type ProviderChangeRequest,
@@ -21,7 +21,7 @@ import {
   type ProviderChangeRequestDetail,
   type ProviderRepositoryRef,
   type PullRequestProviderApi,
-} from "@t3tools/source-control-core/server/PullRequestProvider";
+} from "@s8code/source-control-core/server/PullRequestProvider";
 
 import * as OriginCli from "./OriginCli.ts";
 import {

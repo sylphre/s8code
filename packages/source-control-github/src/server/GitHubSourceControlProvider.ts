@@ -1,4 +1,4 @@
-import { requireSettingsSecretLiteral, SourceControlProviderKind } from "@t3tools/contracts";
+import { requireSettingsSecretLiteral, SourceControlProviderKind } from "@s8code/contracts";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
@@ -19,11 +19,11 @@ import {
   type ChangeRequest,
   type SourceControlProviderDiscoveryItem,
   type SourceControlRepositoryCloneUrls,
-} from "@t3tools/contracts";
-import { normalizeGitRemoteUrl } from "@t3tools/shared/git";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { decodeJsonResult } from "@t3tools/shared/schemaJson";
-import { isSshRemoteUrl } from "@t3tools/shared/sourceControl";
+} from "@s8code/contracts";
+import { normalizeGitRemoteUrl } from "@s8code/shared/git";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import { decodeJsonResult } from "@s8code/shared/schemaJson";
+import { isSshRemoteUrl } from "@s8code/shared/sourceControl";
 
 import { GH_PROCESS_CONCURRENCY } from "./GitHubCredentials.ts";
 import * as GitHubAppSignIn from "./GitHubAppSignIn.ts";
@@ -43,14 +43,14 @@ import {
   resolveGitHubRepository,
   type GitHubRepositoryLocator,
 } from "./gitHubRepositoryResolution.ts";
-import * as SourceControlRateLimit from "@t3tools/source-control-core/server/SourceControlRateLimit";
+import * as SourceControlRateLimit from "@s8code/source-control-core/server/SourceControlRateLimit";
 import {
   effectiveGitHubAccount,
   findAuthenticatedGitHubAccount,
   parseGitHubAuthStatus,
   type GitHubAuthStatusAccount,
 } from "./gitHubAuthStatus.ts";
-import * as SourceControlProvider from "@t3tools/source-control-core/server/SourceControlProvider";
+import * as SourceControlProvider from "@s8code/source-control-core/server/SourceControlProvider";
 import {
   combinedAuthOutput,
   firstSafeAuthLine,
@@ -59,13 +59,13 @@ import {
   type SourceControlAuthProbeInput,
   type SourceControlCliDiscoverySpec,
   type SourceControlManagedCliDiscoverySpec,
-} from "@t3tools/source-control-core/server/discovery";
-import * as SourceControlHost from "@t3tools/source-control-core/server/SourceControlHost";
+} from "@s8code/source-control-core/server/discovery";
+import * as SourceControlHost from "@s8code/source-control-core/server/SourceControlHost";
 import {
   parseGitRemoteHost,
   readSourceControlHostSettings,
   unknownRemoteProvider,
-} from "@t3tools/source-control-core/shared/definition";
+} from "@s8code/source-control-core/shared/definition";
 
 import * as GitHubClient from "../shared/definition.ts";
 import { makeGhProcess } from "./gitHubCliProcess.ts";

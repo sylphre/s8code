@@ -4,8 +4,8 @@ import type {
   EnvironmentId,
   ScopedThreadRef,
   SnapShotSource,
-} from "@t3tools/contracts";
-import { formatAttachmentSize } from "@t3tools/client-runtime/state/attachments";
+} from "@s8code/contracts";
+import { formatAttachmentSize } from "@s8code/client-runtime/state/attachments";
 import { T, useGT, useMessages } from "gt-react";
 import { CircleAlertIcon, ImageIcon, PaperclipIcon, PlayIcon, XIcon } from "lucide-react";
 import { type ComponentProps, type Ref, useLayoutEffect, useRef } from "react";

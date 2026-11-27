@@ -3,8 +3,8 @@ import type {
   ModelParameterValue,
   SDKModel,
 } from "@cursor/sdk";
-import type { ModelSelection, ServerProviderModel } from "@t3tools/contracts";
-import { getProviderOptionCurrentValue } from "@t3tools/shared/model";
+import type { ModelSelection, ServerProviderModel } from "@s8code/contracts";
+import { getProviderOptionCurrentValue } from "@s8code/shared/model";
 
 const CURSOR_SDK_PARAMETER_TO_PROVIDER_OPTION: Readonly<Record<string, string>> = {
   context: "contextWindow",

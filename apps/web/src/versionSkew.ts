@@ -3,9 +3,9 @@ import type {
   ServerConfig,
   ServerInstallation,
   ServerSelfUpdateCapability,
-} from "@t3tools/contracts";
-import type { ServerUpdateState } from "@t3tools/client-runtime/state/server";
-import { compareSemverVersions, parseSemver } from "@t3tools/shared/semver";
+} from "@s8code/contracts";
+import type { ServerUpdateState } from "@s8code/client-runtime/state/server";
+import { compareSemverVersions, parseSemver } from "@s8code/shared/semver";
 import * as Schema from "effect/Schema";
 import { msg } from "gt-react";
 

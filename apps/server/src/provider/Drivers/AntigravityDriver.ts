@@ -1,18 +1,18 @@
-import * as McpProviderSessions from "@t3tools/provider-core/server/McpProviderSessions";
+import * as McpProviderSessions from "@s8code/provider-core/server/McpProviderSessions";
 import {
   AntigravitySettings,
   ProviderDriverKind,
   ProviderSetupError,
   RuntimeMode,
   settingsSecretLiteral,
-} from "@t3tools/contracts";
-import { writeFileStringAtomically } from "@t3tools/shared/atomicWrite";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { resolveSelfInvocation } from "@t3tools/shared/nodeRuntime";
+} from "@s8code/contracts";
+import { writeFileStringAtomically } from "@s8code/shared/atomicWrite";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import { resolveSelfInvocation } from "@s8code/shared/nodeRuntime";
 import {
   NodeRuntimeUnavailableError,
   nodeRuntimeUnavailableMessage,
-} from "@t3tools/shared/nodeRuntime";
+} from "@s8code/shared/nodeRuntime";
 import * as Digest from "effect/crypto/Digest";
 import * as SecureRandom from "effect/crypto/SecureRandom";
 import * as Deferred from "effect/Deferred";
@@ -29,7 +29,7 @@ import * as ChildProcess from "effect/process/ChildProcess";
 import * as ChildProcessSpawner from "effect/process/ChildProcessSpawner";
 import * as AcpErrors from "effect-acp/errors";
 
-import * as ProviderHost from "@t3tools/provider-core/server/ProviderHost";
+import * as ProviderHost from "@s8code/provider-core/server/ProviderHost";
 import {
   isAntigravityTextGenerationAvailable,
   makeAntigravityTextGeneration,
@@ -57,30 +57,30 @@ import {
   OPEN_MODEL_ACCESS_RELEASE,
   type AntigravityAcpRuntimeInput,
 } from "../acp/AntigravityAcpSupport.ts";
-import type * as AcpSessionRuntime from "@t3tools/provider-acp/server/AcpSessionRuntime";
-import type { ServerProviderDraft } from "@t3tools/provider-core/server/snapshotProbe";
+import type * as AcpSessionRuntime from "@s8code/provider-acp/server/AcpSessionRuntime";
+import type { ServerProviderDraft } from "@s8code/provider-core/server/snapshotProbe";
 import {
   removeAntigravitySessionFiles,
   retireAntigravityRuntimeTempDirs,
 } from "../acp/AntigravitySessionFiles.ts";
-import * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
-import * as ProviderContinuationRequests from "@t3tools/provider-core/server/ProviderContinuationRequests";
+import * as IdAllocator from "@s8code/provider-core/server/IdAllocator";
+import * as ProviderContinuationRequests from "@s8code/provider-core/server/ProviderContinuationRequests";
 import {
   makeAntigravityAdapterV2,
   type AntigravityAdapterV2RuntimeInput,
 } from "../../orchestration-v2/Adapters/AntigravityAdapterV2.ts";
-import { makeAcpNativeLoggerFactory } from "@t3tools/provider-acp/server/nativeLogging";
+import { makeAcpNativeLoggerFactory } from "@s8code/provider-acp/server/nativeLogging";
 import { ProviderDriverError } from "../Errors.ts";
 import { makeAntigravityProvider } from "../AntigravityProvider.ts";
-import * as ProviderEventLoggers from "@t3tools/provider-core/server/ProviderEventLoggers";
-import * as ModelCatalog from "@t3tools/provider-core/server/ModelCatalog";
+import * as ProviderEventLoggers from "@s8code/provider-core/server/ProviderEventLoggers";
+import * as ModelCatalog from "@s8code/provider-core/server/ModelCatalog";
 import {
   defaultProviderContinuationIdentity,
   type ProviderDriver,
   type ProviderInstance,
-} from "@t3tools/provider-core/server/driver";
-import { mergeProviderInstanceEnvironment } from "@t3tools/provider-core/server/instanceEnvironment";
-import { withInstanceIdentity } from "@t3tools/provider-core/server/instanceIdentity";
+} from "@s8code/provider-core/server/driver";
+import { mergeProviderInstanceEnvironment } from "@s8code/provider-core/server/instanceEnvironment";
+import { withInstanceIdentity } from "@s8code/provider-core/server/instanceIdentity";
 import { discoverAntigravitySkills, resolveAntigravityUserHome } from "./AntigravitySkills.ts";
 
 const DRIVER = ProviderDriverKind.make("antigravity");

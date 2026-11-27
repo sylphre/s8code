@@ -5,7 +5,7 @@ import {
   PROVIDER_SEND_TURN_MAX_IMAGE_BYTES,
   type ProviderSendTurnInput,
   type RuntimeMode,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as SecureRandom from "effect/crypto/SecureRandom";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
@@ -23,14 +23,14 @@ import {
   makeAntigravityStderrHandler,
   makeAntigravityStdoutTransform,
 } from "../antigravityAuthSupport.ts";
-import * as AcpSessionRuntime from "@t3tools/provider-acp/server/AcpSessionRuntime";
+import * as AcpSessionRuntime from "@s8code/provider-acp/server/AcpSessionRuntime";
 import {
   acpPermissionDisposition,
   unknownRecord,
   type AcpRuntimePolicy,
-} from "@t3tools/provider-acp/server/clientPolicy";
-import type { AcpSessionModeState } from "@t3tools/provider-acp/server/runtimeModel";
-import { T3_MCP_TOOL_NAMES } from "@t3tools/shared/t3McpToolPresentation";
+} from "@s8code/provider-acp/server/clientPolicy";
+import type { AcpSessionModeState } from "@s8code/provider-acp/server/runtimeModel";
+import { T3_MCP_TOOL_NAMES } from "@s8code/shared/t3McpToolPresentation";
 import packageJson from "../../../package.json" with { type: "json" };
 import { normalizeAntigravitySessionUpdate } from "./AntigravityProtocol.ts";
 

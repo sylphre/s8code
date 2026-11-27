@@ -4,16 +4,16 @@ import * as Effect from "effect/Effect";
 import * as Option from "effect/Option";
 import * as SubscriptionRef from "effect/SubscriptionRef";
 import * as Layer from "effect/Layer";
-import { EnvironmentId } from "@t3tools/contracts";
-import { RelayMobileClientId } from "@t3tools/contracts/relay";
+import { EnvironmentId } from "@s8code/contracts";
+import { RelayMobileClientId } from "@s8code/contracts/relay";
 import {
   EnvironmentSupervisor,
   AVAILABLE_CONNECTION_STATE,
   PrimaryConnectionTarget,
   type PreparedConnection,
-} from "@t3tools/client-runtime/connection";
-import { ManagedRelay } from "@t3tools/client-runtime/relay";
-import { layerRemoteHttpClient, type RpcSession } from "@t3tools/client-runtime/rpc";
+} from "@s8code/client-runtime/connection";
+import { ManagedRelay } from "@s8code/client-runtime/relay";
+import { layerRemoteHttpClient, type RpcSession } from "@s8code/client-runtime/rpc";
 import { HttpClient } from "effect/http";
 
 import * as MobileStorage from "../../persistence/mobile-storage";

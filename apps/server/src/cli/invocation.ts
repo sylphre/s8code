@@ -4,9 +4,9 @@ import * as Option from "effect/Option";
 import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
 
-import type { ServerInstallation } from "@t3tools/contracts";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { resolveCommandPath } from "@t3tools/shared/shell";
+import type { ServerInstallation } from "@s8code/contracts";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import { resolveCommandPath } from "@s8code/shared/shell";
 
 import packageJson from "../../package.json" with { type: "json" };
 import {

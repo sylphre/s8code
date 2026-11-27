@@ -1,7 +1,7 @@
 import {
   applyTerminalAttachStreamEvent,
   EMPTY_TERMINAL_SESSION_STATE,
-} from "@t3tools/client-runtime/state/terminal";
+} from "@s8code/client-runtime/state/terminal";
 import {
   EnvironmentId,
   ThreadId,
@@ -10,9 +10,9 @@ import {
   type FilesystemEntryMetadata,
   type ResolvedKeybindingsConfig,
   type TerminalSummary,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { Cause } from "effect";
-import { compileResolvedKeybindingsConfig, DEFAULT_KEYBINDINGS } from "@t3tools/shared/keybindings";
+import { compileResolvedKeybindingsConfig, DEFAULT_KEYBINDINGS } from "@s8code/shared/keybindings";
 import { Atom, AsyncResult } from "effect/reactivity";
 import type { GhosttyTerminalSurfaceOptions } from "~/terminal/ghostty/surface";
 import { AppAtomRegistryProvider, appAtomRegistry } from "../rpc/atomRegistry";
@@ -245,7 +245,7 @@ vi.mock("../editorPreferences", () => ({ useOpenInPreferredEditor: () => () => {
 vi.mock("./preview/openTerminalLinkInPreview", () => ({ openTerminalLinkInPreview: () => {} }));
 vi.mock("~/localApi", () => ({ readLocalApi: () => null }));
 vi.mock("../hooks/useSettings", async () => {
-  const { DEFAULT_CLIENT_SETTINGS } = await import("@t3tools/contracts/settings");
+  const { DEFAULT_CLIENT_SETTINGS } = await import("@s8code/contracts/settings");
   return {
     useClientSettings: <T,>(select: (settings: typeof DEFAULT_CLIENT_SETTINGS) => T) =>
       select(DEFAULT_CLIENT_SETTINGS),

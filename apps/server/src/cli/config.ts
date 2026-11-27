@@ -1,13 +1,13 @@
-import * as NetService from "@t3tools/shared/Net";
-import { isWildcardHost, normalizeHostname } from "@t3tools/shared/hostClassification";
+import * as NetService from "@s8code/shared/Net";
+import { isWildcardHost, normalizeHostname } from "@s8code/shared/hostClassification";
 import {
   OtlpHeadersFromString,
   OtlpProtocol,
   type SignalExport,
-} from "@t3tools/shared/observability";
-import * as OtelEnvironment from "@t3tools/shared/otelEnvironment";
-import { parsePersistedServerObservabilitySettings } from "@t3tools/shared/serverSettings";
-import { DesktopBackendBootstrap, PortSchema } from "@t3tools/contracts";
+} from "@s8code/shared/observability";
+import * as OtelEnvironment from "@s8code/shared/otelEnvironment";
+import { parsePersistedServerObservabilitySettings } from "@s8code/shared/serverSettings";
+import { DesktopBackendBootstrap, PortSchema } from "@s8code/contracts";
 import * as Config from "effect/Config";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";

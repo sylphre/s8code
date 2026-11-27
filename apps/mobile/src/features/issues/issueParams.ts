@@ -5,7 +5,7 @@ import {
   ProjectId,
   type IssueListEntry,
   type IssueRef,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 
 /** Route params that name one issue. Plain strings, so a link can carry them. */
 export type IssueParams = {

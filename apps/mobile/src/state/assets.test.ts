@@ -5,7 +5,7 @@ import {
   EnvironmentId,
   ThreadId,
   type AuthSessionState,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as Cause from "effect/Cause";
 import { Atom, AsyncResult } from "effect/reactivity";
 import { beforeEach, expect, it, vi } from "vite-plus/test";
@@ -50,12 +50,12 @@ vi.mock("../connection/runtime", () => ({ connectionAtomRuntime: {} }));
 vi.mock("../connection/catalog", () => ({
   environmentCatalog: { sessionGenerationAtom: () => null },
 }));
-vi.mock("@t3tools/client-runtime/state/assets", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@t3tools/client-runtime/state/assets")>()),
+vi.mock("@s8code/client-runtime/state/assets", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@s8code/client-runtime/state/assets")>()),
   createAssetEnvironmentAtoms: () => ({ createUrl: state.assetQuery }),
 }));
-vi.mock("@t3tools/client-runtime/state/runtime", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@t3tools/client-runtime/state/runtime")>()),
+vi.mock("@s8code/client-runtime/state/runtime", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@s8code/client-runtime/state/runtime")>()),
   executeAtomQuery: state.executeQuery,
 }));
 vi.mock("./use-atom-query-runner", () => ({ useAtomQueryRunner: () => state.mint }));

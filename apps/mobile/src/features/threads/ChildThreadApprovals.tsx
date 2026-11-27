@@ -1,10 +1,10 @@
 import { useAtomValue } from "@effect/atom-react";
-import { AuthOrchestrationOperateScope, type ScopedThreadRef } from "@t3tools/contracts";
-import type { ChildThreadApproval } from "@t3tools/client-runtime/state/thread-requests";
+import { AuthOrchestrationOperateScope, type ScopedThreadRef } from "@s8code/contracts";
+import type { ChildThreadApproval } from "@s8code/client-runtime/state/thread-requests";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@s8code/client-runtime/state/runtime";
 import { T, useGT, Var } from "gt-react-native";
 import { useState } from "react";
 import { useEnvironmentScope } from "../../state/session";

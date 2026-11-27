@@ -144,7 +144,7 @@ export class DesktopLinuxUrlHandler extends Context.Service<
   {
     readonly register: Effect.Effect<void>;
   }
->()("@t3tools/desktop/app/DesktopLinuxUrlHandler") {}
+>()("@s8code/desktop/app/DesktopLinuxUrlHandler") {}
 
 /** @public */
 export const make = Effect.gen(function* () {

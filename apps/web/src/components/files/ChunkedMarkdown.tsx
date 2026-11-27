@@ -1,4 +1,4 @@
-import type { ScopedThreadRef } from "@t3tools/contracts";
+import type { ScopedThreadRef } from "@s8code/contracts";
 import { LegendList, type LegendListRef } from "@legendapp/list/react";
 import { useRef, type KeyboardEventHandler } from "react";
 
@@ -8,7 +8,7 @@ import {
   LARGE_MARKDOWN_CHUNK_MAX_CHARS,
   type MarkdownChunk,
   withMarkdownDefinitions,
-} from "@t3tools/shared/markdownChunks";
+} from "@s8code/shared/markdownChunks";
 
 const ESTIMATED_LINE_PX = 24;
 const MAX_SAVED_POSITIONS = 100;

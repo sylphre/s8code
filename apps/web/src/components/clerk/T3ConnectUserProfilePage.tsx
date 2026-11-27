@@ -1,10 +1,10 @@
-import { findErrorTraceId, thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { findErrorTraceId, thrownErrorMessage } from "@s8code/client-runtime/errors";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
-import type { EnvironmentId } from "@t3tools/contracts";
-import type { RelayClientEnvironmentRecord } from "@t3tools/contracts/relay";
+} from "@s8code/client-runtime/state/runtime";
+import type { EnvironmentId } from "@s8code/contracts";
+import type { RelayClientEnvironmentRecord } from "@s8code/contracts/relay";
 import { ServerIcon } from "lucide-react";
 import { msg, T, useGT, useMessages, Var } from "gt-react";
 import { useRef, useState } from "react";

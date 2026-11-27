@@ -9,7 +9,7 @@ import {
   IssueTrackerKind,
   IssueTrackerProjectBinding,
   ProjectId,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 
 import {
   PersistenceDecodeError,

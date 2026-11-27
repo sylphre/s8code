@@ -12,12 +12,12 @@ import * as Semaphore from "effect/Semaphore";
 import * as NodePath from "node:path";
 import { FetchHttpClient, HttpClient, HttpClientRequest } from "effect/http";
 import { ChildProcessSpawner } from "effect/process";
-import { VcsProcessExitError } from "@t3tools/contracts";
-import { decodeJsonResult } from "@t3tools/shared/schemaJson";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import * as SourceControlHost from "@t3tools/source-control-core/server/SourceControlHost";
-import { collectUint8StreamText } from "@t3tools/provider-core/server/collectStreamText";
-import type { SourceControlProviderContext } from "@t3tools/source-control-core/server/SourceControlProvider";
+import { VcsProcessExitError } from "@s8code/contracts";
+import { decodeJsonResult } from "@s8code/shared/schemaJson";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import * as SourceControlHost from "@s8code/source-control-core/server/SourceControlHost";
+import { collectUint8StreamText } from "@s8code/provider-core/server/collectStreamText";
+import type { SourceControlProviderContext } from "@s8code/source-control-core/server/SourceControlProvider";
 
 // A Gitea list page can hold 50 pull request bodies; gt's output is otherwise capped at 1 MB.
 const API_MAX_OUTPUT_BYTES = 16 * 1024 * 1024;
@@ -181,7 +181,7 @@ export class ForgejoCli extends Context.Service<
       input: ForgejoApiInput,
     ) => Effect.Effect<SourceControlHost.SourceControlProcessOutput, ForgejoCliError>;
   }
->()("@t3tools/source-control-forgejo/server/ForgejoCli") {}
+>()("@s8code/source-control-forgejo/server/ForgejoCli") {}
 
 export const NO_DEFAULT_GT_SERVER =
   "Several gt servers are signed in and gt's default server has no account. Choose one with `gt config set default_host <server-url>`.";

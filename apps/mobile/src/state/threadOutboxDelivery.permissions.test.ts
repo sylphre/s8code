@@ -6,8 +6,8 @@ import {
   ProjectId,
   ProviderInstanceId,
   ThreadId,
-} from "@t3tools/contracts";
-import { attachmentUploadError } from "@t3tools/client-runtime/state/attachment-uploads";
+} from "@s8code/contracts";
+import { attachmentUploadError } from "@s8code/client-runtime/state/attachment-uploads";
 import * as Effect from "effect/Effect";
 import * as Cause from "effect/Cause";
 import { AsyncResult, type Atom } from "effect/reactivity";

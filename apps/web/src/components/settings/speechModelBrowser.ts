@@ -1,5 +1,5 @@
-import type { EnvironmentSpeechModel, SpeechBenchmarkTier } from "@t3tools/contracts";
-import { recommendSpeechModels } from "@t3tools/shared/speech";
+import type { EnvironmentSpeechModel, SpeechBenchmarkTier } from "@s8code/contracts";
+import { recommendSpeechModels } from "@s8code/shared/speech";
 
 export type SpeechModelSort = "recommended" | "size" | "accuracy" | "speed";
 

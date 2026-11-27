@@ -1,11 +1,11 @@
 import { msg } from "gt-react-native";
-import { unseenConnectDevices } from "@t3tools/client-runtime/connect-device-notices";
+import { unseenConnectDevices } from "@s8code/client-runtime/connect-device-notices";
 import {
   AuthAccessWriteScope,
   type AuthConnectDevice,
   type AuthPairingLink,
   type EnvironmentId,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { Fragment, useEffect, useEffectEvent } from "react";
 
 import * as Dialog from "../../components/ui/Dialog";

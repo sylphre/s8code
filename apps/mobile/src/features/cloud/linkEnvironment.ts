@@ -10,17 +10,17 @@ import {
   EnvironmentHttpForbiddenError,
   EnvironmentHttpInternalServerError,
   EnvironmentHttpUnauthorizedError,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import {
   RelayOkResponse,
   type RelayEnvironmentLinkResponse as RelayEnvironmentLinkResponseType,
   type RelayManagedEndpointProviderKind,
-} from "@t3tools/contracts/relay";
-import { EnvironmentSupervisor } from "@t3tools/client-runtime/connection";
-import { findErrorTraceId } from "@t3tools/client-runtime/errors";
-import { ManagedRelay, relayRequestFailureDetail } from "@t3tools/client-runtime/relay";
+} from "@s8code/contracts/relay";
+import { EnvironmentSupervisor } from "@s8code/client-runtime/connection";
+import { findErrorTraceId } from "@s8code/client-runtime/errors";
+import { ManagedRelay, relayRequestFailureDetail } from "@s8code/client-runtime/relay";
 
-import { executeConnectedEnvironmentHttpRequest } from "@t3tools/client-runtime/state/environmentHttpAuth";
+import { executeConnectedEnvironmentHttpRequest } from "@s8code/client-runtime/state/environmentHttpAuth";
 import { msg } from "gt-react-native";
 
 import { m } from "../../i18n/messages";

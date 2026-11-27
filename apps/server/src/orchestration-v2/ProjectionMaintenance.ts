@@ -1,5 +1,5 @@
-import type { ThreadId } from "@t3tools/contracts";
-import * as NodeSqliteClient from "@t3tools/shared/nodeSqliteClient";
+import type { ThreadId } from "@s8code/contracts";
+import * as NodeSqliteClient from "@s8code/shared/nodeSqliteClient";
 import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";
 import * as Duration from "effect/Duration";

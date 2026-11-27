@@ -7,9 +7,9 @@ import * as NodeURL from "node:url";
 import type {
   OrchestrationV2NativeChildStep,
   OrchestrationV2NativeChildWork,
-} from "@t3tools/contracts";
-import type { AcpSubagentTranscriptEntry } from "@t3tools/provider-acp/server/adapter";
-import type { AcpToolCallState } from "@t3tools/provider-acp/server/runtimeModel";
+} from "@s8code/contracts";
+import type { AcpSubagentTranscriptEntry } from "@s8code/provider-acp/server/adapter";
+import type { AcpToolCallState } from "@s8code/provider-acp/server/runtimeModel";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
 import * as Option from "effect/Option";

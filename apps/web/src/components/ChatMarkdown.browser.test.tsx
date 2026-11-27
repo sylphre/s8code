@@ -1,5 +1,5 @@
-import { MISSING_FILE_ACCESS_MESSAGE } from "@t3tools/client-runtime/state/assets";
-import { EnvironmentId, ThreadId } from "@t3tools/contracts";
+import { MISSING_FILE_ACCESS_MESSAGE } from "@s8code/client-runtime/state/assets";
+import { EnvironmentId, ThreadId } from "@s8code/contracts";
 import { AsyncResult } from "effect/reactivity";
 import { type ReactElement } from "react";
 import { describe, expect, it, vi } from "vite-plus/test";
@@ -15,7 +15,7 @@ import {
   useRightPanelStore,
 } from "../rightPanelStore";
 import type { MarkdownExtensions } from "../markdown/wordsHast";
-import { setMarkdownTaskChecked } from "@t3tools/shared/markdownTaskEdits";
+import { setMarkdownTaskChecked } from "@s8code/shared/markdownTaskEdits";
 import { HostImageUrlContext } from "./chat/hostImageUrl";
 import { getSyntaxHighlighterPromise } from "~/lib/syntaxHighlighting";
 
@@ -79,7 +79,7 @@ vi.mock(import("../state/server"), async (original) => {
   };
 });
 vi.mock(import("../state/session"), async (original) => {
-  const { AuthStandardClientScopes } = await import("@t3tools/contracts");
+  const { AuthStandardClientScopes } = await import("@s8code/contracts");
   const granted = new Set<string>(AuthStandardClientScopes);
   const hasScope = (environmentId: unknown, scope: string) =>
     environmentId !== null && granted.has(scope);

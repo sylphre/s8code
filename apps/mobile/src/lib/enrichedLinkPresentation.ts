@@ -1,4 +1,4 @@
-import type { ComposerContextRecord, EnvironmentId, ThreadId } from "@t3tools/contracts";
+import type { ComposerContextRecord, EnvironmentId, ThreadId } from "@s8code/contracts";
 import {
   composerChipSizeSuffix,
   contextChipIcon,
@@ -7,7 +7,7 @@ import {
   type ContextChipIconRef,
   UNAVAILABLE_CONTEXT_CHIP_PRESENTATION,
 } from "./composerChipPresentation";
-import { formatComposerModelMention } from "@t3tools/client-runtime/composer-model-mentions";
+import { formatComposerModelMention } from "@s8code/client-runtime/composer-model-mentions";
 import type {
   SelectableMarkdownModel,
   SelectableMarkdownSkill,
@@ -15,9 +15,9 @@ import type {
 import {
   formatComposerContextHref,
   parseComposerContextHref,
-} from "@t3tools/shared/composerContextReferences";
-import { hasThreadLinks, parseThreadLinkHref } from "@t3tools/shared/threadLinks";
-import { EXTENSIONLESS_FILE_NAMES } from "@t3tools/shared/markdownLinks";
+} from "@s8code/shared/composerContextReferences";
+import { hasThreadLinks, parseThreadLinkHref } from "@s8code/shared/threadLinks";
+import { EXTENSIONLESS_FILE_NAMES } from "@s8code/shared/markdownLinks";
 
 export function enrichedContextLinkPresentation(
   href: string,

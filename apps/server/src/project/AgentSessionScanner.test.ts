@@ -15,9 +15,9 @@ import {
   ProviderInstanceId,
   type ServerSettings as ContractServerSettings,
   ThreadId,
-} from "@t3tools/contracts";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { symlinksSupported } from "@t3tools/shared/testing/symlinks";
+} from "@s8code/contracts";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import { symlinksSupported } from "@s8code/shared/testing/symlinks";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
 import * as Fiber from "effect/Fiber";

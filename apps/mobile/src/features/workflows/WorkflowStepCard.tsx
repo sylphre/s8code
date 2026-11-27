@@ -7,20 +7,20 @@ import {
   workflowWithdrawal,
   type WorkflowBeat,
   type WorkflowRunNode,
-} from "@t3tools/client-runtime/workflows";
-import { scopeThreadRef } from "@t3tools/client-runtime/environment";
-import { resolveLinkedThreadOpen } from "@t3tools/client-runtime/linked-thread";
+} from "@s8code/client-runtime/workflows";
+import { scopeThreadRef } from "@s8code/client-runtime/environment";
+import { resolveLinkedThreadOpen } from "@s8code/client-runtime/linked-thread";
 import {
   EnvironmentId,
   ThreadId,
   type ScopedThreadRef,
   type WorkflowStep,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
   type AtomCommandResult,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@s8code/client-runtime/state/runtime";
 import { T, Var, useGT } from "gt-react-native";
 import type { ReactNode } from "react";
 import { View } from "react-native";

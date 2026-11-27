@@ -1,8 +1,8 @@
 import type { DraftId } from "~/composerDraftStore";
 import { useComposerDraftStore } from "~/composerDraftStore";
-import { resolveEnvironmentMachineKind, type ScopedProjectRef } from "@t3tools/contracts";
-import { scopedProjectKey, scopeProjectRef } from "@t3tools/client-runtime/environment";
-import { isScratchProject } from "@t3tools/client-runtime/state/projects";
+import { resolveEnvironmentMachineKind, type ScopedProjectRef } from "@s8code/contracts";
+import { scopedProjectKey, scopeProjectRef } from "@s8code/client-runtime/environment";
+import { isScratchProject } from "@s8code/client-runtime/state/projects";
 import { T, useGT, Var } from "gt-react";
 import { FolderPlusIcon } from "lucide-react";
 import { useAtomValue } from "@effect/atom-react";
@@ -16,8 +16,8 @@ import { useOrderWhileOpen } from "~/hooks/useOrderWhileOpen";
 import { moveDraftToProject } from "~/lib/moveDraftToProject";
 import { useProjectPin } from "~/hooks/useProjectGroupUpdate";
 import { useScratchProject } from "~/hooks/useScratchProject";
-import { isTriagePrompt } from "@t3tools/shared/triagePrompt";
-import { pickableProjectGroups } from "@t3tools/client-runtime/state/project-grouping";
+import { isTriagePrompt } from "@s8code/shared/triagePrompt";
+import { pickableProjectGroups } from "@s8code/client-runtime/state/project-grouping";
 import {
   buildSidebarProjectPickerEntries,
   projectGroupsSpanEnvironments,

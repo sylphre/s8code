@@ -1,7 +1,7 @@
-import type { RelayManagedEndpointRuntimeConfig } from "@t3tools/contracts/relay";
-import { RotatingFileSink, RotatingFileSinkError } from "@t3tools/shared/logging";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import * as RelayClient from "@t3tools/shared/relayClient";
+import type { RelayManagedEndpointRuntimeConfig } from "@s8code/contracts/relay";
+import { RotatingFileSink, RotatingFileSinkError } from "@s8code/shared/logging";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import * as RelayClient from "@s8code/shared/relayClient";
 import * as Clock from "effect/Clock";
 import * as Config from "effect/Config";
 import * as Context from "effect/Context";

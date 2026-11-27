@@ -1,7 +1,7 @@
 import { useMessages } from "gt-react";
 import { type ReactNode } from "react";
 import { cn } from "~/lib/utils";
-import { type TimestampFormat } from "@t3tools/contracts/settings";
+import { type TimestampFormat } from "@s8code/contracts/settings";
 import { formatChatTimestampTooltip, formatDayAwareTimestamp } from "../../timestampFormat";
 import { SharedTooltipTrigger } from "../ui/shared-tooltip";
 

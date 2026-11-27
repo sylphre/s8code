@@ -6,7 +6,7 @@ import * as Arr from "effect/Array";
 import { pipe } from "effect/Function";
 import * as Result from "effect/Result";
 
-import type { EnvironmentId, ThreadId } from "@t3tools/contracts";
+import type { EnvironmentId, ThreadId } from "@s8code/contracts";
 import { scopedThreadKey } from "../../lib/scopedEntities";
 import {
   buildReviewCommentTarget,

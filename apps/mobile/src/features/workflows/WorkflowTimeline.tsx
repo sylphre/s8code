@@ -10,8 +10,8 @@ import {
   type WorkflowBeat,
   type WorkflowFeedRow,
   type WorkflowRunNode,
-} from "@t3tools/client-runtime/workflows";
-import type { WorkflowQuestion } from "@t3tools/contracts";
+} from "@s8code/client-runtime/workflows";
+import type { WorkflowQuestion } from "@s8code/contracts";
 import { useGT, useMessages } from "gt-react-native";
 import type { ReactNode } from "react";
 import { Pressable, StyleSheet, View } from "react-native";

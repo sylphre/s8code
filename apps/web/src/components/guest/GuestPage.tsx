@@ -12,10 +12,10 @@ import {
   type OrchestrationV2ThreadProjection,
   type ThreadGuestMessage,
   type ThreadGuestMessageStatus,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
-import { formatAttachmentSize } from "@t3tools/client-runtime/state/attachments";
+import { formatAttachmentSize } from "@s8code/client-runtime/state/attachments";
 import { ArrowUpIcon, PaperclipIcon, XIcon } from "lucide-react";
 import {
   useEffect,

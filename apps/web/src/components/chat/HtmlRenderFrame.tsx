@@ -1,10 +1,10 @@
-import type { EnvironmentId, ScopedThreadRef } from "@t3tools/contracts";
+import type { EnvironmentId, ScopedThreadRef } from "@s8code/contracts";
 import {
   HTML_RENDER_COLUMN_WIDTH,
   htmlRenderFileName,
   htmlRenderFrameHeight,
   type HtmlRenderReference,
-} from "@t3tools/shared/htmlRender";
+} from "@s8code/shared/htmlRender";
 import { T, useGT, Var } from "gt-react";
 import { Maximize2Icon } from "lucide-react";
 import { useEffect, useState } from "react";

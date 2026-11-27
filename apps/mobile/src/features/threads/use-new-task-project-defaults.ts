@@ -1,10 +1,10 @@
-import { resolveFilesystemReadAccess } from "@t3tools/client-runtime/state/filesystem";
-import { isScratchProject } from "@t3tools/client-runtime/state/projects";
-import type { EnvironmentProject } from "@t3tools/client-runtime/state/shell";
-import type { ProjectReadFileResult } from "@t3tools/contracts";
-import { DEFAULT_SERVER_SETTINGS, T3_PROJECT_FILE_NAME } from "@t3tools/contracts";
-import { resolveNewThreadEnvMode, resolveProjectSettings } from "@t3tools/shared/projectSettings";
-import { parseT3ProjectFile } from "@t3tools/shared/t3ProjectFile";
+import { resolveFilesystemReadAccess } from "@s8code/client-runtime/state/filesystem";
+import { isScratchProject } from "@s8code/client-runtime/state/projects";
+import type { EnvironmentProject } from "@s8code/client-runtime/state/shell";
+import type { ProjectReadFileResult } from "@s8code/contracts";
+import { DEFAULT_SERVER_SETTINGS, T3_PROJECT_FILE_NAME } from "@s8code/contracts";
+import { resolveNewThreadEnvMode, resolveProjectSettings } from "@s8code/shared/projectSettings";
+import { parseT3ProjectFile } from "@s8code/shared/t3ProjectFile";
 
 import { m } from "../../i18n/messages";
 import { useEnvironmentServerConfig } from "../../state/entities";

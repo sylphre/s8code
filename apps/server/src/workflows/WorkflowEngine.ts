@@ -31,7 +31,7 @@ import {
   DEFAULT_WORKFLOW_SKIPPED_RUNS_KEPT,
   type WorkflowRunsUpdate,
   workflowQuestionKey,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 
 import { checkOutput, rejectionText } from "../orchestration-v2/runOutput.ts";
 import * as ServerSettings from "../serverSettings.ts";
@@ -74,7 +74,7 @@ import {
   Workflows,
 } from "./Workflows.ts";
 import * as WorkflowStore from "./WorkflowStore.ts";
-import { routineSpan, withoutRoutineSpans } from "@t3tools/shared/observability";
+import { routineSpan, withoutRoutineSpans } from "@s8code/shared/observability";
 
 const SWEEP_EVERY = Duration.seconds(15);
 const LOOK_EVERY = Duration.minutes(1);

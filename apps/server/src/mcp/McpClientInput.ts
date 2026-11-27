@@ -1,5 +1,5 @@
-import type { ProviderApprovalPushHooks } from "@t3tools/contracts";
-import type * as McpProviderSessions from "@t3tools/provider-core/server/McpProviderSessions";
+import type { ProviderApprovalPushHooks } from "@s8code/contracts";
+import type * as McpProviderSessions from "@s8code/provider-core/server/McpProviderSessions";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Option from "effect/Option";

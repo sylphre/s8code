@@ -1,9 +1,9 @@
-import type { KeybindingCommand, ResolvedKeybindingsConfig } from "@t3tools/contracts";
+import type { KeybindingCommand, ResolvedKeybindingsConfig } from "@s8code/contracts";
 import { useEffect, useState } from "react";
 import { expect, it } from "vite-plus/test";
 import { userEvent } from "vite-plus/test/browser";
 
-import { compileResolvedKeybindingsConfig } from "@t3tools/shared/keybindings";
+import { compileResolvedKeybindingsConfig } from "@s8code/shared/keybindings";
 import { isPreviewFocused } from "~/lib/previewFocus";
 import { surfaceShortcutKey } from "~/lib/surfaceShortcutKey";
 import { render } from "../../../test/render";

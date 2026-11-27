@@ -1,4 +1,4 @@
-import { formatPercent } from "@t3tools/shared/usageFormat";
+import { formatPercent } from "@s8code/shared/usageFormat";
 import { useMessages } from "gt-react";
 import type { ReactNode } from "react";
 import { SharedTooltipTrigger } from "../ui/shared-tooltip";

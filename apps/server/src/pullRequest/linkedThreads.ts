@@ -12,10 +12,10 @@ import {
   type OrchestrationV2DomainEvent,
   type ThreadId,
   type ThreadPullRequestKey,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
-import * as NodeSqliteClient from "@t3tools/shared/nodeSqliteClient";
+import * as NodeSqliteClient from "@s8code/shared/nodeSqliteClient";
 import * as Schema from "effect/Schema";
 import * as SqlClient from "effect/sql/SqlClient";
 

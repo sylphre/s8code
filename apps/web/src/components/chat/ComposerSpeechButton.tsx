@@ -1,5 +1,5 @@
-import type { VoiceInputState } from "@t3tools/client-runtime/voice-input";
-import { speechModelDownloadPercent } from "@t3tools/shared/speech";
+import type { VoiceInputState } from "@s8code/client-runtime/voice-input";
+import { speechModelDownloadPercent } from "@s8code/shared/speech";
 import { msg, useGT, useMessages } from "gt-react";
 import { CheckIcon, MicIcon, XIcon } from "lucide-react";
 import { useEffect, useState, type PointerEvent, type ReactElement } from "react";

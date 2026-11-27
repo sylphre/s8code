@@ -3,7 +3,7 @@ import type {
   ContextMenuItem,
   ContextMenuSource,
   LocalApi,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { msg } from "gt-react";
 
 import { isWebUrl } from "./browser/webUrl";

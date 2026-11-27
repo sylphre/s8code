@@ -1,4 +1,4 @@
-import type { ScopedThreadRef } from "@t3tools/contracts";
+import type { ScopedThreadRef } from "@s8code/contracts";
 import { msg, useMessages } from "gt-react";
 
 import type { MessageResolver } from "../../i18n/messages";

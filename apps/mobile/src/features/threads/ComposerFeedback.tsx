@@ -2,7 +2,7 @@ import { Button } from "../../components/ui/Button";
 import {
   codexFeedbackNotice,
   type CodexFeedbackSubmission,
-} from "@t3tools/client-runtime/state/threads";
+} from "@s8code/client-runtime/state/threads";
 import { useGT, useMessages } from "gt-react-native";
 import { Pressable, View } from "react-native";
 

@@ -1,5 +1,5 @@
-import { SourceControlProviderKind } from "@t3tools/contracts";
-import { ProjectId, type PullRequestSummary, type VcsStatusResult } from "@t3tools/contracts";
+import { SourceControlProviderKind } from "@s8code/contracts";
+import { ProjectId, type PullRequestSummary, type VcsStatusResult } from "@s8code/contracts";
 import { describe, expect, it } from "@effect/vitest";
 
 import {

@@ -5,10 +5,10 @@ import {
   formatConnectReachable,
   type RelayClientInstallProgressEvent,
   type RelayClientInstallProgressStage,
-} from "@t3tools/contracts";
-import { RelayOkResponse } from "@t3tools/contracts/relay";
-import * as RelayClient from "@t3tools/shared/relayClient";
-import { withRelayClientTracing } from "@t3tools/shared/relayTracing";
+} from "@s8code/contracts";
+import { RelayOkResponse } from "@s8code/contracts/relay";
+import * as RelayClient from "@s8code/shared/relayClient";
+import { withRelayClientTracing } from "@s8code/shared/relayTracing";
 import * as Cause from "effect/Cause";
 import * as Clock from "effect/Clock";
 import * as Config from "effect/Config";

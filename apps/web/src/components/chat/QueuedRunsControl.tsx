@@ -1,16 +1,16 @@
-import { scopeThreadRef } from "@t3tools/client-runtime/environment";
+import { scopeThreadRef } from "@s8code/client-runtime/environment";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
-import { deriveThreadQueueWorkflowState } from "@t3tools/client-runtime/state/thread-workflows";
-import { assistantCitationsToPlainText } from "@t3tools/shared/assistantCitations";
-import { isSlashCommand } from "@t3tools/shared/composerTrigger";
+} from "@s8code/client-runtime/state/runtime";
+import { deriveThreadQueueWorkflowState } from "@s8code/client-runtime/state/thread-workflows";
+import { assistantCitationsToPlainText } from "@s8code/shared/assistantCitations";
+import { isSlashCommand } from "@s8code/shared/composerTrigger";
 import {
   isAttachmentOnlyBootstrapPrompt,
   replaceComposerContextReferences,
-} from "@t3tools/shared/composerContextReferences";
-import { composerFileLinksToPlainText } from "@t3tools/shared/composerInlineTokens";
+} from "@s8code/shared/composerContextReferences";
+import { composerFileLinksToPlainText } from "@s8code/shared/composerInlineTokens";
 import {
   parseGoalCommand,
   type ChatAttachment as ContractChatAttachment,
@@ -18,8 +18,8 @@ import {
   type MessageId,
   type RunId,
   type ThreadId,
-} from "@t3tools/contracts";
-import { resolveUserMessagePresentation } from "@t3tools/client-runtime/user-message";
+} from "@s8code/contracts";
+import { resolveUserMessagePresentation } from "@s8code/client-runtime/user-message";
 import { Link } from "@tanstack/react-router";
 import {
   ArrowUpIcon,
@@ -32,7 +32,7 @@ import {
 } from "lucide-react";
 import * as DateTime from "effect/DateTime";
 import { msg, T, useGT, useMessages } from "gt-react";
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@s8code/client-runtime/errors";
 import { useId, useImperativeHandle, useRef, useState, type ReactNode, type Ref } from "react";
 
 import { useAssetUrls } from "../../assets/assetUrls";
@@ -47,7 +47,7 @@ import { toastManager } from "../ui/toast";
 import { m } from "../../i18n/messages";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { SharedTooltipTrigger } from "../ui/shared-tooltip";
-import type { TimestampFormat } from "@t3tools/contracts/settings";
+import type { TimestampFormat } from "@s8code/contracts/settings";
 import { GuestMessageName } from "./guestMessageStyle";
 import { TimelineRowTimestamp } from "./TimelineRowParts";
 import { FoldedMessageHeader, useScheduledTaskTitle } from "./TimelineUserMessageRow";

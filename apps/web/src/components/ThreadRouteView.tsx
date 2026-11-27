@@ -1,8 +1,8 @@
 import { useAtomValue } from "@effect/atom-react";
-import { parseScopedThreadKey, scopedThreadKey } from "@t3tools/client-runtime/environment";
-import { parseThreadKey, threadKey } from "@t3tools/client-runtime/state/entities";
-import { visibilityParentKey } from "@t3tools/client-runtime/state/threads";
-import type { ScopedThreadRef } from "@t3tools/contracts";
+import { parseScopedThreadKey, scopedThreadKey } from "@s8code/client-runtime/environment";
+import { parseThreadKey, threadKey } from "@s8code/client-runtime/state/entities";
+import { visibilityParentKey } from "@s8code/client-runtime/state/threads";
+import type { ScopedThreadRef } from "@s8code/contracts";
 import * as Option from "effect/Option";
 import { Link, Navigate, useNavigate } from "@tanstack/react-router";
 import { T } from "gt-react";

@@ -16,7 +16,7 @@ import {
   ScheduledTaskId,
   ThreadId,
   TurnItemId,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
 import * as Exit from "effect/Exit";
@@ -44,8 +44,8 @@ import * as ProviderSessionManager from "./ProviderSessionManager.ts";
 import { pendingStoppedDelegatedTasks } from "./RestartBackgroundNote.ts";
 import * as ThreadManagementService from "./ThreadManagementService.ts";
 import * as ProviderReplayHarness from "./testkit/ProviderReplayHarness.ts";
-import { checkpointWorkspace } from "@t3tools/provider-testing/replayWorkspace";
-import type * as ProviderAdapter from "@t3tools/provider-core/server/ProviderAdapter";
+import { checkpointWorkspace } from "@s8code/provider-testing/replayWorkspace";
+import type * as ProviderAdapter from "@s8code/provider-core/server/ProviderAdapter";
 
 const instanceId = ProviderInstanceId.make("codex");
 const modelSelection = { instanceId, model: "gpt-5.1-codex" };

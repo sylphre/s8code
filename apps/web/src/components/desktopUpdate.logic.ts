@@ -1,10 +1,10 @@
-import { desktopTrackMismatchText } from "@t3tools/client-runtime/state/server";
+import { desktopTrackMismatchText } from "@s8code/client-runtime/state/server";
 import type {
   DesktopBridge,
   DesktopUpdateActionResult,
   DesktopUpdateState,
-} from "@t3tools/contracts";
-import { desktopUpdateChannelOf } from "@t3tools/shared/cliRelease";
+} from "@s8code/contracts";
+import { desktopUpdateChannelOf } from "@s8code/shared/cliRelease";
 import { msg } from "gt-react";
 
 import { m, type MessageResolver } from "../i18n/messages";

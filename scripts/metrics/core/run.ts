@@ -4,7 +4,7 @@
 import * as NodeHttp from "node:http";
 
 import * as NodeHttpServer from "@effect/platform-node/NodeHttpServer";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import * as HostProcess from "@s8code/shared/HostProcess";
 import * as Clock from "effect/Clock";
 import * as Console from "effect/Console";
 import * as Context from "effect/Context";

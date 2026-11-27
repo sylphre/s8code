@@ -1,6 +1,6 @@
 import * as Result from "effect/Result";
 import * as Schema from "effect/Schema";
-import { TrimmedNonEmptyString } from "@t3tools/contracts";
+import { TrimmedNonEmptyString } from "@s8code/contracts";
 import type {
   IssueActor,
   IssueComment,
@@ -11,9 +11,9 @@ import type {
   IssueTemplate,
   IssueViewerPermissions,
   PullRequestState,
-} from "@t3tools/contracts";
-import { decodeJsonResult } from "@t3tools/shared/schemaJson";
-import type { TrackerIssueSummary } from "@t3tools/source-control-core/server/IssueTracker";
+} from "@s8code/contracts";
+import { decodeJsonResult } from "@s8code/shared/schemaJson";
+import type { TrackerIssueSummary } from "@s8code/source-control-core/server/IssueTracker";
 
 import type * as Issues from "./issues.graphql.ts";
 import { toReactions } from "./gitHubPullRequestJson.ts";

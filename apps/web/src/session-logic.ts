@@ -1,6 +1,6 @@
-import type { ThreadStructureRuntime } from "@t3tools/client-runtime/state/shell";
+import type { ThreadStructureRuntime } from "@s8code/client-runtime/state/shell";
 import { msg } from "gt-react";
-import { resolveThreadWorkingStartedAt } from "@t3tools/client-runtime/state/models";
+import { resolveThreadWorkingStartedAt } from "@s8code/client-runtime/state/models";
 import {
   type AssetResource,
   type OrchestrationV2Checkpoint,
@@ -16,31 +16,31 @@ import {
   type ToolActivitySource,
   type ThreadId,
   type TurnItemId,
-} from "@t3tools/contracts";
-import { extractToolActivityPresentation } from "@t3tools/client-runtime/work-log/tool-presentation";
-import { classifyToolActivity, collectToolFilePaths } from "@t3tools/shared/toolActivity";
-import { formatReadToolLabel, formatSearchToolLabel } from "@t3tools/shared/toolActivityCopy";
-import type { HtmlRenderReference } from "@t3tools/shared/htmlRender";
-import { turnItemDetailRevision } from "@t3tools/client-runtime/work-log/item-detail";
-import type { McpAppReference } from "@t3tools/shared/mcpApp";
+} from "@s8code/contracts";
+import { extractToolActivityPresentation } from "@s8code/client-runtime/work-log/tool-presentation";
+import { classifyToolActivity, collectToolFilePaths } from "@s8code/shared/toolActivity";
+import { formatReadToolLabel, formatSearchToolLabel } from "@s8code/shared/toolActivityCopy";
+import type { HtmlRenderReference } from "@s8code/shared/htmlRender";
+import { turnItemDetailRevision } from "@s8code/client-runtime/work-log/item-detail";
+import type { McpAppReference } from "@s8code/shared/mcpApp";
 import {
   htmlRenderFromToolItem,
   mcpAppFromToolItem,
   sentMessageFromToolItem,
-} from "@t3tools/shared/toolOutput";
+} from "@s8code/shared/toolOutput";
 import {
   contextCompactionLabel,
   workEntryIndicatesToolFailure,
-} from "@t3tools/client-runtime/work-log/presentation";
-import type { ThreadCheckpointSummary } from "@t3tools/client-runtime/state/thread-checkpoints";
-import { repositoryCheckpointScopeIds } from "@t3tools/client-runtime/state/thread-repositories";
+} from "@s8code/client-runtime/work-log/presentation";
+import type { ThreadCheckpointSummary } from "@s8code/client-runtime/state/thread-checkpoints";
+import { repositoryCheckpointScopeIds } from "@s8code/client-runtime/state/thread-repositories";
 import type {
   ThreadPendingApproval,
   ThreadPendingUserInput,
-} from "@t3tools/client-runtime/state/thread-requests";
-import type { ThreadRunSummary, ThreadRuntimeSummary } from "@t3tools/client-runtime/state/shell";
-import { threadRuntimeHasInterruptibleRun } from "@t3tools/client-runtime/state/thread-execution";
-import { turnItemIsWorkspacePreparation } from "@t3tools/client-runtime/state/turn-item-presentation";
+} from "@s8code/client-runtime/state/thread-requests";
+import type { ThreadRunSummary, ThreadRuntimeSummary } from "@s8code/client-runtime/state/shell";
+import { threadRuntimeHasInterruptibleRun } from "@s8code/client-runtime/state/thread-execution";
+import { turnItemIsWorkspacePreparation } from "@s8code/client-runtime/state/turn-item-presentation";
 
 import {
   isImageAttachment,
@@ -58,7 +58,7 @@ import { shallow } from "zustand/vanilla/shallow";
 export {
   workEntryDisplayIndicatesToolFailure,
   workEntryIndicatesToolFailure,
-} from "@t3tools/client-runtime/work-log/presentation";
+} from "@s8code/client-runtime/work-log/presentation";
 
 export type WorkLogToolLifecycleStatus =
   | "idle"
@@ -69,7 +69,7 @@ export type WorkLogToolLifecycleStatus =
   | "stopped";
 
 export interface WorkLogEntry {
-  readonly questionAnswer?: import("@t3tools/contracts").UserInputAttachmentAnswerPayload;
+  readonly questionAnswer?: import("@s8code/contracts").UserInputAttachmentAnswerPayload;
   readonly id: string;
   readonly createdAt: string;
   readonly runId?: RunId | null;

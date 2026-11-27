@@ -9,8 +9,8 @@ import type {
   SettingSource,
   ToolCall,
 } from "@cursor/sdk";
-import { formatReadToolLabel, formatSearchToolLabel } from "@t3tools/shared/toolActivity";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import { formatReadToolLabel, formatSearchToolLabel } from "@s8code/shared/toolActivity";
+import * as HostProcess from "@s8code/shared/HostProcess";
 import {
   isOrchestrationV2WorkActive,
   defaultInstanceIdForDriver,
@@ -31,7 +31,7 @@ import {
   type ServerProviderModel,
   type ServerProviderSkill,
   type ThreadId,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as DateTime from "effect/DateTime";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
@@ -44,12 +44,12 @@ import * as Ref from "effect/Ref";
 import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
 
-import * as ProviderContinuationRequests from "@t3tools/provider-core/server/ProviderContinuationRequests";
-import * as ProviderHost from "@t3tools/provider-core/server/ProviderHost";
-import { backgroundWorkNotification } from "@t3tools/provider-core/server/notification";
-import { mcpToolPresentation } from "@t3tools/provider-core/server/mcpToolPresentation";
-import * as McpProviderSessions from "@t3tools/provider-core/server/McpProviderSessions";
-import * as McpProviderSession from "@t3tools/provider-core/server/mcpSession";
+import * as ProviderContinuationRequests from "@s8code/provider-core/server/ProviderContinuationRequests";
+import * as ProviderHost from "@s8code/provider-core/server/ProviderHost";
+import { backgroundWorkNotification } from "@s8code/provider-core/server/notification";
+import { mcpToolPresentation } from "@s8code/provider-core/server/mcpToolPresentation";
+import * as McpProviderSessions from "@s8code/provider-core/server/McpProviderSessions";
+import * as McpProviderSession from "@s8code/provider-core/server/mcpSession";
 import { CursorTransportFailure } from "./transportFailure.ts";
 import { cursorContextWindowTokens, cursorSdkModelSelection } from "./sdkModel.ts";
 import {
@@ -60,21 +60,21 @@ import {
   rewriteCursorSkillMentions,
 } from "./skills.ts";
 import { cursorWorkspaceMcpServers } from "./workspaceMcpServers.ts";
-import { t3OrchestrationPrompt } from "@t3tools/provider-core/server/orchestrationInstructions";
-import { buildRuntimeInstructions } from "@t3tools/provider-core/server/runtimeInstructions";
-import * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
-import { makeProviderFailure } from "@t3tools/provider-core/server/failure";
-import { turnScopedSelectionTransition } from "@t3tools/provider-core/server/selectionTransition";
+import { t3OrchestrationPrompt } from "@s8code/provider-core/server/orchestrationInstructions";
+import { buildRuntimeInstructions } from "@s8code/provider-core/server/runtimeInstructions";
+import * as IdAllocator from "@s8code/provider-core/server/IdAllocator";
+import { makeProviderFailure } from "@s8code/provider-core/server/failure";
+import { turnScopedSelectionTransition } from "@s8code/provider-core/server/selectionTransition";
 import {
   isProviderNativeImageAttachment,
   providerMessageTextWithAttachmentPaths,
-} from "@t3tools/provider-core/server/attachmentPrompt";
-import * as ProviderAdapter from "@t3tools/provider-core/server/ProviderAdapter";
+} from "@s8code/provider-core/server/attachmentPrompt";
+import * as ProviderAdapter from "@s8code/provider-core/server/ProviderAdapter";
 import {
   makeSubagentChildThread,
   makeSubagentConversationArtifacts,
   subagentThreadTitle,
-} from "@t3tools/provider-core/server/subagentProjection";
+} from "@s8code/provider-core/server/subagentProjection";
 import * as CursorAgentSdk from "./CursorAgentSdk.ts";
 import { isCursorSdkError } from "./sdk.ts";
 export { cursorSdkModelSelection } from "./sdkModel.ts";

@@ -3,7 +3,7 @@ import {
   fullAccessOverrideExplanation,
   PUSH_HOOKS_APPROVAL_LABEL,
   PUSH_HOOKS_APPROVAL_QUESTION,
-} from "@t3tools/client-runtime/state/thread-requests";
+} from "@s8code/client-runtime/state/thread-requests";
 import { msg, T, useMessages } from "gt-react";
 import { ShieldIcon } from "lucide-react";
 import { memo, use } from "react";

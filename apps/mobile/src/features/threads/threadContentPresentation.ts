@@ -1,5 +1,5 @@
-import { type EnvironmentConnectionPhase } from "@t3tools/client-runtime/connection";
-import type { EnvironmentThreadStatus } from "@t3tools/client-runtime/state/threads";
+import { type EnvironmentConnectionPhase } from "@s8code/client-runtime/connection";
+import type { EnvironmentThreadStatus } from "@s8code/client-runtime/state/threads";
 import { msg } from "gt-react-native";
 
 import { m, type MessageResolver } from "../../i18n/messages";

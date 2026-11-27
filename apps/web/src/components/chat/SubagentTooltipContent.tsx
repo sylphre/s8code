@@ -6,13 +6,13 @@ import type {
   ProviderDriverKind,
   ProviderInstanceId,
   OrchestrationV2Subagent,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import {
   resolveSubagentMetadata,
   subagentDetailPreview,
-} from "@t3tools/client-runtime/state/subagent-display";
-import { readSelectedEffortValue } from "@t3tools/client-runtime/state/thread-execution";
-import { resolveSelectableModel } from "@t3tools/shared/model";
+} from "@s8code/client-runtime/state/subagent-display";
+import { readSelectedEffortValue } from "@s8code/client-runtime/state/thread-execution";
+import { resolveSelectableModel } from "@s8code/shared/model";
 import { getTraitsSpeedDisplay, TraitsSpeedIcon } from "./TraitsSpeed";
 import { useGT, useMessages } from "gt-react";
 import type { ReactNode } from "react";

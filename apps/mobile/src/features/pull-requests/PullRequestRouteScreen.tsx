@@ -2,7 +2,7 @@ import {
   isFileDiffCollapsed,
   withFileDiffFold,
   type FileDiffFoldChoices,
-} from "@t3tools/client-runtime/pull-request-diff-fold";
+} from "@s8code/client-runtime/pull-request-diff-fold";
 import {
   parsePullRequestAnchor,
   pullRequestAnchorMatchesUrl,
@@ -10,7 +10,7 @@ import {
   pullRequestLinkCommit,
   resolvePullRequestAnchorRange,
   resolvePullRequestReviewAnchor,
-} from "@t3tools/shared/pullRequestAnchor";
+} from "@s8code/shared/pullRequestAnchor";
 import { T, useGT, useMessages, Var } from "gt-react-native";
 import { AppActivityIndicator } from "../../components/ui/AppActivityIndicator";
 import { Chip } from "../../components/ui/Chip";
@@ -50,7 +50,7 @@ import {
   pullRequestDiffInitialPosition,
 } from "./pullRequestDiffDebug";
 import { usePullRequestDiffHighlightFiles } from "./usePullRequestDiffHighlightFiles";
-import { isTestChangedFile } from "@t3tools/shared/changedFileKind";
+import { isTestChangedFile } from "@s8code/shared/changedFileKind";
 import {
   useFocusEffect,
   useNavigation,
@@ -59,7 +59,7 @@ import {
 } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RegistryContext, useAtomRefresh, useAtomValue } from "@effect/atom-react";
-import { runAtomCommand } from "@t3tools/client-runtime/state/runtime";
+import { runAtomCommand } from "@s8code/client-runtime/state/runtime";
 import { pullRequestReviewKey } from "./pullRequestReviewDrafts";
 import {
   EnvironmentId,
@@ -68,7 +68,7 @@ import {
   type PullRequestDetail,
   type PullRequestListEntry,
   type PullRequestSummary,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { PullRequestOverviewLoading } from "./PullRequestOverviewLoading";
 import { copyPullRequestLink, sharePullRequestLink } from "./pullRequestLink";
 import { pullRequestStatus } from "./pullRequestStatus";
@@ -146,7 +146,7 @@ import { PullRequestStackCard } from "./PullRequestStackCard";
 import { usePullRequestStack, type PullRequestStackState } from "./usePullRequestStack";
 import { usePullRequestEnvironmentFallback } from "./usePullRequestEnvironmentFallback";
 import { subscribePullRequestFileJump } from "./pullRequestFileJump";
-import { sourceControlClients } from "@t3tools/client-runtime/source-control-clients";
+import { sourceControlClients } from "@s8code/client-runtime/source-control-clients";
 import { changeRequestTermKind } from "../../lib/changeRequestTerm";
 import { WorkflowRunsAbout } from "../workflows/WorkflowRunsAbout";
 

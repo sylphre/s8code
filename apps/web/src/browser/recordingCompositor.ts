@@ -1,4 +1,4 @@
-import type { DesktopPreviewRecordingInput } from "@t3tools/contracts";
+import type { DesktopPreviewRecordingInput } from "@s8code/contracts";
 
 import { readPreviewAnnotationTheme } from "./annotationTheme";
 

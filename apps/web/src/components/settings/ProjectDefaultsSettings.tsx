@@ -1,11 +1,11 @@
-import { managedRuntimeModeDenial } from "@t3tools/client-runtime/contract-labels";
+import { managedRuntimeModeDenial } from "@s8code/client-runtime/contract-labels";
 import {
   DEFAULT_SERVER_SETTINGS,
   type ModelSelection,
   type WorktreeSubmodules,
-} from "@t3tools/contracts";
-import { createModelSelection, pickModelSelection } from "@t3tools/shared/model";
-import { resolveProjectSettings } from "@t3tools/shared/projectSettings";
+} from "@s8code/contracts";
+import { createModelSelection, pickModelSelection } from "@s8code/shared/model";
+import { resolveProjectSettings } from "@s8code/shared/projectSettings";
 import { useNavigate } from "@tanstack/react-router";
 import { T, useGT, useMessages } from "gt-react";
 

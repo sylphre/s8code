@@ -1,7 +1,7 @@
 import { msg, useMessages } from "gt-react";
 import { useAtomValue } from "@effect/atom-react";
-import { connectionErrorText } from "@t3tools/client-runtime/connection";
-import { PROVIDER_DISPLAY_NAMES } from "@t3tools/contracts";
+import { connectionErrorText } from "@s8code/client-runtime/connection";
+import { PROVIDER_DISPLAY_NAMES } from "@s8code/contracts";
 
 import { APP_VERSION } from "~/branding";
 import { isDesktopLocalConnectionTarget } from "~/connection/desktopLocal";

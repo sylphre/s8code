@@ -1,6 +1,6 @@
 // What a step's own code may use besides plain Effect: state shared between runs, and a way to
 // wake a run that waits. Both touch the world, so they are for inside `step` and `onEnd`.
-import type { WorkflowRunSubject } from "@t3tools/contracts";
+import type { WorkflowRunSubject } from "@s8code/contracts";
 import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";
 import * as Deferred from "effect/Deferred";

@@ -11,10 +11,10 @@ import {
   paceRemainingPercent,
   remainingPercent,
   type ResetCreditChoice,
-} from "@t3tools/shared/usageLimits";
+} from "@s8code/shared/usageLimits";
 import { T, Var, useGT, useMessages } from "gt-react";
 import type { Popover as PopoverPrimitive } from "@base-ui/react/popover";
-import { normalizeProviderAccentColor } from "@t3tools/client-runtime/state/provider-instance-display";
+import { normalizeProviderAccentColor } from "@s8code/client-runtime/state/provider-instance-display";
 import { AlertTriangleIcon, ExternalLinkIcon, TicketIcon } from "lucide-react";
 import {
   createContext,
@@ -46,7 +46,7 @@ import {
   formatDuration,
   formatResetsIn,
   resetCreditChoices,
-} from "@t3tools/shared/usageLimitsCopy";
+} from "@s8code/shared/usageLimitsCopy";
 
 function accountInitials(email: string): string {
   const [local = "", domain = ""] = email.split("@");

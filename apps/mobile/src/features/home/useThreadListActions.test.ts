@@ -1,5 +1,5 @@
 import { makeThreadShellFixture } from "../../test-fixtures";
-import type { EnvironmentThreadShell } from "@t3tools/client-runtime/state/shell";
+import type { EnvironmentThreadShell } from "@s8code/client-runtime/state/shell";
 import {
   AuthOrchestrationOperateScope,
   EnvironmentId,
@@ -8,7 +8,7 @@ import {
   RunId,
   ThreadId,
   type ThreadTitleRegenerationOutcome,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as Cause from "effect/Cause";
 import { AsyncResult } from "effect/reactivity";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vite-plus/test";

@@ -17,16 +17,16 @@ import { HttpClient, HttpClientResponse } from "effect/http";
 import * as ChildProcess from "effect/process/ChildProcess";
 import * as ChildProcessSpawner from "effect/process/ChildProcessSpawner";
 import * as TestClock from "effect/testing/TestClock";
-import { GrokSettings } from "@t3tools/provider-grok/settings";
+import { GrokSettings } from "@s8code/provider-grok/settings";
 
 import {
   buildGrokModelCapabilities,
   checkGrokProviderStatus,
   grokSlashCommandsFromInitialize,
   parseGrokModelsCliOutput,
-} from "@t3tools/provider-grok/testing";
-import { execScriptSource, writeFakeCli } from "@t3tools/provider-testing/fakeCli";
-import { grokUsageResponseToLimits, readGrokAccount } from "@t3tools/provider-grok/testing";
+} from "@s8code/provider-grok/testing";
+import { execScriptSource, writeFakeCli } from "@s8code/provider-testing/fakeCli";
+import { grokUsageResponseToLimits, readGrokAccount } from "@s8code/provider-grok/testing";
 
 const decodeGrokSettings = Schema.decodeSync(GrokSettings);
 const __dirname = NodePath.dirname(NodeURL.fileURLToPath(import.meta.url));

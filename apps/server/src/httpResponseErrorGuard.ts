@@ -2,7 +2,7 @@
 // @effect-diagnostics nodeBuiltinImport:off
 import type * as NodeHttp from "node:http";
 import type * as NodeStream from "node:stream";
-import type { DatabaseMigrationProgress, ServerStartupStatus } from "@t3tools/contracts";
+import type { DatabaseMigrationProgress, ServerStartupStatus } from "@s8code/contracts";
 
 export function guardHttpResponseWriteErrors<T extends NodeHttp.Server>(
   server: T,

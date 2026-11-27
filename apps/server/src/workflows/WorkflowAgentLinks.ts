@@ -6,12 +6,12 @@ import {
   OrchestratorMcpThreadReadResult,
   OrchestratorMcpThreadSendResult,
   OrchestratorMcpThreadWaitResult,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import {
   fileBasename,
   isWindowsDrivePath,
   normalizeProjectPathForComparison,
-} from "@t3tools/shared/path";
+} from "@s8code/shared/path";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Option from "effect/Option";

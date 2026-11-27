@@ -35,15 +35,15 @@ import {
   type OrchestrationV2TurnItem,
   type TerminalMetadataStreamEvent,
   type ResolvedKeybindingsConfig,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import type {
   ConnectionAttemptError,
   ConnectionCatalogEntry,
   EnvironmentConnectionLease,
   RouteCheck,
-} from "@t3tools/client-runtime/connection";
-import type { WsRpcProtocolClient } from "@t3tools/client-runtime/rpc";
-import { DEFAULT_RESOLVED_KEYBINDINGS } from "@t3tools/shared/keybindings";
+} from "@s8code/client-runtime/connection";
+import type { WsRpcProtocolClient } from "@s8code/client-runtime/rpc";
+import { DEFAULT_RESOLVED_KEYBINDINGS } from "@s8code/shared/keybindings";
 import { APP_VERSION } from "~/branding";
 import * as DateTime from "effect/DateTime";
 import * as Deferred from "effect/Deferred";

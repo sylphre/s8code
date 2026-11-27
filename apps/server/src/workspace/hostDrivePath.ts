@@ -1,5 +1,5 @@
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { isWindowsDrivePath } from "@t3tools/shared/path";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import { isWindowsDrivePath } from "@s8code/shared/path";
 import * as Effect from "effect/Effect";
 import * as ChildProcess from "effect/process/ChildProcess";
 import * as ChildProcessSpawner from "effect/process/ChildProcessSpawner";

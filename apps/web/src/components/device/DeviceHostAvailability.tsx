@@ -1,4 +1,4 @@
-import type { DevicePlatformAvailability } from "@t3tools/contracts";
+import type { DevicePlatformAvailability } from "@s8code/contracts";
 import { useGT } from "gt-react";
 import { Check, Minus } from "lucide-react";
 import { SharedTooltipTrigger } from "../ui/shared-tooltip";

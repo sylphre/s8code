@@ -2,14 +2,14 @@ import { pipe } from "effect/Function";
 import {
   IMAGE_DIMENSIONS_HEADER_BYTES,
   readImageDimensions,
-} from "@t3tools/shared/imageDimensions";
+} from "@s8code/shared/imageDimensions";
 import { XMLParser, XMLValidator } from "fast-xml-parser";
 import { decodeHTMLAttribute, decodeHTMLStrict as decodeEntities } from "entities";
 import type JSZip from "jszip";
 import {
   terminalOutputCollapseRedraws,
   terminalOutputPlainText,
-} from "@t3tools/shared/terminalOutput";
+} from "@s8code/shared/terminalOutput";
 
 import { type OfficeWorkerResult, type NotebookCell } from "./officePreviewProtocol";
 import { PreviewError } from "./previewFailure";

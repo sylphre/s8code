@@ -1,6 +1,6 @@
 /* oxlint-disable react/no-array-index-key -- Read-only cells retain their database row and column positions. */
-import { decodeFilePreviewText, filePreviewKind } from "@t3tools/shared/filePreview";
-import { formatAttachmentSize } from "@t3tools/client-runtime/state/attachments";
+import { decodeFilePreviewText, filePreviewKind } from "@s8code/shared/filePreview";
+import { formatAttachmentSize } from "@s8code/client-runtime/state/attachments";
 import { ChevronLeftIcon, ChevronRightIcon, FileIcon, FolderIcon } from "lucide-react";
 import { msg, T, useGT, useMessages } from "gt-react";
 import { lazy, Suspense, useEffect, useRef, useState } from "react";

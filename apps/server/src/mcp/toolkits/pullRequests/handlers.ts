@@ -15,7 +15,7 @@ import {
   type ThreadId,
   type ThreadPullRequestLink,
   TrimmedNonEmptyString,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as Cause from "effect/Cause";
 import * as SecureRandom from "effect/crypto/SecureRandom";
 import * as Effect from "effect/Effect";

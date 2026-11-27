@@ -40,8 +40,8 @@ import {
   type IssueUpdateInput,
   type OrchestrationProjectShell,
   type ProjectId,
-} from "@t3tools/contracts";
-import * as SourceControlRateLimit from "@t3tools/source-control-core/server/SourceControlRateLimit";
+} from "@s8code/contracts";
+import * as SourceControlRateLimit from "@s8code/source-control-core/server/SourceControlRateLimit";
 import {
   IssueTrackerError,
   isStandaloneIssueTracker,
@@ -50,9 +50,9 @@ import {
   type StandaloneIssueTrackerApi,
   type TrackerIssueDetail,
   type TrackerIssueLink,
-} from "@t3tools/source-control-core/server/IssueTracker";
-import { asIssueTrackerAccount } from "@t3tools/source-control-core/server/IssueTrackerHost";
-import { parseUrl } from "@t3tools/shared/url";
+} from "@s8code/source-control-core/server/IssueTracker";
+import { asIssueTrackerAccount } from "@s8code/source-control-core/server/IssueTrackerHost";
+import { parseUrl } from "@s8code/shared/url";
 
 import * as IssueTrackerBindings from "../persistence/IssueTrackerBindings.ts";
 import * as ProjectService from "../project/ProjectService.ts";

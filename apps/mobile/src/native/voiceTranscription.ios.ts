@@ -10,7 +10,7 @@ import {
   type PreparedVoiceTranscription,
   type VoiceTranscriber,
   type VoiceTranscriptionOptions,
-} from "@t3tools/client-runtime/voice-input";
+} from "@s8code/client-runtime/voice-input";
 
 interface AppleSpeechModule {
   isAppleSpeechAvailable?: () => boolean;

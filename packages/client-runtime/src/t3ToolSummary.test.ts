@@ -1,4 +1,4 @@
-import { compactT3McpToolOutput } from "@t3tools/shared/toolOutput";
+import { compactT3McpToolOutput } from "@s8code/shared/toolOutput";
 import { describe, expect, it } from "vite-plus/test";
 
 import { summarizeT3ToolCalls, type T3ToolSummaryCall } from "./t3ToolSummary.ts";

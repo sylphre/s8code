@@ -5,13 +5,13 @@ import {
   type ServerSettings,
   type SourceControlWritingStyleMode,
   textGeneratorForSelection,
-} from "@t3tools/contracts";
-import { DEFAULT_UNIFIED_SETTINGS } from "@t3tools/contracts/settings";
-import { createModelSelection, pickModelSelection } from "@t3tools/shared/model";
+} from "@s8code/contracts";
+import { DEFAULT_UNIFIED_SETTINGS } from "@s8code/contracts/settings";
+import { createModelSelection, pickModelSelection } from "@s8code/shared/model";
 import {
   resolveReviewGuideModelSelection,
   resolveSourceControlWriterModelSelection,
-} from "@t3tools/shared/serverSettings";
+} from "@s8code/shared/serverSettings";
 import { msg, T, useGT, useMessages } from "gt-react";
 
 import {

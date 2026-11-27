@@ -1,10 +1,10 @@
-import { managedCapabilityDenial } from "@t3tools/client-runtime/contract-labels";
-import { squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
+import { managedCapabilityDenial } from "@s8code/client-runtime/contract-labels";
+import { squashAtomCommandFailure } from "@s8code/client-runtime/state/runtime";
 import {
   AuthTerminalOperateScope,
   type WorktreeLayoutCommand,
   type WorktreeLayoutCommandKind,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { msg, T, useGT, useMessages } from "gt-react";
 import { useState } from "react";
 

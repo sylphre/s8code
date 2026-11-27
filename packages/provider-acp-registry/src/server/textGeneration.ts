@@ -1,5 +1,5 @@
-import { TextGenerationError } from "@t3tools/contracts";
-import { readCustomModelEntries } from "@t3tools/shared/model";
+import { TextGenerationError } from "@s8code/contracts";
+import { readCustomModelEntries } from "@s8code/shared/model";
 import * as SecureRandom from "effect/crypto/SecureRandom";
 import * as FileSystem from "effect/FileSystem";
 import * as Effect from "effect/Effect";
@@ -7,10 +7,10 @@ import * as Ref from "effect/Ref";
 import * as Schema from "effect/Schema";
 import * as ChildProcessSpawner from "effect/process/ChildProcessSpawner";
 
-import type { ProviderTextGeneration } from "@t3tools/provider-core/server/textGeneration";
-import * as TextGenerationOperations from "@t3tools/provider-core/server/textGenerationOperations";
-import { findModelConfigOption } from "@t3tools/provider-acp/server/runtimeModel";
-import { flattenSelectChoices } from "@t3tools/provider-acp/server/sessionConfig";
+import type { ProviderTextGeneration } from "@s8code/provider-core/server/textGeneration";
+import * as TextGenerationOperations from "@s8code/provider-core/server/textGenerationOperations";
+import { findModelConfigOption } from "@s8code/provider-acp/server/runtimeModel";
+import { flattenSelectChoices } from "@s8code/provider-acp/server/sessionConfig";
 
 import * as AcpRegistrySupport from "./AcpRegistrySupport.ts";
 import {

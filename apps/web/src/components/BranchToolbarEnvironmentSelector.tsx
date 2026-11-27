@@ -3,7 +3,7 @@ import { ComposerContextLabel } from "./ComposerContextLabel";
 import { useAtomValue } from "@effect/atom-react";
 import { shortcutLabelForCommand } from "../keybindings";
 import { primaryServerKeybindingsAtom } from "../state/server";
-import type { EnvironmentId } from "@t3tools/contracts";
+import type { EnvironmentId } from "@s8code/contracts";
 import { PlusIcon, ScaleIcon } from "lucide-react";
 import { memo } from "react";
 import { T, useGT } from "gt-react";

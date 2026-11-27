@@ -17,7 +17,7 @@ import {
   RunId,
   type RuntimeRequestId,
   ThreadId,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
@@ -25,8 +25,8 @@ import * as Layer from "effect/Layer";
 import * as Schema from "effect/Schema";
 import * as SqlError from "effect/sql/SqlError";
 
-import { AgentScope } from "@t3tools/shared/AgentScope";
-import { modelSelectionsEqual } from "@t3tools/shared/model";
+import { AgentScope } from "@s8code/shared/AgentScope";
+import { modelSelectionsEqual } from "@s8code/shared/model";
 import {
   ProviderTurnAnalytics,
   type ProviderTurnAnalyticsContext,
@@ -36,9 +36,9 @@ import * as ProviderInstanceRegistry from "../provider/ProviderInstanceRegistry.
 import { UsageLimitResetFallback } from "../usage/UsageLimitSources.ts";
 import * as EventSink from "./EventSink.ts";
 import * as ProjectionStore from "./ProjectionStore.ts";
-import * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
-import * as ProviderAdapter from "@t3tools/provider-core/server/ProviderAdapter";
-import { makeProviderFailureTurnItem } from "@t3tools/provider-core/server/failure";
+import * as IdAllocator from "@s8code/provider-core/server/IdAllocator";
+import * as ProviderAdapter from "@s8code/provider-core/server/ProviderAdapter";
+import { makeProviderFailureTurnItem } from "@s8code/provider-core/server/failure";
 import * as ThreadCommandExecutor from "./ThreadCommandExecutor.ts";
 import { stripUnservedToolOutputImageBytes } from "./toolOutputImageBytes.ts";
 import { boundFileChangeForStorage } from "./WireProjection.ts";

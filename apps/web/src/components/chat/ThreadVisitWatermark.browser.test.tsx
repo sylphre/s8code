@@ -1,5 +1,5 @@
-import { claimThreadOpen } from "@t3tools/client-runtime/state/thread-search";
-import { EnvironmentId, type ScopedThreadRef, ThreadId } from "@t3tools/contracts";
+import { claimThreadOpen } from "@s8code/client-runtime/state/thread-search";
+import { EnvironmentId, type ScopedThreadRef, ThreadId } from "@s8code/contracts";
 import * as Effect from "effect/Effect";
 import { Atom } from "effect/reactivity";
 import { expect, it, vi } from "vite-plus/test";

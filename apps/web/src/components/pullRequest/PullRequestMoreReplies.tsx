@@ -1,4 +1,4 @@
-import type { ScopedThreadRef } from "@t3tools/contracts";
+import type { ScopedThreadRef } from "@s8code/contracts";
 import { T, useGT } from "gt-react";
 
 import { useOpenLink } from "~/browser/useOpenLink";

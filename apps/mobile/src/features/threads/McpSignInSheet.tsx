@@ -1,10 +1,10 @@
-import type { EnvironmentId, ProviderThreadId, ThreadId } from "@t3tools/contracts";
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
+import type { EnvironmentId, ProviderThreadId, ThreadId } from "@s8code/contracts";
+import { errorDisplayMessage } from "@s8code/client-runtime/errors";
 import {
   type AtomCommandResult,
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@s8code/client-runtime/state/runtime";
 import * as Haptics from "expo-haptics";
 import { msg, T, useGT, useMessages } from "gt-react-native";
 import { useRef, useState } from "react";

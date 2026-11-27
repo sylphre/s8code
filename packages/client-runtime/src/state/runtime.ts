@@ -9,7 +9,7 @@ import {
   type ClientGuardedRpcTag,
   EnvironmentId,
   type EnvironmentId as EnvironmentIdType,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as Cause from "effect/Cause";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";

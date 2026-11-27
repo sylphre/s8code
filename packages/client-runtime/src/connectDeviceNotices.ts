@@ -1,4 +1,4 @@
-import type { AuthConnectDevice } from "@t3tools/contracts";
+import type { AuthConnectDevice } from "@s8code/contracts";
 
 /**
  * T3 Connect device keys first seen on a host after `seenThrough`, a host-clock watermark each

@@ -8,9 +8,9 @@ import {
   type ThreadPullRequestLink,
   type ThreadPullRequestSnapshot,
   type ThreadPullRequestStack,
-} from "@t3tools/contracts";
-import { makeDrainableWorker } from "@t3tools/shared/DrainableWorker";
-import * as KeyedLock from "@t3tools/shared/KeyedLock";
+} from "@s8code/contracts";
+import { makeDrainableWorker } from "@s8code/shared/DrainableWorker";
+import * as KeyedLock from "@s8code/shared/KeyedLock";
 import {
   threadPullRequestKeyOf,
   normalizeThreadPullRequestKey,
@@ -35,7 +35,7 @@ import * as Semaphore from "effect/Semaphore";
 import * as Stream from "effect/Stream";
 
 import * as GitManager from "../git/GitManager.ts";
-import { PullRequestProviderError } from "@t3tools/source-control-core/server/PullRequestProvider";
+import { PullRequestProviderError } from "@s8code/source-control-core/server/PullRequestProvider";
 import * as PullRequestService from "../pullRequest/PullRequestService.ts";
 import { forkParked } from "../serverActivation.ts";
 import * as VcsProcess from "../vcs/VcsProcess.ts";

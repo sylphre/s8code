@@ -75,7 +75,7 @@
       // CLI archive and desktop sidecar stage them from this manifest.
       "ignoreDependencies": [
         "@effect/platform-node-shared",
-        "@t3tools/web",
+        "@s8code/web",
         "ffi-rs",
         "transcribe-cpp",
       ],
@@ -129,8 +129,8 @@
       // Fonts are configured as asset paths; Expo autolinks the native packages.
       "ignoreDependencies": [
         "@expo-google-fonts/dm-sans",
-        "@t3tools/mobile-review-diff-native",
-        "@t3tools/mobile-terminal-native",
+        "@s8code/mobile-review-diff-native",
+        "@s8code/mobile-terminal-native",
       ],
     },
     "apps/mobile/modules/t3-highlights": {

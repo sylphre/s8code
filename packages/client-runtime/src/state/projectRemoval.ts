@@ -1,4 +1,4 @@
-import { isListedThreadLineage } from "@t3tools/contracts";
+import { isListedThreadLineage } from "@s8code/contracts";
 
 import type { EnvironmentProject, EnvironmentThreadShell } from "./models.ts";
 import { mFallback, msg } from "gt-i18n";

@@ -1,4 +1,4 @@
-import { ProviderInstanceId, ThreadId } from "@t3tools/contracts";
+import { ProviderInstanceId, ThreadId } from "@s8code/contracts";
 import * as Clock from "effect/Clock";
 import * as Context from "effect/Context";
 import * as Digest from "effect/crypto/Digest";
@@ -11,8 +11,8 @@ import * as NetAddress from "effect/net/NetAddress";
 
 import * as ServerEnvironment from "../environment/ServerEnvironment.ts";
 import * as McpInvocationContext from "./McpInvocationContext.ts";
-import * as McpProviderSession from "@t3tools/provider-core/server/mcpSession";
-import { routineSpan } from "@t3tools/shared/observability";
+import * as McpProviderSession from "@s8code/provider-core/server/mcpSession";
+import { routineSpan } from "@s8code/shared/observability";
 
 export interface McpCredentialRequest {
   readonly threadId: ThreadId;

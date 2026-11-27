@@ -39,7 +39,7 @@ export class DesktopWslServerTree extends Context.Service<
     readonly ensure: Effect.Effect<WslServerTreeResult>;
     readonly cleanupLegacy: Effect.Effect<void>;
   }
->()("@t3tools/desktop/wsl/DesktopWslServerTree") {}
+>()("@s8code/desktop/wsl/DesktopWslServerTree") {}
 
 export const forEachBoundedTree = Effect.fn("DesktopWslServerTree.forEachBoundedTree")(function* <
   Node,

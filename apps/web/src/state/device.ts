@@ -1,16 +1,16 @@
 import { useAtomValue } from "@effect/atom-react";
-import { createDeviceEnvironmentAtoms } from "@t3tools/client-runtime/state/device";
+import { createDeviceEnvironmentAtoms } from "@s8code/client-runtime/state/device";
 import {
   type DeviceHubAccess,
   resolveDeviceHubAccess,
-} from "@t3tools/client-runtime/state/deviceHubAccess";
-import { createEnvironmentRpcQueryAtomFamily } from "@t3tools/client-runtime/state/runtime";
+} from "@s8code/client-runtime/state/deviceHubAccess";
+import { createEnvironmentRpcQueryAtomFamily } from "@s8code/client-runtime/state/runtime";
 import {
   type DeviceDetail,
   type DeviceServiceState,
   type EnvironmentId,
   WS_METHODS,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as Effect from "effect/Effect";
 import { useMessages } from "gt-react";
 import * as Option from "effect/Option";

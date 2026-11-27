@@ -39,7 +39,7 @@ import {
 } from "./WorkflowForge.ts";
 import { subjectSet } from "./runReferences.ts";
 import * as WorkflowStore from "./WorkflowStore.ts";
-import { withoutRoutineSpans } from "@t3tools/shared/observability";
+import { withoutRoutineSpans } from "@s8code/shared/observability";
 
 /** A step that could not be completed. Its run is paused until someone resumes it. */
 export class StepFailed extends Schema.TaggedError<StepFailed>()("StepFailed", {

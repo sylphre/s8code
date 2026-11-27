@@ -2,8 +2,8 @@ import {
   DEFAULT_SERVER_SETTINGS,
   type ScopedProjectRef,
   type T3ProjectFile,
-} from "@t3tools/contracts";
-import { resolveNewThreadEnvMode, resolveProjectSettings } from "@t3tools/shared/projectSettings";
+} from "@s8code/contracts";
+import { resolveNewThreadEnvMode, resolveProjectSettings } from "@s8code/shared/projectSettings";
 
 import type { DraftSessionState } from "../composerDraftStore";
 import { readProject, readThreadShells } from "../state/entities";

@@ -3,9 +3,9 @@ import type {
   UsageCostSource,
   UsageModelPriceOverride,
   UsageTokenTotals,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 
-import type { UsageRecord, UsageSpeed } from "@t3tools/provider-core/server/usage";
+import type { UsageRecord, UsageSpeed } from "@s8code/provider-core/server/usage";
 
 export interface TokenRates {
   readonly inputCostPerToken: number;

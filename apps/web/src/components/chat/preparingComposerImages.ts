@@ -1,5 +1,5 @@
-import { scopedThreadKey } from "@t3tools/client-runtime/environment";
-import type { ScopedThreadRef } from "@t3tools/contracts";
+import { scopedThreadKey } from "@s8code/client-runtime/environment";
+import type { ScopedThreadRef } from "@s8code/contracts";
 import * as Equal from "effect/Equal";
 import { useEffect, useRef } from "react";
 import { create } from "zustand";

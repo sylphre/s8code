@@ -3,7 +3,7 @@ import {
   type EditorId,
   type EnvironmentId,
   type ResolvedKeybindingsConfig,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { msg } from "gt-react";
 import { useEffect } from "react";
 

@@ -8,8 +8,8 @@ import {
   type DesktopUpdateChannel,
   type DesktopUpdateCheckResult,
   type DesktopUpdateState,
-} from "@t3tools/contracts";
-import { errorTag } from "@t3tools/shared/observability";
+} from "@s8code/contracts";
+import { errorTag } from "@s8code/shared/observability";
 import * as Cause from "effect/Cause";
 import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";
@@ -43,8 +43,8 @@ import {
   normalizeDesktopUpdateReleaseNotes,
   releaseNotesOfOfferedVersion,
 } from "./releaseNotes.ts";
-import { desktopUpdateChannelOf } from "@t3tools/shared/cliRelease";
-import { compareSemverVersions } from "@t3tools/shared/semver";
+import { desktopUpdateChannelOf } from "@s8code/shared/cliRelease";
+import { compareSemverVersions } from "@s8code/shared/semver";
 import {
   createInitialDesktopUpdateState,
   reduceDesktopUpdateStateOnCheckFailure,
@@ -224,7 +224,7 @@ export class DesktopUpdates extends Context.Service<
       expectedVersion: string,
     ) => Effect.Effect<DesktopPreparedUpdateInstallResult>;
   }
->()("@t3tools/desktop/updates/DesktopUpdates") {}
+>()("@s8code/desktop/updates/DesktopUpdates") {}
 
 const {
   logInfo: logUpdaterInfo,

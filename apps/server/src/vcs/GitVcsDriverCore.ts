@@ -36,15 +36,15 @@ import {
   type ReviewDiffPreviewSource,
   trimAsciiWhitespace,
   type VcsRef,
-} from "@t3tools/contracts";
-import { splitsSurrogatePair } from "@t3tools/shared/assistantCitations";
-import { dedupeRemoteBranchesWithLocalMatches } from "@t3tools/shared/git";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { compactTraceAttributes } from "@t3tools/shared/observability";
-import { decodeJsonResult } from "@t3tools/shared/schemaJson";
-import { resolveSpawnCommand, runsGitWithoutConsole } from "@t3tools/shared/shell";
-import { parseT3ProjectFile } from "@t3tools/shared/t3ProjectFile";
-import { resolveProjectFileBackedSetting } from "@t3tools/shared/projectSettings";
+} from "@s8code/contracts";
+import { splitsSurrogatePair } from "@s8code/shared/assistantCitations";
+import { dedupeRemoteBranchesWithLocalMatches } from "@s8code/shared/git";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import { compactTraceAttributes } from "@s8code/shared/observability";
+import { decodeJsonResult } from "@s8code/shared/schemaJson";
+import { resolveSpawnCommand, runsGitWithoutConsole } from "@s8code/shared/shell";
+import { parseT3ProjectFile } from "@s8code/shared/t3ProjectFile";
+import { resolveProjectFileBackedSetting } from "@s8code/shared/projectSettings";
 import { gitCommandDuration, gitCommandsTotal, withMetrics } from "../observability/Metrics.ts";
 import * as GitVcsDriver from "./GitVcsDriver.ts";
 import { removeEmptyDirectory, type RemoveEmptyDirectoryError } from "./removeEmptyDirectory.ts";

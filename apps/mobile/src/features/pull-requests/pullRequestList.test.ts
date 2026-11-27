@@ -5,7 +5,7 @@ import {
   SourceControlProviderKind,
   type PullRequestListEntry,
   type PullRequestListResult,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import {
   appendPullRequestListPage,
   DEFAULT_PR_LIST_CONTROLS,

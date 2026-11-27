@@ -4,7 +4,7 @@ import {
   type UsageResolution,
   type UsageSource,
   type UsageSummaryInput,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 
 import { sourceIdentity } from "./usageMerge.ts";
 

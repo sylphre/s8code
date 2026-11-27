@@ -331,7 +331,7 @@ Object.assign(globalThis, {
     state: () => JSON.stringify(snapshot()),
     /** Removes these saved environments (and their cached threads) through the app's own command. */
     async forgetEnvironments(ids: ReadonlyArray<string>) {
-      const { runAtomCommand } = require("@t3tools/client-runtime/state/runtime") as {
+      const { runAtomCommand } = require("@s8code/client-runtime/state/runtime") as {
         runAtomCommand: (
           registry: unknown,
           command: unknown,

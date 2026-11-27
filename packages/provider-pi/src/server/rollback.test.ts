@@ -8,11 +8,11 @@ import {
   ProviderTurnId,
   ThreadId,
   type OrchestrationV2ProviderTurn,
-} from "@t3tools/contracts";
-import * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
-import * as McpProviderSessions from "@t3tools/provider-core/server/McpProviderSessions";
-import * as ProviderAdapter from "@t3tools/provider-core/server/ProviderAdapter";
-import * as TestProviderHost from "@t3tools/provider-testing/TestProviderHost";
+} from "@s8code/contracts";
+import * as IdAllocator from "@s8code/provider-core/server/IdAllocator";
+import * as McpProviderSessions from "@s8code/provider-core/server/McpProviderSessions";
+import * as ProviderAdapter from "@s8code/provider-core/server/ProviderAdapter";
+import * as TestProviderHost from "@s8code/provider-testing/TestProviderHost";
 import * as DateTime from "effect/DateTime";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";

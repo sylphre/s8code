@@ -1,4 +1,4 @@
-import { themeCssValueFetches, themeCssWithoutDeclarations } from "@t3tools/shared/themeCss";
+import { themeCssValueFetches, themeCssWithoutDeclarations } from "@s8code/shared/themeCss";
 
 // Theme CSS comes from imported files and from agents, so it must not fetch: a
 // url() on an attribute selector can send what is on screen to another host.

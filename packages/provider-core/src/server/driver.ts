@@ -11,7 +11,7 @@ import type {
   ProviderRuntimeModeLimit,
   ServerProvider,
   ServerProviderWorkspaceSnapshot,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import type * as Effect from "effect/Effect";
 import type * as Schema from "effect/Schema";
 import type * as Scope from "effect/Scope";

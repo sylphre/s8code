@@ -1,11 +1,11 @@
 import { useAtomValue } from "@effect/atom-react";
-import { resolveFilesystemReadAccess } from "@t3tools/client-runtime/state/filesystem";
+import { resolveFilesystemReadAccess } from "@s8code/client-runtime/state/filesystem";
 import { Atom } from "effect/reactivity";
 import { useMemo } from "react";
 import { msg, useMessages } from "gt-react-native";
 
-import { deriveThreadCheckpointSummaries } from "@t3tools/client-runtime/state/thread-checkpoints";
-import type { EnvironmentId, ReviewDiffPreviewSource, ThreadId } from "@t3tools/contracts";
+import { deriveThreadCheckpointSummaries } from "@s8code/client-runtime/state/thread-checkpoints";
+import type { EnvironmentId, ReviewDiffPreviewSource, ThreadId } from "@s8code/contracts";
 
 import { useCheckpointDiff } from "../../state/queries";
 import { useEnvironmentQuery } from "../../state/query";

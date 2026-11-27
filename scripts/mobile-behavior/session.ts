@@ -8,7 +8,7 @@ import * as NodeChildProcess from "node:child_process";
 import * as NodeFS from "node:fs";
 import * as NodeOS from "node:os";
 import * as NodePath from "node:path";
-import type { ThreadId } from "@t3tools/contracts";
+import type { ThreadId } from "@s8code/contracts";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 import { FetchHttpClient, HttpClient } from "effect/http";

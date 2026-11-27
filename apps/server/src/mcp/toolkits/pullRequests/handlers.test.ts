@@ -17,7 +17,7 @@ import {
   type ThreadPullRequestLink,
   type RuntimeMode,
   SourceControlProviderKind,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { describe, expect, it } from "@effect/vitest";
 import * as SecureRandom from "effect/crypto/SecureRandom";
 import * as Effect from "effect/Effect";
@@ -27,7 +27,7 @@ import * as Option from "effect/Option";
 import * as Ref from "effect/Ref";
 import * as Stream from "effect/Stream";
 import { McpSchema, type Tool } from "effect/ai";
-import * as McpProviderSessions from "@t3tools/provider-core/server/McpProviderSessions";
+import * as McpProviderSessions from "@s8code/provider-core/server/McpProviderSessions";
 
 import * as GitManager from "../../../git/GitManager.ts";
 import * as Orchestrator from "../../../orchestration-v2/Orchestrator.ts";

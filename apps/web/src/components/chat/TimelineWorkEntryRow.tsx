@@ -5,27 +5,27 @@ import {
   getQuestionAnswerText,
   getQuestionTextPreview,
   hasQuestionAnswer,
-} from "@t3tools/client-runtime/work-log/user-input";
+} from "@s8code/client-runtime/work-log/user-input";
 import {
   ORCHESTRATION_V2_WORKSPACE_PREPARATION_FAILURE_CODE,
   type EnvironmentId,
   ThreadId,
-} from "@t3tools/contracts";
-import { scopeThreadRef } from "@t3tools/client-runtime/environment";
+} from "@s8code/contracts";
+import { scopeThreadRef } from "@s8code/client-runtime/environment";
 import { Link } from "@tanstack/react-router";
-import { notificationChildThreadId } from "@t3tools/client-runtime/state/thread-execution";
+import { notificationChildThreadId } from "@s8code/client-runtime/state/thread-execution";
 import {
   resolveViewedImageAsset,
   resolveWorkEntryToolPresentation,
   toolGroupAction,
   workEntryViewedImagePath,
-} from "@t3tools/client-runtime/work-log/presentation";
-import { t3ToolResultIndicatesFailure } from "@t3tools/client-runtime/t3ToolSummary";
+} from "@s8code/client-runtime/work-log/presentation";
+import { t3ToolResultIndicatesFailure } from "@s8code/client-runtime/t3ToolSummary";
 import {
   turnItemHasDetail,
   turnItemNeedsDetailFetch,
-} from "@t3tools/client-runtime/work-log/item-detail";
-import { claudeSkillInvocation } from "@t3tools/shared/toolActivity";
+} from "@s8code/client-runtime/work-log/item-detail";
+import { claudeSkillInvocation } from "@s8code/shared/toolActivity";
 import { msg, T, useGT, useMessages, Var } from "gt-react";
 import { memo, use, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 import {
@@ -761,7 +761,7 @@ function WorkEntryLogRow(props: WorkEntryRowProps) {
 function QuestionAnswerHistory({
   answer,
 }: {
-  answer: import("@t3tools/contracts").UserInputAttachmentAnswerPayload;
+  answer: import("@s8code/contracts").UserInputAttachmentAnswerPayload;
 }) {
   const { activeThreadEnvironmentId } = use(TimelineRowCtx);
   const attachments = Object.values(answer.attachmentsByQuestionId).flat();

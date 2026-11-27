@@ -2,8 +2,8 @@ import {
   workflowReferenceIssue,
   workflowReferenceLabel,
   workflowReferencePullRequest,
-} from "@t3tools/client-runtime/workflows";
-import type { EnvironmentId, WorkflowRunReference, WorkflowRunSubject } from "@t3tools/contracts";
+} from "@s8code/client-runtime/workflows";
+import type { EnvironmentId, WorkflowRunReference, WorkflowRunSubject } from "@s8code/contracts";
 import { useNavigate } from "@tanstack/react-router";
 import { T } from "gt-react";
 import { CircleCheckIcon, CircleDotIcon, ExternalLinkIcon, LinkIcon } from "lucide-react";

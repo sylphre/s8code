@@ -28,7 +28,7 @@ import { SharedTooltipTrigger } from "../ui/shared-tooltip";
 import {
   alternateComposerDispatchAction,
   resolveComposerDispatchMode,
-} from "@t3tools/client-runtime/state/composer-dispatch";
+} from "@s8code/client-runtime/state/composer-dispatch";
 
 interface PendingActionState {
   questionIndex: number;

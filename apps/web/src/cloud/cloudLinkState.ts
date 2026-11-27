@@ -3,8 +3,8 @@ import {
   AuthRelayReadScope,
   type EnvironmentCloudLinkStateResult,
   type EnvironmentId,
-} from "@t3tools/contracts";
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+} from "@s8code/contracts";
+import { thrownErrorMessage } from "@s8code/client-runtime/errors";
 import * as Cause from "effect/Cause";
 import { useGT, useMessages } from "gt-react";
 import { AsyncResult, Atom } from "effect/reactivity";

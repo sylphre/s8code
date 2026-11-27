@@ -4,7 +4,7 @@ import { m } from "../../i18n/messages";
 import type {
   EnvironmentProject,
   EnvironmentThreadShell,
-} from "@t3tools/client-runtime/state/shell";
+} from "@s8code/client-runtime/state/shell";
 
 import type {
   AgentActivityPhase,

@@ -1,4 +1,4 @@
-import { sessionHasLegacyPermissions, type EnvironmentId } from "@t3tools/contracts";
+import { sessionHasLegacyPermissions, type EnvironmentId } from "@s8code/contracts";
 import type { AnyRouter } from "@tanstack/react-router";
 import { msg } from "gt-react";
 import * as Schema from "effect/Schema";

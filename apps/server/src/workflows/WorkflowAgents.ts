@@ -3,8 +3,8 @@ import type {
   OrchestrationV2ThreadLaunchWorkspaceStrategy,
   ProviderInteractionMode,
   RuntimeMode,
-} from "@t3tools/contracts";
-import { isWindowsDrivePath } from "@t3tools/shared/path";
+} from "@s8code/contracts";
+import { isWindowsDrivePath } from "@s8code/shared/path";
 import * as Context from "effect/Context";
 import type * as Duration from "effect/Duration";
 import type * as Effect from "effect/Effect";

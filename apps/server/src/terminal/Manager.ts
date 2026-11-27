@@ -43,16 +43,16 @@ import {
   ClaudeSettings,
   CodexSettings,
   ProviderInstanceId,
-} from "@t3tools/contracts";
-import { makeKeyedCoalescingWorker } from "@t3tools/shared/KeyedCoalescingWorker";
-import * as KeyedLock from "@t3tools/shared/KeyedLock";
-import { AgentScope } from "@t3tools/shared/AgentScope";
-import { stripAppImageRuntimeEnv } from "@t3tools/shared/appImageRuntimeEnv";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { SpawnExecutableResolution, mergePathEntries } from "@t3tools/shared/shell";
+} from "@s8code/contracts";
+import { makeKeyedCoalescingWorker } from "@s8code/shared/KeyedCoalescingWorker";
+import * as KeyedLock from "@s8code/shared/KeyedLock";
+import { AgentScope } from "@s8code/shared/AgentScope";
+import { stripAppImageRuntimeEnv } from "@s8code/shared/appImageRuntimeEnv";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import { SpawnExecutableResolution, mergePathEntries } from "@s8code/shared/shell";
 
-import { acpRegistryManagedBinaryDirectories } from "@t3tools/provider-acp-registry/server";
-import { getTerminalLabel } from "@t3tools/shared/terminalLabels";
+import { acpRegistryManagedBinaryDirectories } from "@s8code/provider-acp-registry/server";
+import { getTerminalLabel } from "@s8code/shared/terminalLabels";
 import * as Cause from "effect/Cause";
 import * as Clock from "effect/Clock";
 import * as DateTime from "effect/DateTime";
@@ -76,18 +76,18 @@ import * as SynchronizedRef from "effect/SynchronizedRef";
 
 import packageJson from "../../package.json" with { type: "json" };
 import * as ServerConfig from "../config.ts";
-import { mergeProviderInstanceEnvironment } from "@t3tools/provider-core/server/instanceEnvironment";
+import { mergeProviderInstanceEnvironment } from "@s8code/provider-core/server/instanceEnvironment";
 import { resolveCodexHomeLayout } from "../provider/Drivers/CodexHomeLayout.ts";
 import { makeClaudeEnvironment } from "../provider/Drivers/ClaudeHome.ts";
 import type { deriveProviderInstanceConfigMap } from "../provider/ProviderInstanceRegistryHydration.ts";
 import * as ServerSettings from "../serverSettings.ts";
 import { increment, terminalSessionsTotal } from "../observability/Metrics.ts";
-import { expandHomeVariable } from "@t3tools/provider-core/server/pathExpansion";
+import { expandHomeVariable } from "@s8code/provider-core/server/pathExpansion";
 import * as ProcessRunner from "../processRunner.ts";
 import * as PortScanner from "../preview/PortScanner.ts";
 import * as NativeTelemetryClient from "../resourceTelemetry/NativeTelemetryClient.ts";
 import { terminalOutputStream } from "./OutputProtocol.ts";
-import * as PtyAdapter from "@t3tools/shared/PtyAdapter";
+import * as PtyAdapter from "@s8code/shared/PtyAdapter";
 
 export {
   TerminalCwdError,

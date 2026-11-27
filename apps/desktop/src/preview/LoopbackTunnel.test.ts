@@ -1,9 +1,9 @@
 import * as NodeFileSystem from "@effect/platform-node/NodeFileSystem";
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import * as NodeWS from "@effect/platform-node/NodeWS";
-import { EnvironmentId } from "@t3tools/contracts";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import * as NetService from "@t3tools/shared/Net";
+import { EnvironmentId } from "@s8code/contracts";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import * as NetService from "@s8code/shared/Net";
 import { expect, it } from "@effect/vitest";
 import * as NodeNet from "node:net";
 import * as Context from "effect/Context";

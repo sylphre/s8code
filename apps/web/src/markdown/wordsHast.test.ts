@@ -1,8 +1,8 @@
 import type { Element, Root } from "hast";
 import { toHtml } from "hast-util-to-html";
 import { describe, expect, it } from "vite-plus/test";
-import { serializeComposerFileLink } from "@t3tools/shared/composerTrigger";
-import { extractMarkdownLinkHrefs, isMarkdownFileLinkLabel } from "@t3tools/shared/markdownLinks";
+import { serializeComposerFileLink } from "@s8code/shared/composerTrigger";
+import { extractMarkdownLinkHrefs, isMarkdownFileLinkLabel } from "@s8code/shared/markdownLinks";
 
 import {
   decodeMarkdownLinkEscapes,

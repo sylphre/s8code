@@ -1,15 +1,15 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@s8code/client-runtime/errors";
 import { contextMenuSourceOf } from "../../contextMenuSource";
 import {
   formatFilePathForClipboard,
   type MediaActionId,
-} from "@t3tools/client-runtime/media-actions";
+} from "@s8code/client-runtime/media-actions";
 import {
   mediaReferenceFileName,
   type MediaReference,
-} from "@t3tools/client-runtime/media-reference";
-import { resolveAssetUrl } from "@t3tools/client-runtime/state/assets";
-import { settlePromise, squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
+} from "@s8code/client-runtime/media-reference";
+import { resolveAssetUrl } from "@s8code/client-runtime/state/assets";
+import { settlePromise, squashAtomCommandFailure } from "@s8code/client-runtime/state/runtime";
 import {
   AuthFilesystemReadScope,
   type AssetResource,
@@ -18,7 +18,7 @@ import {
   sessionGrantsScope,
   type SessionGrantInput,
   type ContextMenuSource,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { AsyncResult } from "effect/reactivity";
 import { msg } from "gt-react";
 import { useRef, useState, type ReactElement } from "react";

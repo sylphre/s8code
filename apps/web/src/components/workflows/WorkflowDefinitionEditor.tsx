@@ -2,11 +2,11 @@ import { useAtomValue } from "@effect/atom-react";
 import type { FileContents } from "@pierre/diffs";
 import { Editor, type EditorFactory, type EditorOptions, type Marker } from "@pierre/diffs/edit";
 import { EditProvider, File, Virtualizer } from "@pierre/diffs/react";
-import { type EnvironmentId, type WorkflowDefinitionProblem } from "@t3tools/contracts";
+import { type EnvironmentId, type WorkflowDefinitionProblem } from "@s8code/contracts";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@s8code/client-runtime/state/runtime";
 import { useBlocker } from "@tanstack/react-router";
 import { T, useGT, Var } from "gt-react";
 import { FileCode2Icon, PlusIcon } from "lucide-react";

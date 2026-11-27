@@ -10,13 +10,13 @@ import {
   RunAttemptId,
   RunId,
   ThreadId,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as Effect from "effect/Effect";
 
 import { ClaudeProviderCapabilitiesV2 } from "./Adapters/ClaudeAdapterV2.ts";
 import { CodexProviderCapabilitiesV2 } from "./Adapters/CodexAdapterV2.ts";
-import { CursorProviderCapabilitiesV2 } from "@t3tools/provider-cursor/testing";
-import { makeGrokAcpAdapterFlavor } from "@t3tools/provider-grok/testing";
+import { CursorProviderCapabilitiesV2 } from "@s8code/provider-cursor/testing";
+import { makeGrokAcpAdapterFlavor } from "@s8code/provider-grok/testing";
 import * as CommandPolicy from "./CommandPolicy.ts";
 
 const commandId = CommandId.make("command-policy-test");

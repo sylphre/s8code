@@ -1,8 +1,8 @@
 import {
   type DpopVerificationFailureCode as DpopVerificationFailureCodeType,
   verifyDpopProof,
-} from "@t3tools/shared/dpop";
-import type { DpopFailureReason } from "@t3tools/contracts";
+} from "@s8code/shared/dpop";
+import type { DpopFailureReason } from "@s8code/contracts";
 import * as Digest from "effect/crypto/Digest";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";

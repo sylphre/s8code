@@ -2,9 +2,9 @@ import { useScopedSettingsWriteAllowed } from "./useScopedSettings";
 import { SettingsIcon } from "lucide-react";
 import { msg, T, useGT, useMessages } from "gt-react";
 import { useState } from "react";
-import { type BackgroundActivityProfile } from "@t3tools/contracts";
-import { DEFAULT_UNIFIED_SETTINGS } from "@t3tools/contracts/settings";
-import { resolveServerBackgroundActivitySettings } from "@t3tools/shared/backgroundActivitySettings";
+import { type BackgroundActivityProfile } from "@s8code/contracts";
+import { DEFAULT_UNIFIED_SETTINGS } from "@s8code/contracts/settings";
+import { resolveServerBackgroundActivitySettings } from "@s8code/shared/backgroundActivitySettings";
 import * as Duration from "effect/Duration";
 import * as Equal from "effect/Equal";
 import {

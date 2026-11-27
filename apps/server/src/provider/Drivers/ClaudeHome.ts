@@ -1,12 +1,12 @@
-import type { ClaudeSettings, ProviderInstanceEnvironment } from "@t3tools/contracts";
+import type { ClaudeSettings, ProviderInstanceEnvironment } from "@s8code/contracts";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
 import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
 
-import { mergeProviderInstanceEnvironment } from "@t3tools/provider-core/server/instanceEnvironment";
-import { expandHomePath } from "@t3tools/provider-core/server/pathExpansion";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import { mergeProviderInstanceEnvironment } from "@s8code/provider-core/server/instanceEnvironment";
+import { expandHomePath } from "@s8code/provider-core/server/pathExpansion";
+import * as HostProcess from "@s8code/shared/HostProcess";
 
 import { readClaudeSettingsEnv } from "./ClaudeSkills.ts";
 

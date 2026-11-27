@@ -1,7 +1,7 @@
 // T3 ingest retains events and deduplicates retries by UUID.
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { isCiEnvironment, isDoNotTrackSet } from "@t3tools/shared/otelEnvironment";
-import type { ClientOs } from "@t3tools/contracts";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import { isCiEnvironment, isDoNotTrackSet } from "@s8code/shared/otelEnvironment";
+import type { ClientOs } from "@s8code/contracts";
 import * as Clock from "effect/Clock";
 import * as Config from "effect/Config";
 import * as ConfigProvider from "effect/ConfigProvider";

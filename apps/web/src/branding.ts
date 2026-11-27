@@ -1,4 +1,4 @@
-import type { DesktopAppBranding } from "@t3tools/contracts";
+import type { DesktopAppBranding } from "@s8code/contracts";
 import {
   formatAppDisplayName,
   resolveHostedAppChannelLabel,

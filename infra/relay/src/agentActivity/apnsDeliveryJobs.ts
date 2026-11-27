@@ -1,8 +1,8 @@
 import {
   RelayAgentActivityAggregateState,
   RelayAgentAwarenessPhase,
-} from "@t3tools/contracts/relay";
-import { stableStringify } from "@t3tools/shared/relaySigning";
+} from "@s8code/contracts/relay";
+import { stableStringify } from "@s8code/shared/relaySigning";
 import * as Mac from "effect/crypto/Mac";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";

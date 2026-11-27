@@ -8,15 +8,15 @@ import {
   type ProviderSetupError,
   type ServerProviderModel,
   TextGenerationError,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import type { CursorSettings } from "../settings.ts";
 
-import * as TextGenerationOperations from "@t3tools/provider-core/server/textGenerationOperations";
+import * as TextGenerationOperations from "@s8code/provider-core/server/textGenerationOperations";
 import { cursorSdkModelSelection } from "./sdkModel.ts";
 import type { CursorAuth } from "./auth.ts";
 import * as CursorAgentSdk from "./CursorAgentSdk.ts";
 import * as CursorSdk from "./CursorSdk.ts";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import * as HostProcess from "@s8code/shared/HostProcess";
 
 const CURSOR_TIMEOUT_MS = 180_000;
 

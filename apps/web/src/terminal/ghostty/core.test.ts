@@ -7,7 +7,7 @@ import {
   readTerminalOutputUpdate,
   terminalOutputText,
   type TerminalBufferState,
-} from "@t3tools/client-runtime/state/terminal";
+} from "@s8code/client-runtime/state/terminal";
 
 import {
   terminalPromptNavigationData,

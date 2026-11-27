@@ -1,4 +1,4 @@
-import { createProviderWorkspaceSnapshotRefreshAtomFamily } from "@t3tools/client-runtime/providerSkills";
+import { createProviderWorkspaceSnapshotRefreshAtomFamily } from "@s8code/client-runtime/providerSkills";
 
 import { serverEnvironment } from "./server";
 

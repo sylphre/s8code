@@ -9,8 +9,8 @@ import type {
   PullRequestReviewDecision,
   PullRequestState,
   ScopedThreadRef,
-} from "@t3tools/contracts";
-import { formatDiffCount } from "@t3tools/client-runtime/diff-count";
+} from "@s8code/contracts";
+import { formatDiffCount } from "@s8code/client-runtime/diff-count";
 import {
   CircleCheckIcon,
   CircleDashedIcon,

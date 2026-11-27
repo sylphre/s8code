@@ -1,4 +1,4 @@
-import type { ClientSettings, VoiceMicrophoneEntry } from "@t3tools/contracts";
+import type { ClientSettings, VoiceMicrophoneEntry } from "@s8code/contracts";
 
 import type { BrowserMicrophone } from "./browserMicrophones";
 

@@ -5,9 +5,9 @@ import {
   deviceToolVersionLabels,
   deviceToolUpdateOwnership,
   deviceToolUpdatePolicy,
-} from "@t3tools/client-runtime/state/device";
+} from "@s8code/client-runtime/state/device";
 import { useIsFocused, useNavigation, type StaticScreenProps } from "@react-navigation/native";
-import { EnvironmentId, ThreadId } from "@t3tools/contracts";
+import { EnvironmentId, ThreadId } from "@s8code/contracts";
 import * as Cause from "effect/Cause";
 import { msg, T, useGT } from "gt-react-native";
 import { useEffect, useRef, useState, type RefObject } from "react";

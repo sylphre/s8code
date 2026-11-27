@@ -4,14 +4,14 @@ import type {
   WorktreeSetupStage,
   WorktreeSetupStageId,
   WorktreeSetupStageStatus,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import {
   WORKTREE_SETUP_DETAIL_MAX_LENGTH,
   WORKTREE_SETUP_ERROR_MAX_LENGTH,
   WORKTREE_SETUP_STAGE_ORDER,
   WORKTREE_SETUP_TAIL_LINE_MAX_LENGTH,
-} from "@t3tools/contracts";
-import { splitsSurrogatePair } from "@t3tools/shared/assistantCitations";
+} from "@s8code/contracts";
+import { splitsSurrogatePair } from "@s8code/shared/assistantCitations";
 import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";

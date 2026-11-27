@@ -6,9 +6,9 @@ import * as NodeHttpClient from "@effect/platform-node/NodeHttpClient";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import * as NodeSocket from "@effect/platform-node/NodeSocket";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import * as NodeSqliteClient from "@t3tools/shared/nodeSqliteClient";
-import { fromJsonStringPretty } from "@t3tools/shared/schemaJson";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import * as NodeSqliteClient from "@s8code/shared/nodeSqliteClient";
+import { fromJsonStringPretty } from "@s8code/shared/schemaJson";
 import * as Cause from "effect/Cause";
 import * as Console from "effect/Console";
 import * as DateTime from "effect/DateTime";
@@ -37,7 +37,7 @@ import {
   ORCHESTRATION_PROTOCOL_VERSION_TEXT,
   ThreadId,
   WsRpcGroup,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import {
   HttpClient,
   HttpClientRequest,

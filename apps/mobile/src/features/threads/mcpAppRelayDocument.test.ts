@@ -1,4 +1,4 @@
-import { MCP_APP_DOCUMENT_MESSAGE } from "@t3tools/shared/mcpApp";
+import { MCP_APP_DOCUMENT_MESSAGE } from "@s8code/shared/mcpApp";
 import { expect, it } from "vite-plus/test";
 
 import { mcpAppRelayDocument } from "./mcpAppRelayDocument";

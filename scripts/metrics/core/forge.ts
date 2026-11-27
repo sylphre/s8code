@@ -7,12 +7,12 @@ import * as NodeHttp2 from "node:http2";
 import * as NodeNet from "node:net";
 
 import * as NodeHttpServer from "@effect/platform-node/NodeHttpServer";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+import * as HostProcess from "@s8code/shared/HostProcess";
 import type {
   PullRequestListInput,
   PullRequestListResult,
   PullRequestRef,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as Clock from "effect/Clock";
 import * as Console from "effect/Console";
 import * as Duration from "effect/Duration";

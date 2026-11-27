@@ -7,7 +7,7 @@ import {
   type UsageSourceFingerprint,
   type UsageSummary,
   type UsageTokenTotals,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 
 export interface EnvironmentUsage {
   readonly environmentId: EnvironmentId;

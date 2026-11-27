@@ -25,9 +25,9 @@ import {
   RunId,
   ThreadId,
   TurnItemId,
-} from "@t3tools/contracts";
-import * as NodeSqliteClient from "@t3tools/shared/nodeSqliteClient";
-import type * as ProviderAdapter from "@t3tools/provider-core/server/ProviderAdapter";
+} from "@s8code/contracts";
+import * as NodeSqliteClient from "@s8code/shared/nodeSqliteClient";
+import type * as ProviderAdapter from "@s8code/provider-core/server/ProviderAdapter";
 import * as ConfigProvider from "effect/ConfigProvider";
 import * as Queue from "effect/Queue";
 import * as Arr from "effect/Array";
@@ -66,7 +66,7 @@ import * as EffectWorker from "./EffectWorker.ts";
 import * as EventSink from "./EventSink.ts";
 import * as ThreadViewers from "./ThreadViewers.ts";
 import * as EventStore from "./EventStore.ts";
-import * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
+import * as IdAllocator from "@s8code/provider-core/server/IdAllocator";
 import * as ProjectionMaintenance from "./ProjectionMaintenance.ts";
 import * as ProjectionReplay from "./testkit/ProjectionReplay.ts";
 import * as ProjectionStore from "./ProjectionStore.ts";

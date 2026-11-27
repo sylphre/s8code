@@ -1,16 +1,16 @@
-import { threadPullRequestKeyOf } from "@t3tools/client-runtime/thread-pull-requests";
-import { filterComposerPullRequestMatches } from "@t3tools/shared/composerPullRequestMatches";
-import { EnvironmentId, MessageId, ThreadId, type AssistantCitation } from "@t3tools/contracts";
+import { threadPullRequestKeyOf } from "@s8code/client-runtime/thread-pull-requests";
+import { filterComposerPullRequestMatches } from "@s8code/shared/composerPullRequestMatches";
+import { EnvironmentId, MessageId, ThreadId, type AssistantCitation } from "@s8code/contracts";
 import {
   collectAssistantCitations,
   expandAssistantCitationsForProvider,
   serializeAssistantCitation,
-} from "@t3tools/shared/assistantCitations";
+} from "@s8code/shared/assistantCitations";
 import {
   DEFAULT_RESOLVED_KEYBINDINGS,
   compileResolvedKeybindingsConfig,
   mergeWithDefaultKeybindings,
-} from "@t3tools/shared/keybindings";
+} from "@s8code/shared/keybindings";
 import { describe, expect, it } from "vite-plus/test";
 
 import {

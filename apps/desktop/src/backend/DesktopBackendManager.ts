@@ -26,12 +26,12 @@ import {
   DesktopTelemetryControlMessage,
   type DesktopTelemetryControlMessage as DesktopTelemetryControlMessageValue,
   type DatabaseMigrationProgress,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import {
   databaseMigrationProgress,
   isRunningDatabaseMigrations,
-} from "@t3tools/shared/databaseMigrationLog";
-import { waitForHttpReady as waitForHttpReadyShared } from "@t3tools/shared/httpReadiness";
+} from "@s8code/shared/databaseMigrationLog";
+import { waitForHttpReady as waitForHttpReadyShared } from "@s8code/shared/httpReadiness";
 
 import * as DesktopObservability from "../app/DesktopObservability.ts";
 import * as DesktopTelemetryPublisher from "../telemetry/DesktopTelemetryPublisher.ts";

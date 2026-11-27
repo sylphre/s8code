@@ -19,13 +19,13 @@ import {
   type WorkspaceLayoutCommandsResult,
   type WorktreeLayoutCommandKind,
   T3_PROJECT_FILE_NAME,
-} from "@t3tools/contracts";
-import { resolveProjectSettings } from "@t3tools/shared/projectSettings";
-import { flattenTemporaryWorktreeBranchName, isTemporaryWorktreeBranch } from "@t3tools/shared/git";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { windowsSystem32Path } from "@t3tools/shared/windowsSystem";
-import * as KeyedLock from "@t3tools/shared/KeyedLock";
-import { parseT3ProjectFile } from "@t3tools/shared/t3ProjectFile";
+} from "@s8code/contracts";
+import { resolveProjectSettings } from "@s8code/shared/projectSettings";
+import { flattenTemporaryWorktreeBranchName, isTemporaryWorktreeBranch } from "@s8code/shared/git";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import { windowsSystem32Path } from "@s8code/shared/windowsSystem";
+import * as KeyedLock from "@s8code/shared/KeyedLock";
+import { parseT3ProjectFile } from "@s8code/shared/t3ProjectFile";
 import * as Cause from "effect/Cause";
 import * as Context from "effect/Context";
 import * as Digest from "effect/crypto/Digest";

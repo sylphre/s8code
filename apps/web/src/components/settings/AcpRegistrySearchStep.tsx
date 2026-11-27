@@ -3,18 +3,18 @@ import {
   ACP_REGISTRY_MAX_AGENTS,
   ACP_REGISTRY_SEARCH_QUERY_MAX_LENGTH,
   AuthProvidersManageScope,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { readEnvironmentScope, useEnvironmentScope } from "../../state/session";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@s8code/client-runtime/state/runtime";
 import type {
   AcpRegistryPrepareResult,
   AcpRegistrySearchAgent,
   EnvironmentId,
   ProviderInstanceConfig,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { ExternalLinkIcon, SearchIcon } from "lucide-react";
 import { msg, T, useGT, useMessages, Var } from "gt-react";
 import { type FormEvent, useState } from "react";
@@ -29,7 +29,7 @@ import { Button } from "../ui/button";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group";
 import { ScrollArea } from "../ui/scroll-area";
 import { isConfiguredAcpRegistryAgent } from "./AddProviderInstanceDialog.logic";
-import { ProviderDriverKind } from "@t3tools/contracts";
+import { ProviderDriverKind } from "@s8code/contracts";
 import { ProviderInstanceIcon } from "../chat/ProviderInstanceIcon";
 import { providerClients } from "./providerDriverMeta";
 import { SharedTooltipTrigger } from "../ui/shared-tooltip";

@@ -1,4 +1,4 @@
-import type { ScopedThreadRef, SourceControlProviderKind } from "@t3tools/contracts";
+import type { ScopedThreadRef, SourceControlProviderKind } from "@s8code/contracts";
 import { T, useMessages, Var } from "gt-react";
 import { ExternalLinkIcon, TriangleAlertIcon } from "lucide-react";
 

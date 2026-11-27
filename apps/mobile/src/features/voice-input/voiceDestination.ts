@@ -8,7 +8,7 @@ import {
   type EnvironmentId,
   DEFAULT_SPEECH_TRANSCRIPTION_OPTIONS,
   type VoiceTranscriptionDestination,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import {
   getEnvironmentSpeechModels,
   getCloudSpeechKeys,
@@ -18,10 +18,10 @@ import {
   getEnvironmentSpeechStatus,
   transcribeEnvironmentPcm,
   VoiceTranscriptionError,
-} from "@t3tools/client-runtime/voice-input";
+} from "@s8code/client-runtime/voice-input";
 import { FetchHttpClient, type HttpClient } from "effect/http";
-import type { PreparedConnection } from "@t3tools/client-runtime/connection";
-import { effectiveSpeechLanguage } from "@t3tools/shared/speech";
+import type { PreparedConnection } from "@s8code/client-runtime/connection";
+import { effectiveSpeechLanguage } from "@s8code/shared/speech";
 import * as Effect from "effect/Effect";
 import * as Option from "effect/Option";
 import { Atom, AsyncResult, AtomRegistry } from "effect/reactivity";

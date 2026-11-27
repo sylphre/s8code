@@ -1,7 +1,7 @@
 import { assert, it, vi } from "@effect/vitest";
-import type { ManagedPolicyDocument } from "@t3tools/contracts";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import * as RelayTracing from "@t3tools/shared/relayTracing";
+import type { ManagedPolicyDocument } from "@s8code/contracts";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import * as RelayTracing from "@s8code/shared/relayTracing";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";

@@ -1,4 +1,4 @@
-import type { EnvironmentId } from "@t3tools/contracts";
+import type { EnvironmentId } from "@s8code/contracts";
 import { msg } from "gt-react";
 
 import { m, type MessageResolver } from "../i18n/messages";

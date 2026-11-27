@@ -1,11 +1,11 @@
 import * as Dialog from "../components/ui/Dialog";
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
+import { errorDisplayMessage } from "@s8code/client-runtime/errors";
 import { msg } from "gt-react-native";
 import { useRef } from "react";
 import { m } from "../i18n/messages";
-import { PROVIDER_SEND_TURN_MAX_ATTACHMENTS, type ServerConfig } from "@t3tools/contracts";
-import { clampFileAttachmentUploadBytes } from "@t3tools/client-runtime/state/attachments";
-import { nextPastedTextFileName } from "@t3tools/client-runtime/text-paste";
+import { PROVIDER_SEND_TURN_MAX_ATTACHMENTS, type ServerConfig } from "@s8code/contracts";
+import { clampFileAttachmentUploadBytes } from "@s8code/client-runtime/state/attachments";
+import { nextPastedTextFileName } from "@s8code/client-runtime/text-paste";
 import type { ComposerTextPaste } from "../components/ComposerEditor";
 import {
   convertPastedImagesToAttachments,

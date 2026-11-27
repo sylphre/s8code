@@ -1,5 +1,5 @@
-import type { EnvironmentId, SidebarProjectGroupingMode } from "@t3tools/contracts";
-import { DEFAULT_SIDEBAR_PROJECT_SORT_ORDER } from "@t3tools/contracts";
+import type { EnvironmentId, SidebarProjectGroupingMode } from "@s8code/contracts";
+import { DEFAULT_SIDEBAR_PROJECT_SORT_ORDER } from "@s8code/contracts";
 import { RegistryContext, useAtomValue } from "@effect/atom-react";
 import { Atom } from "effect/reactivity";
 import { createContext, createElement, useContext, useState, type PropsWithChildren } from "react";

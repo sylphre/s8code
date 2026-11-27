@@ -1,9 +1,9 @@
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
+import { errorDisplayMessage } from "@s8code/client-runtime/errors";
 import { useAtomValue } from "@effect/atom-react";
-import { visibleLinkedThreads } from "@t3tools/client-runtime/state/threads";
+import { visibleLinkedThreads } from "@s8code/client-runtime/state/threads";
 import { AsyncResult } from "effect/reactivity";
 import { useGT } from "gt-react-native";
-import { settlePromise, squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
+import { settlePromise, squashAtomCommandFailure } from "@s8code/client-runtime/state/runtime";
 import * as Dialog from "../../components/ui/Dialog";
 import {
   StackActions,
@@ -11,18 +11,18 @@ import {
   useNavigationState,
   useRoute,
 } from "@react-navigation/native";
-import { threadPullRequestLinkMode } from "@t3tools/client-runtime/thread-pull-request-compatibility";
+import { threadPullRequestLinkMode } from "@s8code/client-runtime/thread-pull-request-compatibility";
 import {
   AuthOrchestrationOperateScope,
   AuthSourceControlWriteScope,
   ThreadId,
   type PullRequestDetail,
   type PullRequestLinkedThreadsResult,
-} from "@t3tools/contracts";
-import { formatComposerContextReference } from "@t3tools/shared/composerContextReferences";
-import { sourceControlClients } from "@t3tools/client-runtime/source-control-clients";
+} from "@s8code/contracts";
+import { formatComposerContextReference } from "@s8code/shared/composerContextReferences";
+import { sourceControlClients } from "@s8code/client-runtime/source-control-clients";
 import { changeRequestTermKind } from "../../lib/changeRequestTerm";
-import { normalizeThreadPullRequestKey } from "@t3tools/client-runtime/thread-pull-requests";
+import { normalizeThreadPullRequestKey } from "@s8code/client-runtime/thread-pull-requests";
 import { useRef, useState } from "react";
 import { pullRequestComposerContext } from "../../lib/composerContext";
 import { scopedThreadKey } from "../../lib/scopedEntities";

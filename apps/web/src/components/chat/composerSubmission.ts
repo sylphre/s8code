@@ -1,5 +1,5 @@
-import { PROVIDER_SEND_TURN_MAX_INPUT_CHARS } from "@t3tools/contracts";
-import { expandAssistantCitationsForProvider } from "@t3tools/shared/assistantCitations";
+import { PROVIDER_SEND_TURN_MAX_INPUT_CHARS } from "@s8code/contracts";
+import { expandAssistantCitationsForProvider } from "@s8code/shared/assistantCitations";
 import { msg } from "gt-react";
 
 import { getActiveLocale, m, type MessageResolver } from "../../i18n/messages";

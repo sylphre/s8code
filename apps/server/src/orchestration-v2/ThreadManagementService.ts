@@ -1,7 +1,7 @@
 import type {
   OrchestrationV2SearchThreadInput,
   OrchestrationV2SearchThreadResult,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import type {
   ActiveThreadListEntry,
   ProjectionRecordField,
@@ -43,11 +43,11 @@ import {
   type ScheduledTaskId,
   ThreadId,
   type TurnItemId,
-} from "@t3tools/contracts";
-import { delegatedTaskProgress } from "@t3tools/provider-core/server/subagentProjection";
-import { derivePendingBackgroundWork } from "@t3tools/shared/orchestrationV2PendingBackgroundWork";
-import { threadTranscriptHeader } from "@t3tools/shared/threadTranscript";
-import { AgentScope } from "@t3tools/shared/AgentScope";
+} from "@s8code/contracts";
+import { delegatedTaskProgress } from "@s8code/provider-core/server/subagentProjection";
+import { derivePendingBackgroundWork } from "@s8code/shared/orchestrationV2PendingBackgroundWork";
+import { threadTranscriptHeader } from "@s8code/shared/threadTranscript";
+import { AgentScope } from "@s8code/shared/AgentScope";
 import * as Clock from "effect/Clock";
 import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";
@@ -77,7 +77,7 @@ import * as LegacyV1ThreadImporter from "./legacy/LegacyV1ThreadImporter.ts";
 import * as ServerSettings from "../serverSettings.ts";
 import { ThreadWorktreeRestore } from "../workspace/restoreMissingWorktree.ts";
 import { checkOutput, outputRequestProblem } from "./runOutput.ts";
-import { routineSpan } from "@t3tools/shared/observability";
+import { routineSpan } from "@s8code/shared/observability";
 
 export type ThreadManagementSendMode = "auto" | "queue" | "steer" | "restart";
 

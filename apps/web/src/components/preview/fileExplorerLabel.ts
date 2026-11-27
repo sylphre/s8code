@@ -1,4 +1,4 @@
-import type { ExecutionEnvironmentPlatformOs, FileManagerRevealKind } from "@t3tools/contracts";
+import type { ExecutionEnvironmentPlatformOs, FileManagerRevealKind } from "@s8code/contracts";
 import { msg } from "gt-react";
 
 import { m, type MessageResolver } from "~/i18n/messages";

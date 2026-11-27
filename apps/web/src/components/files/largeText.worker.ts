@@ -1,4 +1,4 @@
-import { csvPreviewDelimiter, parseDelimitedPreview } from "@t3tools/shared/delimitedPreview";
+import { csvPreviewDelimiter, parseDelimitedPreview } from "@s8code/shared/delimitedPreview";
 import {
   LARGE_TEXT_MAX_BYTES,
   LARGE_TEXT_MAX_ROWS,

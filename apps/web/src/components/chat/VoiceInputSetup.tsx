@@ -10,7 +10,7 @@ import type {
   EnvironmentId,
   EnvironmentSpeechModel,
   EnvironmentSpeechStatus,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { useNavigate } from "@tanstack/react-router";
 import { CircleAlertIcon, MicIcon, RefreshCwIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -23,8 +23,8 @@ import {
   preferredMicrophoneId,
 } from "../../speech/microphoneOrder";
 import { useEnvironment } from "../../state/environments";
-import { AuthSettingsWriteScope } from "@t3tools/contracts";
-import { speechModelDownloadPercent } from "@t3tools/shared/speech";
+import { AuthSettingsWriteScope } from "@s8code/contracts";
+import { speechModelDownloadPercent } from "@s8code/shared/speech";
 import { useEnvironmentScope } from "../../state/session";
 import { languageLabel } from "../settings/SpeechLanguageSelect";
 import { Button } from "../ui/button";

@@ -1,7 +1,7 @@
-import { isScratchProject } from "@t3tools/client-runtime/state/projects";
-import { ProjectIconColor, type ProjectIconOverride } from "@t3tools/contracts";
-import { isProjectFaviconFallbackUrl } from "@t3tools/shared/projectFavicon";
-import { projectMonogram } from "@t3tools/shared/projectMonogram";
+import { isScratchProject } from "@s8code/client-runtime/state/projects";
+import { ProjectIconColor, type ProjectIconOverride } from "@s8code/contracts";
+import { isProjectFaviconFallbackUrl } from "@s8code/shared/projectFavicon";
+import { projectMonogram } from "@s8code/shared/projectMonogram";
 import type { AppSymbolName } from "../components/ui/AppSymbol";
 
 export type ProjectIconGlyph =

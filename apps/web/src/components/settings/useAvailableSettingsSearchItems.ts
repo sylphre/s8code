@@ -1,6 +1,6 @@
 import { useMessages } from "gt-react";
-import { hasFeatureFlag } from "@t3tools/client-runtime/state/server";
-import { AuthEnvironmentMaintainScope } from "@t3tools/contracts";
+import { hasFeatureFlag } from "@s8code/client-runtime/state/server";
+import { AuthEnvironmentMaintainScope } from "@s8code/contracts";
 
 import { usePrimaryCloudLinkState } from "~/cloud/cloudLinkState";
 import { hasCloudPublicConfig } from "~/cloud/publicConfig";

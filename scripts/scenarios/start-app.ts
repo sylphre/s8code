@@ -4,9 +4,9 @@
 import * as NodeCrypto from "@effect/platform-node/NodeCrypto";
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as NodeServices from "@effect/platform-node/NodeServices";
-import { writeFakeCli } from "@t3tools/provider-testing/fakeCli";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import * as NetService from "@t3tools/shared/Net";
+import { writeFakeCli } from "@s8code/provider-testing/fakeCli";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import * as NetService from "@s8code/shared/Net";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";

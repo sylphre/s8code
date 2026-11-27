@@ -1,4 +1,4 @@
-import { EnvironmentId, SourceControlProviderKind, ThreadId } from "@t3tools/contracts";
+import { EnvironmentId, SourceControlProviderKind, ThreadId } from "@s8code/contracts";
 import { expect, it, vi } from "vite-plus/test";
 
 const { openLink, useOpenLink } = vi.hoisted(() => {

@@ -1,11 +1,11 @@
 import { assert, describe, it } from "@effect/vitest";
 import * as NodeServices from "@effect/platform-node/NodeServices";
-import type { ManagedPolicyLimits } from "@t3tools/contracts";
-import { EDITORS, REMOTE_CAPABLE_EDITOR_IDS } from "@t3tools/contracts";
-import { resolveEditorCommand } from "@t3tools/shared/editor";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { makePathDirectoryListings, PathDirectoryListings } from "@t3tools/shared/shell";
-import { ManagedPolicyFileError } from "@t3tools/shared/managedPolicyFile";
+import type { ManagedPolicyLimits } from "@s8code/contracts";
+import { EDITORS, REMOTE_CAPABLE_EDITOR_IDS } from "@s8code/contracts";
+import { resolveEditorCommand } from "@s8code/shared/editor";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import { makePathDirectoryListings, PathDirectoryListings } from "@s8code/shared/shell";
+import { ManagedPolicyFileError } from "@s8code/shared/managedPolicyFile";
 import * as FileSystem from "effect/FileSystem";
 import * as Path from "effect/Path";
 import * as Effect from "effect/Effect";

@@ -1,6 +1,6 @@
-import { canCreateProjectInEnvironment } from "@t3tools/client-runtime/operations/projects";
-import type { EnvironmentConnectionPhase } from "@t3tools/client-runtime/connection";
-import { type EnvironmentId, FilesystemBrowseError } from "@t3tools/contracts";
+import { canCreateProjectInEnvironment } from "@s8code/client-runtime/operations/projects";
+import type { EnvironmentConnectionPhase } from "@s8code/client-runtime/connection";
+import { type EnvironmentId, FilesystemBrowseError } from "@s8code/contracts";
 import * as Schema from "effect/Schema";
 
 import { newTaskFlowKey } from "../threads/new-task-flow-state";

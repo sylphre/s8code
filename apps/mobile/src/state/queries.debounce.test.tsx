@@ -1,6 +1,6 @@
-import { AuthFilesystemReadScope, EnvironmentId } from "@t3tools/contracts";
+import { AuthFilesystemReadScope, EnvironmentId } from "@s8code/contracts";
 import { RegistryContext } from "@effect/atom-react";
-import type { VcsRefTarget } from "@t3tools/client-runtime/state/vcs";
+import type { VcsRefTarget } from "@s8code/client-runtime/state/vcs";
 import { AsyncResult, Atom, AtomRegistry } from "effect/reactivity";
 import { act, useLayoutEffect } from "react";
 import { createRoot } from "react-dom/client";

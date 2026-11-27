@@ -1,5 +1,5 @@
-import { squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
-import type { EnvironmentId, IssueRef } from "@t3tools/contracts";
+import { squashAtomCommandFailure } from "@s8code/client-runtime/state/runtime";
+import type { EnvironmentId, IssueRef } from "@s8code/contracts";
 import { msg, useGT } from "gt-react";
 import { ArrowUpIcon } from "lucide-react";
 import { useRef, useState } from "react";

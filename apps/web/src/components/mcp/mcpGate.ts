@@ -1,9 +1,9 @@
 import type {
   EnvironmentCloudLinkStateResult,
   EnvironmentConnectReachability,
-} from "@t3tools/contracts";
-import type { Discovery } from "@t3tools/client-runtime/relay";
-import type { RelayManagedEndpoint } from "@t3tools/contracts/relay";
+} from "@s8code/contracts";
+import type { Discovery } from "@s8code/client-runtime/relay";
+import type { RelayManagedEndpoint } from "@s8code/contracts/relay";
 
 import { msg } from "gt-react";
 

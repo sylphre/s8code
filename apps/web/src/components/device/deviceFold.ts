@@ -1,5 +1,5 @@
-import type { DeviceHubAccess } from "@t3tools/client-runtime/state/deviceHubAccess";
-import { withDeviceHubQuery } from "@t3tools/client-runtime/state/deviceHubAccess";
+import type { DeviceHubAccess } from "@s8code/client-runtime/state/deviceHubAccess";
+import { withDeviceHubQuery } from "@s8code/client-runtime/state/deviceHubAccess";
 import * as Schema from "effect/Schema";
 import { msg } from "gt-react";
 

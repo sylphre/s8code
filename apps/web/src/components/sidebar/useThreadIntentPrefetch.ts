@@ -1,4 +1,4 @@
-import type { ScopedThreadRef } from "@t3tools/contracts";
+import type { ScopedThreadRef } from "@s8code/contracts";
 import { useEffect, useRef } from "react";
 
 import { appAtomRegistry } from "~/rpc/atomRegistry";

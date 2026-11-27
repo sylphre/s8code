@@ -1,5 +1,5 @@
 /// <reference lib="dom" />
-import type { GitResolvePullRequestResult } from "@t3tools/contracts";
+import type { GitResolvePullRequestResult } from "@s8code/contracts";
 import { expect } from "e2e";
 
 import { test, WEB } from "./t3.ts";

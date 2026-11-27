@@ -7,14 +7,14 @@ import {
   type ProviderDriverKind,
   type ResolvedKeybindingsConfig,
   MODEL_PICKER_JUMP_KEYBINDING_COMMANDS,
-} from "@t3tools/contracts";
-import { resolveSelectableModel } from "@t3tools/shared/model";
+} from "@s8code/contracts";
+import { resolveSelectableModel } from "@s8code/shared/model";
 import { useAtomValue } from "@effect/atom-react";
 import {
   formatProviderUpdateRequiredNotice,
   providerUpdateChannelLags,
-} from "@t3tools/client-runtime/providerUpdateRequiredModels";
-import { groupModelsBySubProvider } from "@t3tools/client-runtime/providerSubProviders";
+} from "@s8code/client-runtime/providerUpdateRequiredModels";
+import { groupModelsBySubProvider } from "@s8code/client-runtime/providerSubProviders";
 import { useNavigate } from "@tanstack/react-router";
 import { LegendList, type LegendListRef } from "@legendapp/list/react";
 import {
@@ -39,7 +39,7 @@ import {
   parseModelPickerLegacySectionKey,
   parseModelPickerModelKey,
 } from "./modelPickerKeys";
-import { rankModelPickerSearch } from "@t3tools/client-runtime/model-search";
+import { rankModelPickerSearch } from "@s8code/client-runtime/model-search";
 import {
   Combobox,
   ComboboxEmpty,

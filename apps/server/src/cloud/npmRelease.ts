@@ -2,9 +2,9 @@ import {
   ServerNpmReleaseError,
   ServerNpmReleaseInput,
   type ServerNpmRelease,
-} from "@t3tools/contracts";
-import { npmReleaseDatabaseMigration } from "@t3tools/shared/cliRelease";
-import { resolveCommandPath } from "@t3tools/shared/shell";
+} from "@s8code/contracts";
+import { npmReleaseDatabaseMigration } from "@s8code/shared/cliRelease";
+import { resolveCommandPath } from "@s8code/shared/shell";
 import * as Cache from "effect/Cache";
 import * as Context from "effect/Context";
 import * as Duration from "effect/Duration";

@@ -4,9 +4,9 @@ import {
   createMergedIssueListAtoms,
   type IssueCandidatesTarget,
   type IssueListTarget,
-} from "@t3tools/client-runtime/state/issues";
+} from "@s8code/client-runtime/state/issues";
 import { useAtomValue } from "@effect/atom-react";
-import type { EnvironmentId } from "@t3tools/contracts";
+import type { EnvironmentId } from "@s8code/contracts";
 
 import { connectionAtomRuntime } from "../connection/runtime";
 import { appAtomRegistry } from "./atom-registry";

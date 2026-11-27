@@ -1,17 +1,17 @@
 import * as Dialog from "../../components/ui/Dialog";
 import { useAtomValue } from "@effect/atom-react";
-import { scopeThreadRef } from "@t3tools/client-runtime/environment";
+import { scopeThreadRef } from "@s8code/client-runtime/environment";
 import {
   resolveHandoffEndpoints,
   resolveModelSwitchChange,
   type HandoffEndpoints,
-} from "@t3tools/client-runtime/handoff";
-import { resolveModelShortName } from "@t3tools/client-runtime/provider-clients";
+} from "@s8code/client-runtime/handoff";
+import { resolveModelShortName } from "@s8code/client-runtime/provider-clients";
 import {
   normalizeProviderAccentColor,
   resolveProviderInstanceDisplayName,
   shouldShowInstanceBadge,
-} from "@t3tools/client-runtime/state/provider-instance-display";
+} from "@s8code/client-runtime/state/provider-instance-display";
 import type {
   EnvironmentId,
   ModelSelection,
@@ -19,7 +19,7 @@ import type {
   OrchestrationV2ProjectedTurnItem,
   ProviderInstanceId,
   ServerProvider,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { Atom } from "effect/reactivity";
 import { useGT } from "gt-react-native";
 import { useMemo } from "react";

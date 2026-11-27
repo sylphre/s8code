@@ -6,8 +6,8 @@ import {
   type VoiceInputControllerDependencies,
   type VoiceInputErrorCode,
   type VoiceInputState,
-} from "@t3tools/client-runtime/voice-input";
-import type { PreparedConnection } from "@t3tools/client-runtime/connection";
+} from "@s8code/client-runtime/voice-input";
+import type { PreparedConnection } from "@s8code/client-runtime/connection";
 import type {
   CloudSpeechModelId,
   CloudSpeechProvider,
@@ -18,9 +18,9 @@ import type {
   SpeechPostProcessingOptions,
   SpeechStreamText,
   SpeechTranscriptionOptions,
-} from "@t3tools/contracts";
-import { DEFAULT_CLIENT_SETTINGS, EnvironmentInternalError } from "@t3tools/contracts";
-import { resolveSpeechVocabulary } from "@t3tools/shared/speech";
+} from "@s8code/contracts";
+import { DEFAULT_CLIENT_SETTINGS, EnvironmentInternalError } from "@s8code/contracts";
+import { resolveSpeechVocabulary } from "@s8code/shared/speech";
 import * as Schema from "effect/Schema";
 import { useEffect, useSyncExternalStore } from "react";
 

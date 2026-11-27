@@ -1,14 +1,14 @@
 import { useAtomValue } from "@effect/atom-react";
-import { squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
-import { visibleLinkedThreads } from "@t3tools/client-runtime/state/threads";
-import { AuthOrchestrationOperateScope, threadIssueKeysEqual } from "@t3tools/contracts";
+import { squashAtomCommandFailure } from "@s8code/client-runtime/state/runtime";
+import { visibleLinkedThreads } from "@s8code/client-runtime/state/threads";
+import { AuthOrchestrationOperateScope, threadIssueKeysEqual } from "@s8code/contracts";
 import type {
   EnvironmentId,
   IssueDetail,
   IssueRef,
   ScopedThreadRef,
   ThreadId,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { Link2Icon, Link2OffIcon, MessageSquareIcon } from "lucide-react";
 import { msg, T, useGT } from "gt-react";
 import { useState } from "react";

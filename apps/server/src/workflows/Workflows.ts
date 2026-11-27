@@ -7,7 +7,7 @@ import {
   applyWorkflowRunsUpdate,
   type WorkflowRunsSnapshot,
   type WorkflowRunsUpdate,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as Context from "effect/Context";
 import type * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";

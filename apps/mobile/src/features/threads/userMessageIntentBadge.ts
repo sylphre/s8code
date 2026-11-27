@@ -1,4 +1,4 @@
-import type { OrchestrationV2UserMessageInputIntent } from "@t3tools/contracts";
+import type { OrchestrationV2UserMessageInputIntent } from "@s8code/contracts";
 import { msg } from "gt-react-native";
 
 import { m, type MessageResolver } from "../../i18n/messages";

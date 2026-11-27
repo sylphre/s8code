@@ -5,8 +5,8 @@ import * as NodePath from "node:path";
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import { describe, expect, it } from "@effect/vitest";
 import * as FileSystem from "effect/FileSystem";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { SpawnExecutableResolution } from "@t3tools/shared/shell";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import { SpawnExecutableResolution } from "@s8code/shared/shell";
 import * as Effect from "effect/Effect";
 
 import {

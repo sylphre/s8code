@@ -1,7 +1,7 @@
-import { sanitizeNewRefName } from "@t3tools/shared/git";
-import { sourceControlClients } from "@t3tools/client-runtime/source-control-clients";
+import { sanitizeNewRefName } from "@s8code/shared/git";
+import { sourceControlClients } from "@s8code/client-runtime/source-control-clients";
 import { changeRequestTermKind } from "../../lib/changeRequestTerm";
-import { resolveSendEnvMode } from "@t3tools/shared/projectSettings";
+import { resolveSendEnvMode } from "@s8code/shared/projectSettings";
 import { msg } from "gt-react-native";
 
 import { m, type MessageResolver } from "../../i18n/messages";

@@ -1,5 +1,5 @@
-import { type EnvironmentId, SourceControlProviderKind } from "@t3tools/contracts";
-import { runAtomCommand } from "@t3tools/client-runtime/state/runtime";
+import { type EnvironmentId, SourceControlProviderKind } from "@s8code/contracts";
+import { runAtomCommand } from "@s8code/client-runtime/state/runtime";
 import * as Schema from "effect/Schema";
 import { msg } from "gt-react";
 import { StarIcon } from "lucide-react";

@@ -2,11 +2,11 @@ import type {
   EnvironmentId,
   UserInputAttachmentAnswerPayload,
   UserInputAttachments,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { Image } from "expo-image";
 import { Pressable, View } from "react-native";
 import { tryOpenExternalUrl } from "../../lib/openExternalUrl";
-import { getQuestionAnswerText } from "@t3tools/client-runtime/work-log/user-input";
+import { getQuestionAnswerText } from "@s8code/client-runtime/work-log/user-input";
 import { AppText as Text } from "../../components/ui/AppText";
 import { assetImageSource } from "../../lib/assetImageSource";
 import { useAssetUrl } from "../../state/assets";

@@ -4,7 +4,7 @@ import {
   type ProviderMcpSignInCompleteResult,
   type ProviderMcpSignInStartInput,
   type ProviderMcpSignInStartResult,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";

@@ -5,8 +5,8 @@ import {
   duoHoldOrientation,
   type DuoCommand,
   type DuoControlState,
-} from "@t3tools/client-runtime/device/duo-control";
-import type { DeviceScreenSize } from "@t3tools/client-runtime/device/stream";
+} from "@s8code/client-runtime/device/duo-control";
+import type { DeviceScreenSize } from "@s8code/client-runtime/device/stream";
 import { DeviceDuoGlyph } from "./DeviceDuoGlyph";
 import { Button } from "~/components/ui/button";
 import { SharedTooltipTrigger } from "~/components/ui/shared-tooltip";

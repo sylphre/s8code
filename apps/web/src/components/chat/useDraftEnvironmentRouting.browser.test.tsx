@@ -1,24 +1,24 @@
 import { useAtomValue } from "@effect/atom-react";
-import type { EnvironmentProject } from "@t3tools/client-runtime/state/shell";
-import { PrimaryConnectionTarget } from "@t3tools/client-runtime/connection";
+import type { EnvironmentProject } from "@s8code/client-runtime/state/shell";
+import { PrimaryConnectionTarget } from "@s8code/client-runtime/connection";
 import * as Option from "effect/Option";
-import type { VcsListRefsInput, VcsRef } from "@t3tools/contracts";
+import type { VcsListRefsInput, VcsRef } from "@s8code/contracts";
 import { AsyncResult, Atom } from "effect/reactivity";
 import type { EnvironmentPresentation } from "../../state/environments";
-import type { ProjectReadFileResult, ServerProvider } from "@t3tools/contracts";
+import type { ProjectReadFileResult, ServerProvider } from "@s8code/contracts";
 import {
   scopedThreadKey,
   scopeProjectRef,
   scopeThreadRef,
-} from "@t3tools/client-runtime/environment";
-import { createModelSelection } from "@t3tools/shared/model";
-import { DEFAULT_UNIFIED_SETTINGS } from "@t3tools/contracts/settings";
+} from "@s8code/client-runtime/environment";
+import { createModelSelection } from "@s8code/shared/model";
+import { DEFAULT_UNIFIED_SETTINGS } from "@s8code/contracts/settings";
 import {
   EnvironmentId,
   ProjectId,
   ProviderDriverKind,
   ProviderInstanceId,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { expect, it, vi } from "vite-plus/test";
 
 import { act, render } from "../../../test/render";

@@ -1,8 +1,8 @@
 import { assert, describe, it } from "@effect/vitest";
-import { GitCommandError } from "@t3tools/contracts";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { SpawnExecutableResolution } from "@t3tools/shared/shell";
-import * as TestSourceControlHost from "@t3tools/source-control-testing/TestSourceControlHost";
+import { GitCommandError } from "@s8code/contracts";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import { SpawnExecutableResolution } from "@s8code/shared/shell";
+import * as TestSourceControlHost from "@s8code/source-control-testing/TestSourceControlHost";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
 import * as Layer from "effect/Layer";

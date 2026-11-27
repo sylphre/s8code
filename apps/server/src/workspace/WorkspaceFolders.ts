@@ -9,13 +9,13 @@ import {
   type WorkspaceListFoldersResult,
   type WorkspaceScanFoldersInput,
   type WorkspaceScanFoldersResult,
-} from "@t3tools/contracts";
-import { expandHomePath } from "@t3tools/provider-core/server/pathExpansion";
-import { splitsSurrogatePair } from "@t3tools/shared/assistantCitations";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { fromLenientJson } from "@t3tools/shared/schemaJson";
-import { T3_PROJECT_FILE_NAME } from "@t3tools/contracts";
-import { parseT3ProjectFile } from "@t3tools/shared/t3ProjectFile";
+} from "@s8code/contracts";
+import { expandHomePath } from "@s8code/provider-core/server/pathExpansion";
+import { splitsSurrogatePair } from "@s8code/shared/assistantCitations";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import { fromLenientJson } from "@s8code/shared/schemaJson";
+import { T3_PROJECT_FILE_NAME } from "@s8code/contracts";
+import { parseT3ProjectFile } from "@s8code/shared/t3ProjectFile";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";

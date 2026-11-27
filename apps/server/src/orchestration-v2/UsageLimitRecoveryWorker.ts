@@ -1,9 +1,9 @@
-import { CommandId, MessageId, type OrchestrationV2Command } from "@t3tools/contracts";
+import { CommandId, MessageId, type OrchestrationV2Command } from "@s8code/contracts";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Stream from "effect/Stream";
-import type { OrchestrationV2DomainEvent } from "@t3tools/contracts";
+import type { OrchestrationV2DomainEvent } from "@s8code/contracts";
 import * as DueHint from "../scheduling/DueHint.ts";
 import * as Scheduler from "../scheduling/Scheduler.ts";
 import { forkParked } from "../serverActivation.ts";
@@ -11,7 +11,7 @@ import * as ServerSettings from "../serverSettings.ts";
 import * as ProjectionStore from "./ProjectionStore.ts";
 import * as Orchestrator from "./Orchestrator.ts";
 import * as ThreadManagement from "./ThreadManagementService.ts";
-import { routineSpan } from "@t3tools/shared/observability";
+import { routineSpan } from "@s8code/shared/observability";
 
 export const MAX_OVERDUE_ARM_MS = 24 * 60 * 60 * 1000;
 

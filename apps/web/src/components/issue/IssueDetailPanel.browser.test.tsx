@@ -1,4 +1,4 @@
-import type { IssueDetail } from "@t3tools/contracts";
+import type { IssueDetail } from "@s8code/contracts";
 import * as AsyncResult from "effect/reactivity/AsyncResult";
 import { describe, expect, it, vi } from "vite-plus/test";
 import { page, userEvent } from "vite-plus/test/browser";

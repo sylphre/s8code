@@ -6,17 +6,17 @@ import {
   type OrchestrationV2TurnItem,
   ThreadId,
   TurnItemId,
-} from "@t3tools/contracts";
-import { searchableMessageSegments, searchablePlanSegments } from "@t3tools/shared/threadFindText";
-import { countThreadSearchOccurrences } from "@t3tools/shared/threadSearch";
-import { htmlRenderFromToolItem, mcpAppFromToolItem } from "@t3tools/shared/toolOutput";
+} from "@s8code/contracts";
+import { searchableMessageSegments, searchablePlanSegments } from "@s8code/shared/threadFindText";
+import { countThreadSearchOccurrences } from "@s8code/shared/threadSearch";
+import { htmlRenderFromToolItem, mcpAppFromToolItem } from "@s8code/shared/toolOutput";
 import * as Cache from "effect/Cache";
 import * as Data from "effect/Data";
 import * as Effect from "effect/Effect";
 import * as RcRef from "effect/RcRef";
 import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
-import * as NodeSqliteClient from "@t3tools/shared/nodeSqliteClient";
+import * as NodeSqliteClient from "@s8code/shared/nodeSqliteClient";
 import * as SqlClient from "effect/sql/SqlClient";
 import {
   ProjectionStoreReadError,

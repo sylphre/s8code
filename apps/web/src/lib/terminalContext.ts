@@ -1,9 +1,9 @@
-import type { ThreadId } from "@t3tools/contracts";
+import type { ThreadId } from "@s8code/contracts";
 import { msg } from "gt-react";
 import {
   formatComposerContextReference,
   toKindScopedComposerContextId,
-} from "@t3tools/shared/composerContextReferences";
+} from "@s8code/shared/composerContextReferences";
 import type { MessageResolver } from "~/i18n/messages";
 
 export interface TerminalContextSelection {

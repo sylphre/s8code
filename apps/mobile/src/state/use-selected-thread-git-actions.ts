@@ -1,24 +1,24 @@
 import { useAtomMount } from "@effect/atom-react";
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
+import { errorDisplayMessage } from "@s8code/client-runtime/errors";
 
-import { EnvironmentProject, EnvironmentThreadShell } from "@t3tools/client-runtime/state/shell";
-import type { AtomCommandResult } from "@t3tools/client-runtime/state/runtime";
+import { EnvironmentProject, EnvironmentThreadShell } from "@s8code/client-runtime/state/shell";
+import type { AtomCommandResult } from "@s8code/client-runtime/state/runtime";
 import {
   createVcsStatusRevalidationAtomFamily,
   type GitActionRequestInput,
   type VcsActionOperation,
   type VcsRef,
-} from "@t3tools/client-runtime/state/vcs";
+} from "@s8code/client-runtime/state/vcs";
 import {
   AuthOrchestrationOperateScope,
   AuthSourceControlWriteScope,
   EnvironmentAuthorizationError,
   type GitRunStackedActionResult,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import {
   dedupeRemoteBranchesWithLocalMatches,
   sanitizeFeatureBranchName,
-} from "@t3tools/shared/git";
+} from "@s8code/shared/git";
 import * as Cause from "effect/Cause";
 import { msg } from "gt-react-native";
 import { m } from "../i18n/messages";

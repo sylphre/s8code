@@ -1,9 +1,9 @@
-import { DEFAULT_SERVER_SETTINGS, type ServerSettings } from "@t3tools/contracts";
+import { DEFAULT_SERVER_SETTINGS, type ServerSettings } from "@s8code/contracts";
 import {
   noCompatibilityPolicy,
   type ProviderCompatibilityLookup,
-} from "@t3tools/provider-core/server/compatibility";
-import * as ProviderHost from "@t3tools/provider-core/server/ProviderHost";
+} from "@s8code/provider-core/server/compatibility";
+import * as ProviderHost from "@s8code/provider-core/server/ProviderHost";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as FileSystem from "effect/FileSystem";
@@ -23,7 +23,7 @@ export interface TestProviderHostOptions {
 export class TestProviderHostSettings extends Context.Service<
   TestProviderHostSettings,
   { readonly set: (settings: ServerSettings) => Effect.Effect<void> }
->()("@t3tools/provider-testing/TestProviderHost/TestProviderHostSettings") {}
+>()("@s8code/provider-testing/TestProviderHost/TestProviderHostSettings") {}
 
 export const layer = (
   options: TestProviderHostOptions = {},

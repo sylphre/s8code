@@ -1,4 +1,4 @@
-import { splitsSurrogatePair } from "@t3tools/shared/assistantCitations";
+import { splitsSurrogatePair } from "@s8code/shared/assistantCitations";
 
 export function formatDiagnosticsDuration(value: number): string {
   const milliseconds = Math.round(value);

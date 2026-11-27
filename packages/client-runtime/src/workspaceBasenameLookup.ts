@@ -1,10 +1,10 @@
-import { FILESYSTEM_METADATA_BATCH_LIMIT } from "@t3tools/contracts";
+import { FILESYSTEM_METADATA_BATCH_LIMIT } from "@s8code/contracts";
 import {
   isAbsolutePath,
   isNetworkPath,
   isWindowsAbsolutePath,
   resolveWorkspaceFilePath,
-} from "@t3tools/shared/path";
+} from "@s8code/shared/path";
 
 export const WORKSPACE_BASENAME_LOOKUP_LIMIT = 25;
 

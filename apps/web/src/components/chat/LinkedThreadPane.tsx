@@ -1,5 +1,5 @@
-import { isLinkedThreadWorking, linkedThreadFailure } from "@t3tools/client-runtime/linked-thread";
-import type { ScopedThreadRef } from "@t3tools/contracts";
+import { isLinkedThreadWorking, linkedThreadFailure } from "@s8code/client-runtime/linked-thread";
+import type { ScopedThreadRef } from "@s8code/contracts";
 import { T, useGT, useMessages, Var } from "gt-react";
 import { EyeIcon, PlugIcon } from "lucide-react";
 import { useState, type ReactNode } from "react";

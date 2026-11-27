@@ -1,19 +1,19 @@
-import { sourceControlClients } from "@t3tools/client-runtime/source-control-clients";
+import { sourceControlClients } from "@s8code/client-runtime/source-control-clients";
 import { changeRequestTermKind } from "../lib/changeRequestTerm";
-import { errorDisplayMessage } from "@t3tools/client-runtime/errors";
+import { errorDisplayMessage } from "@s8code/client-runtime/errors";
 import * as Dialog from "../components/ui/Dialog";
 import {
   type EnvironmentProject,
   type EnvironmentThreadShell,
-} from "@t3tools/client-runtime/state/shell";
+} from "@s8code/client-runtime/state/shell";
 import {
   type AtomCommand,
   type AtomCommandResult,
   reportAtomCommandResult,
-} from "@t3tools/client-runtime/state/runtime";
-import { threadFamilyRead, type ThreadFamilyRead } from "@t3tools/client-runtime/state/threads";
-import { deriveThreadTitleSeed } from "@t3tools/client-runtime/operations";
-import { managedRuntimeModeDenial } from "@t3tools/client-runtime/contract-labels";
+} from "@s8code/client-runtime/state/runtime";
+import { threadFamilyRead, type ThreadFamilyRead } from "@s8code/client-runtime/state/threads";
+import { deriveThreadTitleSeed } from "@s8code/client-runtime/operations";
+import { managedRuntimeModeDenial } from "@s8code/client-runtime/contract-labels";
 import {
   AuthOrchestrationOperateScope,
   CommandId,
@@ -22,8 +22,8 @@ import {
   MessageId,
   PROVIDER_SEND_TURN_MAX_ATTACHMENTS,
   type EnvironmentId,
-} from "@t3tools/contracts";
-import { buildTemporaryWorktreeBranchName } from "@t3tools/shared/git";
+} from "@s8code/contracts";
+import { buildTemporaryWorktreeBranchName } from "@s8code/shared/git";
 import * as Cause from "effect/Cause";
 import * as Clock from "effect/Clock";
 import * as Effect from "effect/Effect";

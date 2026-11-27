@@ -5,11 +5,11 @@ import {
   ThreadId,
   type DiscoveredLocalServer,
   type PreviewStopLocalServerInput,
-} from "@t3tools/contracts";
-import { signalProcessGroup } from "@t3tools/provider-core/server/processGroup";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { windowsSystem32Path } from "@t3tools/shared/windowsSystem";
-import { isLoopbackHost, LSOF_LOCAL_HOST_TOKENS } from "@t3tools/shared/preview";
+} from "@s8code/contracts";
+import { signalProcessGroup } from "@s8code/provider-core/server/processGroup";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import { windowsSystem32Path } from "@s8code/shared/windowsSystem";
+import { isLoopbackHost, LSOF_LOCAL_HOST_TOKENS } from "@s8code/shared/preview";
 import * as Cause from "effect/Cause";
 import * as Clock from "effect/Clock";
 import * as Context from "effect/Context";

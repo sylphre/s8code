@@ -1,5 +1,5 @@
-import { ASSISTANT_CITATION_MAX_COMMENT_LENGTH, type AssistantCitation } from "@t3tools/contracts";
-import { scopedThreadKey } from "@t3tools/client-runtime/environment";
+import { ASSISTANT_CITATION_MAX_COMMENT_LENGTH, type AssistantCitation } from "@s8code/contracts";
+import { scopedThreadKey } from "@s8code/client-runtime/environment";
 import { useState } from "react";
 import { T, useGT } from "gt-react-native";
 import { Platform, ScrollView, TextInput, View } from "react-native";

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vite-plus/test";
 
-import type { EnvironmentId, ThreadId } from "@t3tools/contracts";
-import type { RelayAgentActivityAggregateState } from "@t3tools/contracts/relay";
+import type { EnvironmentId, ThreadId } from "@s8code/contracts";
+import type { RelayAgentActivityAggregateState } from "@s8code/contracts/relay";
 
 import {
   AGENT_ACTIVITY_WIDGET_STALE_AFTER_MS,

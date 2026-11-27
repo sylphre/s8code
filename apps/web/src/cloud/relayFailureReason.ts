@@ -1,4 +1,4 @@
-import { ManagedRelay, relayRequestFailureDetail } from "@t3tools/client-runtime/relay";
+import { ManagedRelay, relayRequestFailureDetail } from "@s8code/client-runtime/relay";
 import * as Schema from "effect/Schema";
 import { msg } from "gt-react";
 

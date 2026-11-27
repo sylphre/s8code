@@ -1,9 +1,9 @@
 import { discardComposerDraft } from "../../lib/discardComposerDraft";
-import type { ContextMenuSource } from "@t3tools/contracts";
+import type { ContextMenuSource } from "@s8code/contracts";
 import { contextMenuSourceOf } from "../../contextMenuSource";
-import { assistantCitationsToPlainText } from "@t3tools/shared/assistantCitations";
-import { replaceComposerContextReferences } from "@t3tools/shared/composerContextReferences";
-import { composerFileLinksToPlainText } from "@t3tools/shared/composerInlineTokens";
+import { assistantCitationsToPlainText } from "@s8code/shared/assistantCitations";
+import { replaceComposerContextReferences } from "@s8code/shared/composerContextReferences";
+import { composerFileLinksToPlainText } from "@s8code/shared/composerInlineTokens";
 import { T, useGT, useMessages } from "gt-react";
 import { SquarePenIcon, XIcon } from "lucide-react";
 import {
@@ -12,8 +12,8 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type MouseEvent as ReactMouseEvent,
 } from "react";
-import type { EnvironmentProject } from "@t3tools/client-runtime/state/shell";
-import type { EnvironmentId } from "@t3tools/contracts";
+import type { EnvironmentProject } from "@s8code/client-runtime/state/shell";
+import type { EnvironmentId } from "@s8code/contracts";
 import { useShallow } from "zustand/react/shallow";
 import { terminalContextDisplayLabels } from "~/lib/terminalContext";
 import { cn } from "~/lib/utils";

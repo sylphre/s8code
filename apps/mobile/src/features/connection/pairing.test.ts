@@ -1,4 +1,4 @@
-import { resolveRemotePairingTarget } from "@t3tools/shared/remote";
+import { resolveRemotePairingTarget } from "@s8code/shared/remote";
 import { describe, expect, it } from "vite-plus/test";
 
 import { buildPairingUrl, extractPairingUrlFromQrPayload, parsePairingUrl } from "./pairing";

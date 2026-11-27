@@ -4,20 +4,20 @@ import {
   ExecutionEnvironmentDescriptor,
   ORCHESTRATION_PROTOCOL_VERSION,
   PortSchema,
-} from "@t3tools/contracts";
-import { resolveWorktreeT3Home } from "@t3tools/shared/devHome";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { formatHostForUrl, isWildcardHost } from "@t3tools/shared/hostClassification";
-import { DEFAULT_SIGNAL_EXPORT } from "@t3tools/shared/observability";
-import { buildPairingAppLink } from "@t3tools/shared/remote";
-import * as OtelEnvironment from "@t3tools/shared/otelEnvironment";
+} from "@s8code/contracts";
+import { resolveWorktreeT3Home } from "@s8code/shared/devHome";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import { formatHostForUrl, isWildcardHost } from "@s8code/shared/hostClassification";
+import { DEFAULT_SIGNAL_EXPORT } from "@s8code/shared/observability";
+import { buildPairingAppLink } from "@s8code/shared/remote";
+import * as OtelEnvironment from "@s8code/shared/otelEnvironment";
 import {
   buildTailscaleHttpsBaseUrl,
   DEFAULT_TAILSCALE_SERVE_PORT,
   ensureTailscaleServe,
   readTailscaleServeRootHolder,
   readTailscaleStatus,
-} from "@t3tools/tailscale";
+} from "@s8code/tailscale";
 import * as Config from "effect/Config";
 import * as Console from "effect/Console";
 import * as DateTime from "effect/DateTime";

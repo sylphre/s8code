@@ -1,5 +1,5 @@
-import { sourceControlClients } from "@t3tools/client-runtime/source-control-clients";
-import type { EnvironmentId, PullRequestDetailView, PullRequestRef } from "@t3tools/contracts";
+import { sourceControlClients } from "@s8code/client-runtime/source-control-clients";
+import type { EnvironmentId, PullRequestDetailView, PullRequestRef } from "@s8code/contracts";
 import { MessageSquareIcon, Trash2Icon, XIcon } from "lucide-react";
 import { T, useGT } from "gt-react";
 import { useRef, useState } from "react";

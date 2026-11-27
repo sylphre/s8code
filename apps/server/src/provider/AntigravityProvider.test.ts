@@ -9,7 +9,7 @@ import {
   ProviderInstanceId,
   ProviderSetupError,
   type RuntimeMode,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";
 import * as Fiber from "effect/Fiber";
@@ -26,8 +26,8 @@ import * as ServerConfig from "../config.ts";
 import * as ServerSettings from "../serverSettings.ts";
 import * as ProviderHostLive from "./ProviderHostLive.ts";
 import * as ServerSecretStore from "../auth/ServerSecretStore.ts";
-import type * as AcpSessionRuntime from "@t3tools/provider-acp/server/AcpSessionRuntime";
-import type { ServerProvider } from "@t3tools/contracts";
+import type * as AcpSessionRuntime from "@s8code/provider-acp/server/AcpSessionRuntime";
+import type { ServerProvider } from "@s8code/contracts";
 import {
   buildAntigravityModelsFromSession,
   makeAntigravityProvider,

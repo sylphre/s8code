@@ -2,7 +2,7 @@ import {
   chunkTerminalWrite,
   terminalWritePhase,
   type TerminalWriteInput,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 
 import { encodeTerminalPaste } from "./terminalInput";
 

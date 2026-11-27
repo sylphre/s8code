@@ -1,5 +1,5 @@
 /// <reference lib="dom" />
-import type { IssueListResult } from "@t3tools/contracts";
+import type { IssueListResult } from "@s8code/contracts";
 import { expect } from "e2e";
 
 import { SECOND_HOME, startSecondServer } from "./second-server.ts";

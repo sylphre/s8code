@@ -1,12 +1,12 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@s8code/client-runtime/errors";
 import { useNavigate } from "@tanstack/react-router";
 import {
   type AtomCommandResult,
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
-import { AuthAccessWriteScope, type EnvironmentId } from "@t3tools/contracts";
-import { unseenConnectDevices } from "@t3tools/client-runtime/connect-device-notices";
+} from "@s8code/client-runtime/state/runtime";
+import { AuthAccessWriteScope, type EnvironmentId } from "@s8code/contracts";
+import { unseenConnectDevices } from "@s8code/client-runtime/connect-device-notices";
 import * as DateTime from "effect/DateTime";
 import * as Schema from "effect/Schema";
 import { useEffect, useRef, useState } from "react";

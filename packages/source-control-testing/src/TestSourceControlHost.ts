@@ -6,9 +6,9 @@ import {
   type ServerSettingsPatch,
   VcsProcessExitError,
   VcsProcessSpawnError,
-} from "@t3tools/contracts";
-import { applyServerSettingsPatch } from "@t3tools/shared/serverSettings";
-import * as SourceControlHost from "@t3tools/source-control-core/server/SourceControlHost";
+} from "@s8code/contracts";
+import { applyServerSettingsPatch } from "@s8code/shared/serverSettings";
+import * as SourceControlHost from "@s8code/source-control-core/server/SourceControlHost";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -26,7 +26,7 @@ export interface TestSourceControlHostOptions {
 export class TestSourceControlHostSettings extends Context.Service<
   TestSourceControlHostSettings,
   { readonly update: (patch: ServerSettingsPatch) => Effect.Effect<void> }
->()("@t3tools/source-control-testing/TestSourceControlHost/TestSourceControlHostSettings") {}
+>()("@s8code/source-control-testing/TestSourceControlHost/TestSourceControlHostSettings") {}
 
 type Git = SourceControlHost.SourceControlHost["Service"]["git"];
 

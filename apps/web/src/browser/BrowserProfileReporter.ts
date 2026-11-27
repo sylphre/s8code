@@ -1,7 +1,7 @@
-import type { EnvironmentServerConfig } from "@t3tools/client-runtime/connection";
-import { runAtomCommand } from "@t3tools/client-runtime/state/runtime";
-import { AuthPreviewOperateScope, type EnvironmentId } from "@t3tools/contracts";
-import type { ClientSettings } from "@t3tools/contracts/settings";
+import type { EnvironmentServerConfig } from "@s8code/client-runtime/connection";
+import { runAtomCommand } from "@s8code/client-runtime/state/runtime";
+import { AuthPreviewOperateScope, type EnvironmentId } from "@s8code/contracts";
+import type { ClientSettings } from "@s8code/contracts/settings";
 import { Atom } from "effect/reactivity";
 
 import {

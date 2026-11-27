@@ -6,9 +6,9 @@ import type {
   DesktopPreviewRecordingInputEvent,
   PreviewAnnotationPayload,
   PreviewAnnotationRect,
-} from "@t3tools/contracts";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { parseKeybindingShortcut } from "@t3tools/shared/keybindings";
+} from "@s8code/contracts";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import { parseKeybindingShortcut } from "@s8code/shared/keybindings";
 import { app, shell } from "electron";
 import * as Cause from "effect/Cause";
 import * as Deferred from "effect/Deferred";

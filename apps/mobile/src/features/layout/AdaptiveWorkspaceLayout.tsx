@@ -15,7 +15,7 @@ import {
 } from "./adaptive-workspace-context";
 import { threadSelectionDeferral } from "./deferred-navigation";
 import { uuidv4 } from "../../lib/uuid";
-import { EnvironmentId, ThreadId, type SidebarProjectGroupingMode } from "@t3tools/contracts";
+import { EnvironmentId, ThreadId, type SidebarProjectGroupingMode } from "@s8code/contracts";
 import { useAtomValue } from "@effect/atom-react";
 import {
   CommonActions,

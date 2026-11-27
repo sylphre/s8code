@@ -1,6 +1,6 @@
 import { useAtomValue } from "@effect/atom-react";
-import { parseScopedThreadKey } from "@t3tools/client-runtime/environment";
-import { resolveListedAncestorThreadRef } from "@t3tools/client-runtime/state/threads";
+import { parseScopedThreadKey } from "@s8code/client-runtime/environment";
+import { resolveListedAncestorThreadRef } from "@s8code/client-runtime/state/threads";
 import { Atom } from "effect/reactivity";
 
 import { scopedThreadKey } from "../../lib/scopedEntities";

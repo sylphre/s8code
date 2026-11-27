@@ -10,12 +10,12 @@ import {
   DesktopAppActivationResponse,
   type DesktopAppActivationPlatform,
   type DesktopAppActivationRequest,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import {
   resolveDesktopAppControlAddress,
   type DesktopAppControlAddress,
-} from "@t3tools/shared/desktopAppControl";
-import * as HostProcess from "@t3tools/shared/HostProcess";
+} from "@s8code/shared/desktopAppControl";
+import * as HostProcess from "@s8code/shared/HostProcess";
 import * as Config from "effect/Config";
 import * as Console from "effect/Console";
 import * as SecureRandom from "effect/crypto/SecureRandom";

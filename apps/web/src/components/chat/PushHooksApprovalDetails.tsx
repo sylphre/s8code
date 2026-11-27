@@ -1,5 +1,5 @@
-import { pushHooksApprovalRows } from "@t3tools/client-runtime/state/thread-requests";
-import type { ProviderApprovalPushHooks } from "@t3tools/contracts";
+import { pushHooksApprovalRows } from "@s8code/client-runtime/state/thread-requests";
+import type { ProviderApprovalPushHooks } from "@s8code/contracts";
 import { useMessages } from "gt-react";
 
 /** The branch and hooks a push hooks approval names, under its question. */

@@ -18,7 +18,7 @@ import {
   type OrchestrationV2ProviderThread,
   OrchestrationV2UserInputQuestion,
   type OrchestrationV2ProviderTurn,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import * as Cause from "effect/Cause";
 import * as PlatformError from "effect/PlatformError";
 import * as DateTime from "effect/DateTime";
@@ -39,16 +39,16 @@ import * as TestClock from "effect/testing/TestClock";
 import * as ChildProcess from "effect/process/ChildProcess";
 import * as ChildProcessSpawner from "effect/process/ChildProcessSpawner";
 
-import * as TestProviderHost from "@t3tools/provider-testing/TestProviderHost";
-import * as ProviderContinuationRequests from "@t3tools/provider-core/server/ProviderContinuationRequests";
-import * as McpProviderSessions from "@t3tools/provider-core/server/McpProviderSessions";
-import * as IdAllocator from "@t3tools/provider-core/server/IdAllocator";
-import * as ProviderAdapter from "@t3tools/provider-core/server/ProviderAdapter";
-import * as ProviderHost from "@t3tools/provider-core/server/ProviderHost";
-import { handoffBudget } from "@t3tools/provider-core/server/handoffBudget";
-import * as HostProcess from "@t3tools/shared/HostProcess";
-import { AgentScope } from "@t3tools/shared/AgentScope";
-import { toolOutputImages, compactDynamicToolOutput } from "@t3tools/shared/toolOutput";
+import * as TestProviderHost from "@s8code/provider-testing/TestProviderHost";
+import * as ProviderContinuationRequests from "@s8code/provider-core/server/ProviderContinuationRequests";
+import * as McpProviderSessions from "@s8code/provider-core/server/McpProviderSessions";
+import * as IdAllocator from "@s8code/provider-core/server/IdAllocator";
+import * as ProviderAdapter from "@s8code/provider-core/server/ProviderAdapter";
+import * as ProviderHost from "@s8code/provider-core/server/ProviderHost";
+import { handoffBudget } from "@s8code/provider-core/server/handoffBudget";
+import * as HostProcess from "@s8code/shared/HostProcess";
+import { AgentScope } from "@s8code/shared/AgentScope";
+import { toolOutputImages, compactDynamicToolOutput } from "@s8code/shared/toolOutput";
 import {
   makePiAdapterV2,
   PiAdapterV2Driver,

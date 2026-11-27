@@ -4,7 +4,7 @@ import type {
   EnvironmentId,
   OrchestrationV2ProjectedTurnItem,
   ScopedThreadRef,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import {
   isJsonToolText,
   toolCallLines,
@@ -12,9 +12,9 @@ import {
   turnItemNeedsDetailFetch,
   turnItemOutputImages,
   turnItemOutputText,
-} from "@t3tools/client-runtime/work-log/item-detail";
-import { formatDiffCount } from "@t3tools/client-runtime/diff-count";
-import { isJavaScriptReplTool } from "@t3tools/shared/toolActivity";
+} from "@s8code/client-runtime/work-log/item-detail";
+import { formatDiffCount } from "@s8code/client-runtime/diff-count";
+import { isJavaScriptReplTool } from "@s8code/shared/toolActivity";
 import { ExternalLinkIcon } from "lucide-react";
 import { memo, type ReactNode, Suspense, use } from "react";
 

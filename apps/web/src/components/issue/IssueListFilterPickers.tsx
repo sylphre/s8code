@@ -1,10 +1,10 @@
-import type { IssueCandidatesTarget } from "@t3tools/client-runtime/state/issues";
+import type { IssueCandidatesTarget } from "@s8code/client-runtime/state/issues";
 import type {
   EnvironmentId,
   IssueInvolvement,
   IssueListState,
   ProjectId,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import { FolderGit2Icon, LayersIcon, ListFilterIcon, TagIcon, UserIcon } from "lucide-react";
 import { T, useGT } from "gt-react";
 import { useState } from "react";

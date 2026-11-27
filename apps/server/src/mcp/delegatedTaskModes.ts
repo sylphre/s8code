@@ -8,8 +8,8 @@ import {
   type ProviderOptionDescriptor,
   type ProviderOptionSelection,
   type RuntimeMode,
-} from "@t3tools/contracts";
-import { ACP_SESSION_MODE_OPTION_ID } from "@t3tools/provider-acp/server/sessionConfig";
+} from "@s8code/contracts";
+import { ACP_SESSION_MODE_OPTION_ID } from "@s8code/provider-acp/server/sessionConfig";
 import * as Effect from "effect/Effect";
 
 /** How much a runtime mode allows, narrowest first. */

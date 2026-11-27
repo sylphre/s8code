@@ -1,4 +1,4 @@
-import type { EnvironmentId, ProviderInstanceId, RuntimeMode } from "@t3tools/contracts";
+import type { EnvironmentId, ProviderInstanceId, RuntimeMode } from "@s8code/contracts";
 import { useAtomValue } from "@effect/atom-react";
 import { use } from "react";
 import { T, useGT, useMessages } from "gt-react";

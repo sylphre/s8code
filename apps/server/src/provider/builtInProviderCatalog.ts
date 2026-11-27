@@ -1,6 +1,6 @@
-import type { ProviderDriverKind, ProviderInstanceId, ServerProvider } from "@t3tools/contracts";
+import type { ProviderDriverKind, ProviderInstanceId, ServerProvider } from "@s8code/contracts";
 import type * as Stream from "effect/Stream";
-import type { ManagedServerProvider } from "@t3tools/provider-core/server/snapshot";
+import type { ManagedServerProvider } from "@s8code/provider-core/server/snapshot";
 
 export type ProviderSnapshotSource = {
   readonly instanceId: ProviderInstanceId;

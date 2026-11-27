@@ -12,7 +12,7 @@ import * as FileSystem from "effect/FileSystem";
 import * as Option from "effect/Option";
 import * as Path from "effect/Path";
 
-import type { ShellEnvironmentPatch } from "@t3tools/contracts";
+import type { ShellEnvironmentPatch } from "@s8code/contracts";
 import * as HostProcess from "./HostProcess.ts";
 import * as Context from "effect/Context";
 import { routineSpan } from "./observability.ts";
@@ -141,7 +141,7 @@ async function resolveSpawnExecutableWithNode(
 }
 
 export const SpawnExecutableResolution = Context.Reference<SpawnExecutableResolver>(
-  "@t3tools/shared/shell/SpawnExecutableResolution",
+  "@s8code/shared/shell/SpawnExecutableResolution",
   {
     defaultValue: () => resolveSpawnExecutableWithNode,
   },
@@ -410,14 +410,14 @@ export type WindowsShellEnvironmentReader = (
 ) => Effect.Effect<Partial<Record<string, string>>>;
 
 export const WindowsShellEnvironment = Context.Reference<WindowsShellEnvironmentReader>(
-  "@t3tools/shared/shell/WindowsShellEnvironment",
+  "@s8code/shared/shell/WindowsShellEnvironment",
   {
     defaultValue: () => readEnvironmentFromWindowsShell,
   },
 );
 
 export const CommandAvailability = Context.Reference<CommandAvailabilityChecker>(
-  "@t3tools/shared/shell/CommandAvailability",
+  "@s8code/shared/shell/CommandAvailability",
   {
     defaultValue: () => isCommandAvailable,
   },
@@ -601,7 +601,7 @@ interface CommandResolutionCacheEntry {
 }
 
 export const CommandResolutionCache = Context.Reference<Map<string, CommandResolutionCacheEntry>>(
-  "@t3tools/shared/shell/CommandResolutionCache",
+  "@s8code/shared/shell/CommandResolutionCache",
   {
     defaultValue: () => new Map(),
   },
@@ -682,7 +682,7 @@ export const makePathDirectoryListings = Cache.makeWith(listPathDirectory, {
 
 /** Windows PATH directory listings for the process; each use rechecks the directory's mtime. */
 export const PathDirectoryListings = Context.Reference(
-  "@t3tools/shared/shell/PathDirectoryListings",
+  "@s8code/shared/shell/PathDirectoryListings",
   { defaultValue: () => Effect.runSync(makePathDirectoryListings) },
 );
 
@@ -1053,7 +1053,7 @@ function locateXcodeGitWithXcrun(env: NodeJS.ProcessEnv): string | undefined {
 }
 
 export const XcodeGitLocation = Context.Reference<XcodeGitLocator>(
-  "@t3tools/shared/shell/XcodeGitLocation",
+  "@s8code/shared/shell/XcodeGitLocation",
   { defaultValue: () => locateXcodeGitWithXcrun },
 );
 

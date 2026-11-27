@@ -10,8 +10,8 @@ import {
   type WorkflowBeat,
   type WorkflowQuestionChoice,
   type WorkflowRunNode,
-} from "@t3tools/client-runtime/workflows";
-import { EnvironmentId, type WorkflowQuestion } from "@t3tools/contracts";
+} from "@s8code/client-runtime/workflows";
+import { EnvironmentId, type WorkflowQuestion } from "@s8code/contracts";
 import { StackActions, useNavigation, type StaticScreenProps } from "@react-navigation/native";
 import { T, Var, useGT, useMessages } from "gt-react-native";
 import { useRef, useState } from "react";

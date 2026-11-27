@@ -7,8 +7,8 @@ import {
   WorkflowRunStatus,
   type WorkflowRunSubject,
   WorkflowStep,
-} from "@t3tools/contracts";
-import { splitsSurrogatePair } from "@t3tools/shared/assistantCitations";
+} from "@s8code/contracts";
+import { splitsSurrogatePair } from "@s8code/shared/assistantCitations";
 import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";
 import * as Duration from "effect/Duration";

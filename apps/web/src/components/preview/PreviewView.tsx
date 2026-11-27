@@ -1,14 +1,14 @@
-import { thrownErrorMessage } from "@t3tools/client-runtime/errors";
+import { thrownErrorMessage } from "@s8code/client-runtime/errors";
 import { m } from "~/i18n/messages";
 import { useAtomValue } from "@effect/atom-react";
-import { scopedThreadKey } from "@t3tools/client-runtime/environment";
-import { settlePromise } from "@t3tools/client-runtime/state/runtime";
-import type { DesktopPreviewAnnotationVoiceConfig } from "@t3tools/contracts";
-import { previewStreamDownloadUrl } from "@t3tools/client-runtime/preview/server-browser-stream";
+import { scopedThreadKey } from "@s8code/client-runtime/environment";
+import { settlePromise } from "@s8code/client-runtime/state/runtime";
+import type { DesktopPreviewAnnotationVoiceConfig } from "@s8code/contracts";
+import { previewStreamDownloadUrl } from "@s8code/client-runtime/preview/server-browser-stream";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
-} from "@t3tools/client-runtime/state/runtime";
+} from "@s8code/client-runtime/state/runtime";
 import {
   AuthOrchestrationOperateScope,
   DEFAULT_BROWSER_PROFILE_ID,
@@ -19,14 +19,14 @@ import {
   DEFAULT_PREVIEW_ZOOM_FACTOR,
   PREVIEW_ZOOM_LEVELS,
   type PreviewAdjustInput,
-} from "@t3tools/contracts";
+} from "@s8code/contracts";
 import {
   normalizePreviewUrl,
   isPreviewUrlNormalizationError,
   resolveAddressBarInput,
   previewPdfAssetUrl,
   resolveSearchUrlTemplate,
-} from "@t3tools/shared/preview";
+} from "@s8code/shared/preview";
 import { msg, T, useGT, useMessages } from "gt-react";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 
