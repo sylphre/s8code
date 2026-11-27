@@ -1,4 +1,5 @@
 import {
+  type DesktopUpdateChannel,
   type EnvironmentId,
   type ProviderInstanceId,
   type ServerConfig,
@@ -52,6 +53,7 @@ import {
   type ServerConfigProjection,
   withoutEnvironmentThemes,
 } from "./serverConfigProjection.ts";
+import { msg } from "gt-i18n";
 
 export type { ServerConfigProjection } from "./serverConfigProjection.ts";
 
@@ -463,6 +465,17 @@ interface FetchedWorkspaceSnapshot {
   readonly instanceId: ProviderInstanceId;
   readonly snapshot: ServerProviderWorkspaceSnapshot;
   readonly basis: ReturnType<typeof snapshotBasis>;
+}
+
+/** Marked text for a desktop app whose build track differs from its saved update track. */
+export function desktopTrackMismatchText(mismatch: {
+  readonly buildChannel: DesktopUpdateChannel;
+  readonly savedChannel: DesktopUpdateChannel;
+}): string {
+  return msg(
+    "This {build, select, nightly {Nightly} other {Stable}} build can't update from the {saved, select, nightly {Nightly} other {Stable}} track on its own. Switch the update track back to {build, select, nightly {Nightly} other {Stable}}, or use Review beside Update track to retry the switch to {saved, select, nightly {Nightly} other {Stable}}.",
+    { build: mismatch.buildChannel, saved: mismatch.savedChannel },
+  );
 }
 
 const MAX_FETCHED_WORKSPACE_SNAPSHOTS = 32;
