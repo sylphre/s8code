@@ -7471,8 +7471,9 @@
   "96b7f4f09517ff8c": "正在添加…",
   "3cfe596e1f02e49f": "添加实例",
   "9760499f4f5c5cd0": "Add a custom provider",
-  "8f0bc64cdce43c7e": [
-    "Point an Anthropic-compatible relay or an OpenAI-compatible endpoint on ",
+  "335b76b25f8dd127": [
+    "Point an Anthropic-compatible relay or an OpenAI-compatible endpoint on",
+    " ",
     {
       "i": 1,
       "k": "_gt_value_1",
