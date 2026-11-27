@@ -11,7 +11,6 @@ import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
 import * as Path from "effect/Path";
 import * as Predicate from "effect/Predicate";
-import * as Ref from "effect/Ref";
 import * as Schema from "effect/Schema";
 import * as Sink from "effect/Sink";
 import * as Stream from "effect/Stream";
@@ -43,14 +42,10 @@ import * as ProjectionStore from "../orchestration-v2/ProjectionStore.ts";
 import * as PullRequestService from "../pullRequest/PullRequestService.ts";
 import * as PullRequestWatchService from "../pullRequest/PullRequestWatchService.ts";
 import { advertisedJsonSchema } from "./advertisedJsonSchema.ts";
-import * as McpClientInput from "./McpClientInput.ts";
 import * as McpInvocationContext from "./McpInvocationContext.ts";
 import * as McpToolAccess from "./McpToolAccess.ts";
 import * as McpToolExposure from "./McpToolExposure.ts";
 import * as McpWebhookTransport from "./McpWebhookTransport.ts";
-import { HTML_RENDER_TOOL_NAME } from "@s8code/shared/htmlRender";
-import { compactT3McpToolOutput } from "@s8code/shared/toolOutput";
-import * as McpProviderSessions from "@s8code/provider-core/server/McpProviderSessions";
 import { MCP_TOOL_EXPOSURE_HEADER } from "@s8code/provider-core/server/mcpSession";
 import * as OrchestratorMcpService from "./OrchestratorMcpService.ts";
 import { PreviewControlsToolkit } from "./toolkits/previewControls/tools.ts";
@@ -1044,38 +1039,6 @@ const withToolSpans = Effect.fn("McpHttpServer.withToolSpans")(function* <A, E, 
   return yield* registration.pipe(Effect.provideService(McpServer.McpServer, tracingServer));
 });
 
-/**
- * A toolkit handler returns its tool's result type, so it cannot answer with a request for the
- * client's input. It leaves one in `McpClientInput` and ends, and that request is the answer.
- */
-const withClientInput = Effect.fn("McpHttpServer.withClientInput")(function* <A, E, R>(
-  registration: Effect.Effect<A, E, R>,
-) {
-  const server = yield* McpServer.McpServer;
-  const sessions = Option.getOrUndefined(
-    yield* Effect.serviceOption(McpProviderSessions.McpProviderSessions),
-  );
-  const askingServer = McpServer.McpServer.of({
-    ...server,
-    addTool: Effect.fn("McpServer.addTool", { attributes: routineSpan })(function (options) {
-      return server.addTool({
-        ...options,
-        handle: Effect.fnUntraced(function* (payload) {
-          const request = yield* Ref.make<McpSchema.InputRequired | undefined>(undefined);
-          const exit = yield* options
-            .handle(payload)
-            .pipe(
-              Effect.provideService(McpClientInput.McpClientInput, { request, sessions }),
-              Effect.exit,
-            );
-          return (yield* Ref.get(request)) ?? (yield* exit);
-        }),
-      });
-    }),
-  });
-  return yield* registration.pipe(Effect.provideService(McpServer.McpServer, askingServer));
-});
-
 /** `McpServer.registerToolkit` advertises the full codec schema; agents get the compact one. */
 const withAdvertisedSchemas = Effect.fn("McpHttpServer.withAdvertisedSchemas")(function* <
   Tools extends Record<string, Tool.Any>,
@@ -1176,7 +1139,7 @@ export const layerOrchestratorToolkit = toolkitRegistration(
 export const layerThreadToolkit = toolkitRegistration(ThreadToolkit, ThreadHandlers.layer);
 const layerWorkflowToolkit = toolkitRegistration(WorkflowToolkit, WorkflowHandlers.layer);
 
-export const layerMessageToolkit = toolkitRegistration(MessageToolkit, MessageHandlers.layer);
+const layerMessageToolkit = toolkitRegistration(MessageToolkit, MessageHandlers.layer);
 
 const layerWorktreeToolkitRegistration = toolkitRegistration(
   WorktreeToolkit,

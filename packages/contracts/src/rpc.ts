@@ -380,6 +380,8 @@ import {
   ServerRemoveKeybindingInput,
   ServerRemoveKeybindingResult,
   ServerProviderUpdatedPayload,
+  ProviderRuntimeModeLimitsInput,
+  ProviderRuntimeModeLimitsResult,
   ServerNpmRelease,
   ServerNpmReleaseError,
   ServerNpmReleaseInput,
