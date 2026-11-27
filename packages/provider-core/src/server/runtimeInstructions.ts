@@ -6,7 +6,7 @@ import type { ProviderAdapterV2RuntimePolicy } from "./ProviderAdapter.ts";
 export const AGENT_FEEDBACK_INSTRUCTIONS = {
   off: "",
   "on-request": "Use `t3_feedback` only when the user asks you to send T3 feedback.",
-  auto: "`t3_feedback` reports are wanted and cheap. Send one, then continue, when a T3 tool or `t3` command fails or gives a wrong result, the user corrects how you use T3 Code, or a T3 capability you looked for is missing. Once per problem; also when the user asks. Only about T3 Code, never the user's code or other tools.",
+  auto: "`t3_feedback` reports are wanted and cheap. Send one, then continue, when a T3 tool or `t3` command fails or gives a wrong result, the user corrects how you use S8 Code, or a T3 capability you looked for is missing. Once per problem; also when the user asks. Only about S8 Code, never the user's code or other tools.",
 } satisfies Record<AgentFeedbackMode, string>;
 
 /** Session-invariant; harnesses with a native system-prompt append can carry it once per session. */

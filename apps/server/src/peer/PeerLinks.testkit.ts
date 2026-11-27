@@ -100,7 +100,11 @@ export const servePeer = <E, R, E2 = never, R2 = never>(
       getDescriptor: Ref.get(descriptor),
     });
     const authContext = yield* Layer.build(
-      layerEnvironmentAuth("t3-peer-link-peer-").pipe(Layer.provideMerge(ServerE2ee.layer)),
+      layerEnvironmentAuth("t3-peer-link-peer-").pipe(
+        Layer.provideMerge(ServerE2ee.layer),
+        Layer.provide(ServerConfig.layerTest(process.cwd(), { prefix: "t3-peer-link-peer-" })),
+        Layer.provideMerge(Layer.mergeAll(NodeServices.layer, NodeCrypto.layer)),
+      ),
     );
     const layerRecordBearers = HttpRouter.middleware(
       (httpEffect) =>

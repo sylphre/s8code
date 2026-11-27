@@ -49,10 +49,7 @@ import {
 } from "@s8code/contracts";
 import * as DateTime from "effect/DateTime";
 import * as TextGeneration from "../textGeneration/TextGeneration.ts";
-import {
-  fromRunner,
-  decodeJsonReply,
-} from "@s8code/provider-core/server/textGenerationOperations";
+import { fromRunner, decodeJsonReply } from "@s8code/provider-core/server/textGenerationOperations";
 import * as GitVcsDriver from "../vcs/GitVcsDriver.ts";
 import * as VcsProcess from "../vcs/VcsProcess.ts";
 import * as VcsDriverRegistry from "../vcs/VcsDriverRegistry.ts";
@@ -1104,7 +1101,7 @@ it.layer(layerGitManagerTest)("GitManager", (it) => {
         ),
       ).toEqual([]);
 
-      // A remote added outside T3 Code shows on the next read.
+      // A remote added outside S8 Code shows on the next read.
       yield* runGit(repoDir, [
         "remote",
         "add",

@@ -194,7 +194,6 @@ import * as ProviderMaintenanceRunner from "./provider/providerMaintenanceRunner
 import * as ProviderAuthService from "./provider/ProviderAuthService.ts";
 import * as ProviderInstallation from "./provider/providerInstallation.ts";
 import * as NpmRelease from "./cloud/npmRelease.ts";
-import * as RelayTracing from "./cloud/relayTracing.ts";
 import * as ServerLifecycleEvents from "./serverLifecycleEvents.ts";
 import * as ServerRuntimeStartup from "./serverRuntimeStartup.ts";
 import * as SecretResolver from "@s8code/secret-provider-core/server/SecretResolver";
@@ -1396,6 +1395,7 @@ export const layerWsRpc = (
 
       const providerSessionsV2 = yield* ProviderSessionManager.ProviderSessionManagerV2;
       const mcpAppRequests = yield* McpAppRequests.McpAppRequests;
+      const mcpSignIn = yield* McpSignIn.McpSignIn;
       const threadLaunch = yield* ThreadLaunchService.ThreadLaunchService;
       const commandOutputHub = yield* CommandOutputHub.CommandOutputHub;
       const threadViewers = yield* ThreadViewers.ThreadViewers;
@@ -1480,7 +1480,6 @@ export const layerWsRpc = (
       const storageCleanup = yield* StorageCleanup.StorageCleanup;
       const databaseStorage = yield* DatabaseStorage.DatabaseStorage;
       const serverSettings = yield* ServerSettings.ServerSettingsService;
-      const hostEnvironment = yield* HostProcess.Environment;
       const secretResolver = yield* SecretResolver.SecretResolver;
       const peerLinks = yield* PeerLinks.PeerLinks;
       const peerLinkRequests = yield* PeerLinkRequests.PeerLinkRequests;
@@ -3646,6 +3645,7 @@ export const WS_RPC_SERVER_OPTIONS = {
 export const layer = Layer.unwrap(
   Effect.gen(function* () {
     const serverBrowser = yield* ServerBrowser.ServerBrowser;
+    const providerMaintenanceRunner = yield* ProviderMaintenanceRunner.ProviderMaintenanceRunner;
     const npmRelease = yield* NpmRelease.NpmRelease;
     const pullRequests = yield* PullRequestService.PullRequestService;
     const issues = yield* IssueService.IssueService;
@@ -3763,8 +3763,7 @@ export const layer = Layer.unwrap(
             // The RPC server upgrades the request itself, so its socket is
             // wrapped through the request it reads. E2EE wraps inside the
             // frame splitter so large plaintext frames still split before
-            // they are encrypted; the heartbeat wraps both so its frames
-            // travel the same path as any other frame.
+            // they are encrypted; the heartbeat wraps both.
             Object.create(request, {
               upgrade: {
                 value: Effect.flatMap(request.upgrade, (socket) =>
@@ -3777,9 +3776,7 @@ export const layer = Layer.unwrap(
                           ),
                       )
                     : Effect.succeed(
-                        withSocketHeartbeat(
-                          splitFrames ? splitLargeSocketFrames(socket) : socket,
-                        ),
+                        withSocketHeartbeat(splitFrames ? splitLargeSocketFrames(socket) : socket),
                       ),
                 ),
               },
@@ -3790,7 +3787,7 @@ export const layer = Layer.unwrap(
           sessions.markConnected(session.sessionId),
           () =>
             Effect.raceFirst(
-              routedRpcWebSocketHttpEffect,
+              framedRpcWebSocketHttpEffect,
               sessions.awaitInvalidation(session.sessionId, session.proofKeyThumbprint).pipe(
                 Effect.as(HttpServerResponse.empty()),
                 Effect.catchTags({

@@ -1,5 +1,6 @@
 import * as NetService from "@s8code/shared/Net";
 import * as OtelEnvironment from "@s8code/shared/otelEnvironment";
+import { isWildcardHost, normalizeHostname } from "@s8code/shared/hostClassification";
 import { DesktopBackendBootstrap, PortSchema } from "@s8code/contracts";
 import * as Config from "effect/Config";
 import * as Duration from "effect/Duration";

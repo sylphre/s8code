@@ -279,7 +279,10 @@ export class KeyPairing extends Context.Service<
       payload: KeyVerifyRequest,
     ) => Effect.Effect<
       KeyPairingResult,
-      KeyPairingError | EnvironmentAuth.ServerAuthInternalError | ServerSecretStore.SecretStoreError
+      | KeyPairingError
+      | EnvironmentAuth.ServerAuthInvalidCredentialError
+      | EnvironmentAuth.ServerAuthInternalError
+      | ServerSecretStore.SecretStoreError
     >;
     /** The server's E2EE identity fingerprint, so a pairing client can pin it without the descriptor. */
     readonly e2eeFingerprint: Option.Option<string>;
@@ -343,6 +346,7 @@ const verifyRouteLayer = HttpRouter.add(
       Effect.catchTags({
         KeyPairingError: (error: KeyPairingError) =>
           jsonNoStore({ error: error.reason }, error.reason === "invalid_request" ? 400 : 401),
+        ServerAuthInvalidCredentialError: () => jsonNoStore({ error: "invalid_credential" }, 401),
       }),
       Effect.catchIf(
         (error) =>

@@ -29,6 +29,8 @@ const UNMANAGEABLE_KEYS: ReadonlySet<string> = new Set([
   "projectScriptOverrides",
 ]);
 
+const ENVIRONMENT_OVERRIDDEN_KEYS: ReadonlySet<string> = new Set(["observability"]);
+
 /** Legacy settings the server derives from another on every write; manage that one instead. */
 const DERIVED_FROM: ReadonlyMap<string, string> = new Map([
   ["compactIdleThreads", "idleCompaction"],

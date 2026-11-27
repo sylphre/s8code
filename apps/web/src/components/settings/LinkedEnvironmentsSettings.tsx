@@ -686,7 +686,7 @@ export function useForgetPeerLink(environmentId: EnvironmentId, link: PeerLinkSu
           type: "warning",
           title: gt("{label} did not answer", { label: link.label }),
           description: gt(
-            "Revoke \"T3 Code · …\" in {label}''s Sharing & access to end the session there too.",
+            "Revoke \"S8 Code · …\" in {label}''s Sharing & access to end the session there too.",
             { label: link.label },
           ),
         });

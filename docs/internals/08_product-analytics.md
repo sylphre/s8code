@@ -11,7 +11,7 @@ count as product use.
   Codex or Claude sign-in files, so the ingest side counts installs by `installId`.
 - **Identity never comes from a provider.** Do not read a provider's sign-in files or derive an id
   or owner from a user's OpenAI, Claude, or other provider account, even hashed: users did not sign
-  in to those to be identified by T3 Code.
+  in to those to be identified by S8 Code.
 - **Resolve owners at query time.** `install.owner_observed` links installs to owners (Connect
   account, client device). Two Connect accounts are never merged as one person.
 - **Hash everywhere with [one helper](../../packages/shared/src/telemetryId.ts).** Clients and

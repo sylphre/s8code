@@ -50,7 +50,7 @@ import {
 } from "../antigravityAuthSupport.ts";
 import {
   antigravityModelOptions,
-  antigravityServesT3Code,
+  antigravityServesS8Code,
   antigravitySessionMode,
   antigravityThinkingConfig,
   makeAntigravityAcpRuntime,
@@ -342,12 +342,12 @@ export const AntigravityDriver: ProviderDriver<
         const refused = !version
           ? undefined
           : (brokenRuntimeError({ instanceId, name: "Antigravity", version, advisory, action }) ??
-            (antigravityServesT3Code(version)
+            (antigravityServesS8Code(version)
               ? undefined
               : new ProviderSetupError({
                   instanceId,
                   operation: "runtime",
-                  detail: `Antigravity ${version} only serves allowlisted editors, not T3 Code. ${action} to ${OPEN_MODEL_ACCESS_RELEASE.join(".")} or newer, then retry.`,
+                  detail: `Antigravity ${version} only serves allowlisted editors, not S8 Code. ${action} to ${OPEN_MODEL_ACCESS_RELEASE.join(".")} or newer, then retry.`,
                 })));
         if (refused) {
           return yield* new AcpErrors.AcpTransportError({ detail: refused.detail, cause: refused });

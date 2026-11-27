@@ -128,7 +128,7 @@ const policies = (): ReadonlyArray<Policy> => [
   {
     id: "WorktreeLayoutCommands",
     title: "Allow project worktree layout commands",
-    help: "Disabled stops T3 Code from running the worktreeLayout commands a project's t3.json declares, whether or not a user approved them. Such a project gets no new worktree threads; existing thread folders are restored and removed without the project's commands.",
+    help: "Disabled stops S8 Code from running the worktreeLayout commands a project's t3.json declares, whether or not a user approved them. Such a project gets no new worktree threads; existing thread folders are restored and removed without the project's commands.",
     toggle: "WorktreeLayoutCommands",
   },
   {
@@ -230,7 +230,7 @@ const admxElement = (element: Element) => {
 export function windowsAdmx(): string {
   const body = policies().map((policy) => {
     const head = `<policy name="${policy.id}" class="Machine" displayName="$(string.${policy.id})" explainText="$(string.${policy.id}_Help)" key="${ADMX_KEY}"`;
-    const common = `<parentCategory ref="T3Code" />\n      <supportedOn ref="SUPPORTED_T3Code" />`;
+    const common = `<parentCategory ref="S8Code" />\n      <supportedOn ref="SUPPORTED_S8Code" />`;
     if (policy.toggle !== undefined) {
       return `    ${head} valueName="${policy.toggle}">
       ${common}
@@ -249,16 +249,16 @@ export function windowsAdmx(): string {
   return `<?xml version="1.0" encoding="utf-8"?>
 <policyDefinitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" revision="1.0" schemaVersion="1.0" xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
   <policyNamespaces>
-    <target prefix="t3code" namespace="T3Tools.Policies.T3Code" />
+    <target prefix="t3code" namespace="T3Tools.Policies.S8Code" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
   <supportedOn>
     <definitions>
-      <definition name="SUPPORTED_T3Code" displayName="$(string.SUPPORTED_T3Code)" />
+      <definition name="SUPPORTED_S8Code" displayName="$(string.SUPPORTED_S8Code)" />
     </definitions>
   </supportedOn>
   <categories>
-    <category name="T3Code" displayName="$(string.T3Code)" />
+    <category name="S8Code" displayName="$(string.S8Code)" />
   </categories>
   <policies>
 ${body.join("\n")}
@@ -282,8 +282,8 @@ const presentationElement = (element: Element) => {
 /** The en-US strings and dialog layouts for `windowsAdmx`. */
 export function windowsAdml(): string {
   const strings: Array<readonly [string, string]> = [
-    ["T3Code", "S8 Code"],
-    ["SUPPORTED_T3Code", "S8 Code with managed policy support"],
+    ["S8Code", "S8 Code"],
+    ["SUPPORTED_S8Code", "S8 Code with managed policy support"],
   ];
   const presentations: Array<string> = [];
   for (const policy of policies()) {

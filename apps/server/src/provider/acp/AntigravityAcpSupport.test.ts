@@ -16,7 +16,7 @@ import { resolveAttachmentPath } from "../../attachmentStore.ts";
 import {
   applyAntigravityAcpModelSelection,
   antigravityPermissionDisposition,
-  antigravityServesT3Code,
+  antigravityServesS8Code,
   antigravitySessionMeta,
   antigravitySessionMode,
   buildAntigravityPrompt,
@@ -58,7 +58,7 @@ function makeModelRuntime(
   };
 }
 
-describe("antigravityServesT3Code", () => {
+describe("antigravityServesS8Code", () => {
   // The model manifest accepts the same `v` and `agy_acp_server_` prefixes.
   it.each([
     ["1.5.0", false],
@@ -68,7 +68,7 @@ describe("antigravityServesT3Code", () => {
     ["agy_acp_server_1.5.12", true],
     ["custom", true],
   ] as const)("%s → %s", (version, serves) => {
-    expect(antigravityServesT3Code(version)).toBe(serves);
+    expect(antigravityServesS8Code(version)).toBe(serves);
   });
 });
 
