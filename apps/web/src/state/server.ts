@@ -77,13 +77,6 @@ export const primaryServerConfigAtom = Atom.make(
 ).pipe(Atom.withLabel("web-primary-server-config"));
 
 // The config cache can outlive the session and predate an opt-out.
-export const primaryRelayTracingAllowedAtom = Atom.make((get): boolean | null => {
-  const environmentId = get(primaryEnvironmentIdAtom);
-  const config =
-    environmentId === null ? null : get(environmentSession.initialConfigValueAtom(environmentId));
-  return config === null ? null : config.observability.relayTracingAllowed !== false;
-}).pipe(Atom.withLabel("web-primary-relay-tracing-allowed"));
-
 export const primaryServerConfigEventAtom = Atom.make(
   (get): ServerConfigStreamEvent | null => get(primaryServerStateAtom).latestEvent,
 ).pipe(Atom.withLabel("web-primary-server-config-event"));

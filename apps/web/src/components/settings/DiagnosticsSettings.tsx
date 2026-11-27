@@ -7,6 +7,7 @@ import { AuthOrchestrationOperateScope } from "@s8code/contracts";
 import { readEnvironmentScope, useEnvironmentScope } from "../../state/session";
 import { AuthEnvironmentMaintainScope } from "@s8code/contracts";
 import { RefreshIcon } from "~/components/ui/refresh-icon";
+import { SharedTooltipTrigger } from "../ui/shared-tooltip";
 import {
   AlertTriangleIcon,
   CopyIcon,

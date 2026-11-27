@@ -28,6 +28,7 @@ import {
   settlePromise,
   squashAtomCommandFailure,
 } from "@s8code/client-runtime/state/runtime";
+import { useAtomSet, useAtomValue } from "@effect/atom-react";
 import * as Cause from "effect/Cause";
 
 import { isLocalEnvironmentDisabled } from "../../localEnvironment";
@@ -313,7 +314,8 @@ function ConnectionsSettingsContent({
   const [addBackendHost, setAddBackendHost] = useState("");
   const [savedBackendError, setSavedBackendError] = useState<string | null>(null);
   // Set by a read-only linked thread whose machine this client is about to pair with.
-  const [addPrefill, setAddPrefill] = useAtom(addEnvironmentPrefillAtom);
+  const addPrefill = useAtomValue(addEnvironmentPrefillAtom);
+  const setAddPrefill = useAtomSet(addEnvironmentPrefillAtom);
   const handleAddBackendDialogOpenChange = (open: boolean) => {
     setAddBackendDialogOpen(open);
     if (open) {
