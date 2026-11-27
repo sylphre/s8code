@@ -1,57 +1,35 @@
-<p align="center">
-  <img src="./assets/prod/s8-black-web-icon-192x192.png" width="80" height="80" alt="S8 Code logo" />
-</p>
+# S8 Code
 
-<h1 align="center">S8 Code</h1>
+![S8 Code](docs/assets/s8-logo.png)
 
-<p align="center">An unofficial fork based on the T3 Code source code</p>
+**S8 Code**（Side8）は、[T3 Code](https://github.com/pingdotgg/t3code) の個人フォークです。名前の由来は「横倒しの 8 = ∞」。
 
-S8 Code runs the coding agents on your machine and gives them one fast interface. Start a thread at your desk, then approve the next step from your phone.
+上流の使い勝手はそのままに、自分の環境で自分の道具として使うための変更を入れています。公式版とは無関係の非公式フォークです。
 
-It works with Claude Code, Codex, Cursor, OpenCode, Grok Build, Antigravity, Kiro, Pi, Muse Code, fx, and any [ACP](./docs/user/providers-acp.md) agent. If an agent is set up on your computer, S8 Code can control it.
+[English README](README.en.md)
 
-## What you get
+## 上流との違い
 
-- **Your subscriptions.** S8 Code does not resell tokens. It drives the agents you are already signed in to.
-- **Every agent in one place.** Change models in the middle of a thread. Let Claude hand a task to Codex.
-- **Desktop, web, and phone.** One server, and every client shows the same threads.
-- **Remote ready.** Run agents on any machine. Connect over your local network or Tailscale.
-- **Git built in.** Each thread can work in its own worktree. Review the diff, then commit, push, and open a pull request with one button.
-- **Fast.** Performance is a feature here. We measure it, and we treat a dropped frame as a bug.
-- **Open.** MIT licensed. If you don't like something, fork it.
+- **テレメトリ送信なし**: PostHog 等の解析送信と、公式アップデート経路を撤去しました（デスクトップの自動アップデートだけは、このフォーク自身のフィードを向けて残しています）。診断情報はローカルの外に出ません。
+- **エンドツーエンド暗号化**: リレー越しの会話チャネル（WebSocket RPC）に加えて、`/mcp` と端末ストリーム（Device Hub）まで E2EE を広げました。サーバーの身元はペアリング時の指紋で固定します。設計は [docs/internals/e2ee.md](docs/internals/e2ee.md)。
+- **カスタムプロバイダー追加ウィザード**: プロバイダー追加画面から、Anthropic 互換リレー（Claude Code 経由）と OpenAI 互換エンドポイント（Kilo Code 経由）を GUI で登録できます。API キーは機密変数として保存され、設定ファイルに平文で残りません。
+- **キー・ペアリング**: Ed25519 鍵によるデバイスのペアリングに対応。
+- **サーバーの待ち受け指定**: `--host` / `--port` で待ち受け先を指定でき、MCP サーバー（`/mcp`）経由で外部のエージェントからも操作できます。
 
-## Install
+## 動作環境とビルド
 
-This fork has no published builds. Run it from source:
+ベースは上流の Stable **v0.1.13** です。
 
-```bash
-vp i
-vp run dev
+Linux デスクトップ版は GitHub Actions（`build-desktop-linux.yml`）でビルドします。成果物は `.deb` と AppImage です。
+
+```sh
+# 開発用
+pnpm install
+vp run --filter=t3 dev
 ```
 
-The desktop, web, and mobile clients are built from this repository. [Install and first run](./docs/user/install.md) covers the prerequisites.
+## ライセンスとクレジット
 
-### Sign in to an agent
-
-S8 Code needs one agent that is installed and signed in. For example, install [Claude Code](https://claude.com/product/claude-code) and run `claude auth login`, or install [Codex CLI](https://developers.openai.com/codex/cli) and run `codex login`.
-
-[Provider setup](./docs/user/install.md#providers) has the steps for each agent.
-
-## Documentation
-
-- [Install and first run](./docs/user/install.md)
-- [Remote access from a phone or another machine](./docs/user/remote-access.md)
-- [Permission modes](./docs/user/permission-modes.md)
-- [Source control](./docs/user/source-control.md)
-- [Connect outside agents over MCP](./docs/user/outside-agents.md)
-- [FAQ](./docs/user/faq.md)
-
-[All docs](./docs/README.md) has the full list.
-
-## Development
-
-- Build from source with the [development runbook](./docs/operations/00_development.md#first-checkout). The [architecture overview](./docs/internals/01_architecture.md) explains how it works.
-
-## License
-
-[MIT](./LICENSE). The upstream copyright notice is kept in full.
+- ライセンスは上流と同じ **MIT** です（[LICENSE](LICENSE)）。
+- 元のプロジェクトは **T3 Code**（T3 Tools Inc. とコントリビューター）です。このフォークは上流の著作権表示を保持しています。
+- 「T3 Code」の名称・ロゴ等の商標は T3 Tools Inc. に帰属します。S8 Code は非公式フォークであり、上流とは提携していません（[TRADEMARK.md](TRADEMARK.md)）。
