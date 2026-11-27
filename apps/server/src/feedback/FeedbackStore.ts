@@ -22,10 +22,7 @@ import * as Semaphore from "effect/Semaphore";
 import * as SqlClient from "effect/sql/SqlClient";
 
 import * as Threads from "../orchestration-v2/ThreadManagementService.ts";
-import * as Providers from "../provider/ProviderRegistry.ts";
 import * as Settings from "../serverSettings.ts";
-import * as Analytics from "../telemetry/AnalyticsService.ts";
-import { type ProviderDimensions, providerDimensions } from "../telemetry/ProviderDimensions.ts";
 import {
   FeedbackLimitError,
   FeedbackNotRequestedError,
@@ -56,7 +53,6 @@ export interface UnpromptedReport {
   readonly source: FeedbackSource;
   readonly threadId: ThreadId | null;
   readonly runId: RunId | null;
-  readonly dimensions: Partial<ProviderDimensions>;
 }
 
 export class FeedbackStore extends Context.Service<
@@ -101,8 +97,6 @@ const make = Effect.gen(function* () {
   const sql = yield* SqlClient.SqlClient;
   const threads = yield* Threads.ThreadManagementService;
   const settings = yield* Settings.ServerSettingsService;
-  const analytics = yield* Analytics.AnalyticsService;
-  const providers = yield* Providers.ProviderRegistry;
   // Serializes the limit checks with their writes. Held only after any settings wait, so an answer
   // stalled on the settings lock never holds up a card or an unprompted report.
   const lock = yield* Semaphore.make(1);
@@ -197,34 +191,14 @@ const make = Effect.gen(function* () {
       );
   });
 
-  /** Sends a stored report as the `agent.feedback` event; false when telemetry refuses it. */
+  /** S8 Code has no analytics backend, so a stored report is never sent anywhere. */
   const deliver = Effect.fn("FeedbackStore.deliver")(function* (
     report: Omit<FeedbackReport, "sent">,
-    dimensions: Partial<ProviderDimensions>,
   ) {
-    const { kind, subject, expected, actual, workaround, trace, userRequested, source } = report;
-    // A report links to no install. One that left without the user seeing it carries only its
-    // categories; the agent's text stays in the local copy.
-    const sent = yield* analytics.record(
-      "agent.feedback",
-      {
-        kind,
-        subject,
-        ...(userRequested ? { expected, actual, workaround } : {}),
-        trace,
-        userRequested,
-        source,
-        ...dimensions,
-      },
-      { anonymous: true },
+    yield* sql`UPDATE agent_feedback SET sent = 0 WHERE id = ${report.id}`.pipe(
+      Effect.mapError(storageError),
     );
-    if (!sent) {
-      // A failed clear leaves the report reading as sent, on purpose: uncertain reads as sent.
-      yield* sql`UPDATE agent_feedback SET sent = 0 WHERE id = ${report.id}`.pipe(
-        Effect.mapError(storageError),
-      );
-    }
-    return sent;
+    return false;
   });
 
   const store = Effect.fn("FeedbackStore.store")(function* ({
@@ -233,7 +207,6 @@ const make = Effect.gen(function* () {
     source,
     threadId,
     runId,
-    dimensions,
   }: UnpromptedReport) {
     const report = {
       ...preview,
@@ -244,7 +217,7 @@ const make = Effect.gen(function* () {
       createdAt: DateTime.formatIso(yield* DateTime.now),
     };
     yield* insert(report, runId);
-    return { ...report, sent: yield* deliver(report, dimensions) };
+    return { ...report, sent: yield* deliver(report) };
   });
 
   const showCard = Effect.fn("FeedbackStore.showCard")(function* (card: FeedbackCard) {
@@ -300,13 +273,11 @@ const make = Effect.gen(function* () {
     // Settles the card with the trace it sent. Without one, it keeps only the outline.
     const settle = (status: AgentFeedbackRequestStatus, trace = item.preview.trace) =>
       record({ ...card, preview: { ...item.preview, trace } }, status);
-    const { runs } = yield* threads
+    yield* threads
       .getThreadRecords(input.threadId, ["runs"], { runIds: [card.runId] })
       .pipe(
         Effect.mapError((cause) => new AgentFeedbackRequestError({ reason: "load_failed", cause })),
       );
-    const run = runs.find((candidate) => candidate.id === card.runId);
-    const providerList = yield* providers.getProviders;
 
     // One answer at a time, from the claim through settling the card, so no other answer can
     // settle it differently in between.
@@ -348,10 +319,7 @@ const make = Effect.gen(function* () {
             yield* settle("cancelled");
             return yield* fail("feedback_off");
           }
-          const sent = yield* deliver(
-            report,
-            run === undefined ? {} : providerDimensions(providerList, run.modelSelection),
-          );
+          const sent = yield* deliver(report);
           // Telemetry off keeps the report on this machine, so the card says not sent.
           yield* sent ? settle("sent", trace) : settle("cancelled");
         }),

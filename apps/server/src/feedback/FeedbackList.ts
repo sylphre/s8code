@@ -4,13 +4,7 @@ import * as Effect from "effect/Effect";
 import * as Schema from "effect/Schema";
 import * as SqlClient from "effect/sql/SqlClient";
 
-import * as Settings from "../serverSettings.ts";
-import {
-  FeedbackOffError,
-  type FeedbackReport,
-  FeedbackStorageError,
-  FeedbackTrace,
-} from "./FeedbackReport.ts";
+import { type FeedbackReport, FeedbackStorageError, FeedbackTrace } from "./FeedbackReport.ts";
 
 const LIST_LIMIT = 50;
 const decodeTrace = Schema.decodeUnknownEffect(Schema.NullOr(Schema.fromJsonString(FeedbackTrace)));
@@ -50,13 +44,3 @@ export const readFeedbackReports = Effect.gen(function* () {
     ),
   );
 }).pipe(Effect.withSpan("FeedbackList.readFeedbackReports"));
-
-/** The reports, or the Labs line while agent feedback is off. */
-export const listFeedbackReports = Effect.gen(function* () {
-  const settings = yield* Settings.ServerSettingsService;
-  const { agentFeedback } = yield* settings.getSettings.pipe(
-    Effect.mapError((cause) => new FeedbackStorageError({ cause })),
-  );
-  if (agentFeedback.mode === "off") return yield* new FeedbackOffError({});
-  return yield* readFeedbackReports;
-});
