@@ -1,0 +1,108 @@
+name: Build desktop (Linux x64)
+
+# The fork's own desktop build. Upstream's release.yml only runs on
+# pingdotgg/t3code and its Blacksmith runners, so this workflow builds the
+# same JS bundle and calls the same release-desktop.yml packaging job on a
+# GitHub-hosted runner, for Linux x64 only. The AppImage stays a run
+# artifact; nothing is published and no updater feed is written (preview
+# channel).
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Build version (defaults to the desktop package version)"
+        required: false
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  build_bundle:
+    name: Build JS bundle
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      # Same hand-rolled checkout as release-desktop.yml: actions/checkout's
+      # credential cleanup fails on the orphaned gitlinks in the vendored
+      # .repos tree, which this build does not need.
+      - name: Checkout
+        shell: bash
+        env:
+          GIT_TERMINAL_PROMPT: "0"
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git"
+          git fetch --no-tags --depth=1 origin "${{ github.sha }}"
+          git sparse-checkout set --no-cone '/*' '!/.repos/'
+          git -c checkout.workers=0 checkout --detach FETCH_HEAD
+
+      - name: Setup dependencies
+        uses: ./.github/actions/setup-ci-deps
+        with:
+          install-args: --filter=t3... --filter=@s8code/web... --filter=@s8code/desktop... --filter=@s8code/scripts...
+
+      - name: Resolve build version
+        id: version
+        shell: bash
+        run: |
+          version="${{ inputs.version }}"
+          if [[ -z "$version" ]]; then
+            version="$(node -p "require('./apps/desktop/package.json').version")"
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Align package versions to build version
+        run: node scripts/update-release-package-versions.ts "${{ steps.version.outputs.version }}"
+
+      - name: Build JS bundle
+        run: vp run build:desktop:bundle
+
+      # Upload only the expected hidden file, without opting all build outputs into hidden uploads.
+      - name: Stage web asset manifest
+        shell: bash
+        run: |
+          manifest=apps/server/dist/client/.vite/manifest.json
+          if [[ -f "$manifest" ]]; then
+            cp "$manifest" apps/server/dist/client/vite-manifest.release.json
+          fi
+
+      # Two paths under apps/ so the artifact root is apps/; consumers download
+      # into `apps` to restore both at their original locations.
+      - name: Upload JS bundle
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: js-bundle
+          path: |
+            apps/server/dist
+            apps/desktop/dist-electron
+          if-no-files-found: error
+          retention-days: 1
+
+  desktop_linux_x64:
+    name: Desktop Linux x64
+    needs: [build_bundle]
+    uses: ./.github/workflows/release-desktop.yml
+    with:
+      version: ${{ needs.build_bundle.outputs.version }}
+      ref: ${{ github.sha }}
+      release_channel: preview
+      clerk_publishable_key: ""
+      clerk_jwt_template: ""
+      clerk_cli_oauth_client_id: ""
+      relay_url: ""
+      relay_client_tracing: false
+      label: Linux x64
+      runner: ubuntu-24.04
+      platform: linux
+      target: AppImage
+      arch: x64
+      rust_target: x86_64-unknown-linux-gnu
+      resource_key: linux-x64
+      cli_archive: false
+      launch_check: false
