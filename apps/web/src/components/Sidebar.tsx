@@ -10,6 +10,7 @@ import {
   moveThreadContextDrag as moveThreadContextDragGhost,
 } from "./chat/threadContextDrag";
 import { discardComposerDraft } from "../lib/discardComposerDraft";
+import { downloadTextFile } from "../lib/downloadTextFile";
 import { requestCustomSnooze } from "./CustomSnoozeDialog";
 import { useAtomValue } from "@effect/atom-react";
 import * as Option from "effect/Option";
@@ -44,6 +45,7 @@ import {
   threadSearchSubject,
   type ShownOrder,
 } from "@s8code/client-runtime/state/thread-search";
+import { markdownExportFileName } from "@s8code/shared/threadMarkdownExport";
 import { foldSearchQuery, rankMessageMatches } from "@s8code/shared/paletteSearch";
 import { findForMessageMatch, openThreadFindOnQuery } from "./chat/threadFindStore";
 import {
@@ -970,6 +972,14 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
   const regenerateThreadTitle = useOrchestrationCommand(threadEnvironment.regenerateTitle, {
     reportFailure: false,
   });
+  const exportMarkdown = useOrchestrationCommand(
+    threadEnvironment.exportMarkdown,
+    {
+      reportFailure: false,
+    },
+    // Exporting is a read, available to read-only connections like the copy actions are.
+    () => true,
+  );
   const { copyToClipboard: copyPathToClipboard } = useCopyToClipboard<{ path: string }>({
     onError: (error) => {
       toastManager.add(
@@ -2917,6 +2927,27 @@ export default function Sidebar({ routeReveal }: { routeReveal: SidebarRouteReve
           case "copy-thread-id":
             copyThreadIdToClipboard(thread.id, { threadId: thread.id });
             return;
+          case "export-markdown": {
+            const result = await exportMarkdown({
+              environmentId: threadRef.environmentId,
+              input: { threadId: threadRef.threadId },
+            });
+            if (result._tag === "Failure") {
+              if (!isAtomCommandInterrupted(result)) {
+                const error = squashAtomCommandFailure(result);
+                toastManager.add(
+                  stackedThreadToast({
+                    type: "error",
+                    title: gt("Failed to export thread"),
+                    description: thrownErrorMessage(error, m) ?? gt("An error occurred."),
+                  }),
+                );
+              }
+              return;
+            }
+            downloadTextFile(markdownExportFileName(thread.title), result.value.markdown);
+            return;
+          }
           case "archive": {
             if (confirmThreadArchive) {
               const confirmed = await settlePromise(() =>
