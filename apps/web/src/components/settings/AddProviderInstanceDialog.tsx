@@ -58,6 +58,8 @@ import {
   type WizardNavigation,
 } from "./AddProviderInstanceDialog.logic";
 import { AddProviderInstanceWizardSteps } from "./AddProviderInstanceWizardSteps";
+import { AddCustomProviderDialog } from "./AddCustomProviderDialog";
+import { CUSTOM_PROVIDER_DRIVERS } from "./AddCustomProviderDialog.logic";
 import { AcpRegistrySearchStep, useAcpRegistrySearch } from "./AcpRegistrySearchStep";
 import { ProviderWizardAuthenticationStep } from "./ProviderWizardAuthenticationStep";
 import { resolveOfficialAcpRegistryIconUrl } from "./AcpRegistryIcon";
@@ -172,6 +174,7 @@ export function AddProviderInstanceDialog({
 
   const [wizardStep, setWizardStep] = useState(0);
   const [addingChatGptAccount, setAddingChatGptAccount] = useState(false);
+  const [addingCustomProvider, setAddingCustomProvider] = useState(false);
   // Drivers the administrator's policy leaves out are not offered at all.
   const managedPolicy = useManagedPolicy(environmentId);
   const featuredDriverOptions = FEATURED_DRIVER_OPTIONS.filter((option) =>
@@ -181,6 +184,10 @@ export function AddProviderInstanceDialog({
     isManagedDriverAllowed(managedPolicy, option.driverKind),
   );
   const acpRegistryAllowed = isManagedDriverAllowed(managedPolicy, ACP_REGISTRY_DRIVER_KIND);
+  // The custom provider wizard only composes these drivers' instances.
+  const customProviderAllowed = CUSTOM_PROVIDER_DRIVERS.some((driver) =>
+    isManagedDriverAllowed(managedPolicy, driver),
+  );
   const [driver, setDriver] = useState<ProviderDriverKind>(
     () =>
       (featuredDriverOptions[0] ?? moreDriverOptions[0])?.driverKind ??
@@ -441,6 +448,21 @@ export function AddProviderInstanceDialog({
     onOpenChange(false);
   };
 
+  if (addingCustomProvider) {
+    return (
+      <AddCustomProviderDialog
+        environmentId={environmentId}
+        environmentLabel={environmentLabel}
+        onClose={() => setAddingCustomProvider(false)}
+        onCreated={(instanceId, driver) => {
+          setAddingCustomProvider(false);
+          onOpenChange(false);
+          onCreated?.(instanceId, driver);
+        }}
+      />
+    );
+  }
+
   if (addingChatGptAccount) {
     return (
       <AddManagedCodexAccountDialog
@@ -601,6 +623,25 @@ export function AddProviderInstanceDialog({
                           {isAcpRegistry && hasAttemptedSubmit && acpSelectionError ? (
                             <p className="mt-2 text-2xs text-destructive">{acpSelectionError}</p>
                           ) : null}
+                        </>
+                      )}
+                      {!customProviderAllowed ? null : (
+                        <>
+                          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                            <div aria-hidden className="flex-1 border-t border-border/70" />
+                            <span>
+                              <T>Or add a custom provider</T>
+                            </span>
+                            <div aria-hidden className="flex-1 border-t border-border/70" />
+                          </div>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full"
+                            onClick={() => setAddingCustomProvider(true)}
+                          >
+                            <T>Custom provider</T>
+                          </Button>
                         </>
                       )}
                     </div>
