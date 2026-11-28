@@ -399,6 +399,7 @@ export function AddCustomProviderDialog({
               </Label>
               <ToggleGroup
                 aria-label={gt("Source")}
+                className="flex-wrap"
                 value={[source]}
                 onValueChange={(next) => {
                   const value = next[0];
