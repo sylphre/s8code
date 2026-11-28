@@ -479,7 +479,7 @@ export function AddCustomProviderDialog({
                       {kiloSummary.providers.map((provider) => (
                         <label
                           key={provider.id}
-                          className="flex items-center gap-3 rounded-md px-2 py-1.5 text-sm hover:bg-muted"
+                          className="flex flex-wrap items-center gap-3 rounded-md px-2 py-1.5 text-sm hover:bg-muted"
                         >
                           <Checkbox
                             aria-label={gt("Import provider {provider}", {
@@ -580,7 +580,7 @@ export function AddCustomProviderDialog({
                       {kiloParse.config.providers.map((provider) => (
                         <label
                           key={provider.id}
-                          className="flex items-center gap-3 rounded-md px-2 py-1.5 text-sm hover:bg-muted"
+                          className="flex flex-wrap items-center gap-3 rounded-md px-2 py-1.5 text-sm hover:bg-muted"
                         >
                           <Checkbox
                             aria-label={gt("Import provider {provider}", {
