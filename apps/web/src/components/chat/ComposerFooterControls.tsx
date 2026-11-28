@@ -1,18 +1,21 @@
 import type { ModelSelection, ProviderInstanceId, RuntimeMode } from "@s8code/contracts";
 import { createModelSelection } from "@s8code/shared/model";
-import { T, useGT, useMessages } from "gt-react";
+import { msg, T, useGT, useMessages } from "gt-react";
 import { type ComponentProps, memo, use, useId, useRef, useState } from "react";
 
 import { Menu as MenuPrimitive } from "@base-ui/react/menu";
 import { Menu, MenuPopup, MenuTrigger } from "../ui/menu";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
+import { m } from "~/i18n/messages";
 import { ComposerControl, ComposerControlIcon } from "./ComposerControl";
 import { focusRequestedPermission, useComposerMenuProps } from "./composerEventScope";
 import { ComposerPrimaryActions } from "./ComposerPrimaryActions";
 import { resolveModelPickerSelectedModel } from "./ModelPickerContent";
 import { ProviderModelPicker } from "./ProviderModelPicker";
 import { resolveRuntimeModeOption, runtimeModeConfig } from "./runtimeModeConfig";
+import { MULTIPLE_MODEL_MAX_SELECTIONS } from "./composerSend.logic";
 import { useComposerMenuState } from "./useComposerMenuState";
+import { stackedThreadToast, toastManager } from "../ui/toast";
 import {
   RuntimeModeLimitsTargetContext,
   useProviderRuntimeModeLimits,
@@ -315,6 +318,17 @@ export function ComposerModelPicker({
     const next = exists
       ? current.filter((selection) => !matchesModel(selection))
       : [...current, createModelSelection(instanceId, model)];
+    if (!exists && next.length > MULTIPLE_MODEL_MAX_SELECTIONS) {
+      toastManager.add(
+        stackedThreadToast({
+          type: "warning",
+          title: m(
+            msg("Up to {count} models can be compared.", { count: MULTIPLE_MODEL_MAX_SELECTIONS }),
+          ),
+        }),
+      );
+      return;
+    }
     if (next.length > 1) {
       onMultipleModelSelectionsChange(next);
     } else {

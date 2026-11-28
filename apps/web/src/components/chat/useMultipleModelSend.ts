@@ -11,7 +11,7 @@ import { scopeThreadRef } from "@s8code/client-runtime/environment";
 import { settlePromise, squashAtomCommandFailure } from "@s8code/client-runtime/state/runtime";
 import type { EnvironmentProject } from "@s8code/client-runtime/state/shell";
 import { useNavigate } from "@tanstack/react-router";
-import { newMessageId } from "~/lib/utils";
+import { newMessageId, newThreadId } from "~/lib/utils";
 import { collapseExpandedComposerCursor } from "../../composer-logic";
 import {
   type ComposerThreadTarget,
@@ -28,6 +28,7 @@ import { useOrchestrationCommand } from "../../state/use-orchestration-command";
 import { buildThreadRouteParams } from "../../threadRoutes";
 import { DEFAULT_INTERACTION_MODE } from "../../types";
 import { stackedThreadToast, toastManager } from "../ui/toast";
+import { openModelCompare, recordFanoutCompareGroup } from "./compareGroup";
 import {
   boundAttachmentIds,
   type ComposerSendSnapshot,
@@ -126,7 +127,6 @@ export function useMultipleModelSend(input: MultipleModelSendInput) {
     let clearedDraft = false;
     let releasedComposer = false;
     let canRestoreDraft = () => false;
-    let startedCount = 0;
     // Anything thrown here (an attachment the server can no longer take)
     // fails every selection; the draft restore below still runs.
     const sendResult = await settlePromise(async () => {
@@ -158,9 +158,10 @@ export function useMultipleModelSend(input: MultipleModelSendInput) {
           clearedDraftSnapshot &&
         appAtomRegistry.get(fanoutSelectionsAtom) === submittedSelections;
       setThreadError(threadId, null);
+      const startedThreadIds: ThreadId[] = [];
       const starts = Promise.all(
         targets.map(async (target) => {
-          const started = await startFanoutThread({
+          const startedThreadId = await startFanoutThread({
             retryKey: JSON.stringify([
               routeThreadKey,
               target.selection.instanceId,
@@ -216,24 +217,44 @@ export function useMultipleModelSend(input: MultipleModelSendInput) {
                 params: buildThreadRouteParams(scopeThreadRef(environmentId, threadId)),
               }),
           });
-          if (started) startedCount += 1;
-          else failedSelections.push(target.selection);
+          if (startedThreadId === null) failedSelections.push(target.selection);
+          else startedThreadIds.push(startedThreadId);
         }),
       );
       sendInFlightRef.current = false;
       resetLocalDispatch();
       releasedComposer = true;
       await starts;
-      if (startedCount > 0) {
+      const compareGroup =
+        startedThreadIds.length > 1
+          ? recordFanoutCompareGroup({
+              groupId: newThreadId(),
+              environmentId,
+              threadIds: startedThreadIds,
+              startedAt: Date.now(),
+            })
+          : null;
+      if (startedThreadIds.length > 0) {
         toastManager.add(
           stackedThreadToast({
             type: "success",
             title: m(
               msg(
                 "{count, plural, one {Started {count} thread in background} other {Started {count} threads in background}}",
-                { count: startedCount },
+                { count: startedThreadIds.length },
               ),
             ),
+            // The comparison is the send's follow-up work, so the toast stays
+            // until it is used or dismissed.
+            ...(compareGroup
+              ? {
+                  timeout: 0,
+                  actionProps: {
+                    children: m(msg("Compare results")),
+                    onClick: () => openModelCompare(compareGroup.groupId),
+                  },
+                }
+              : {}),
           }),
         );
       }

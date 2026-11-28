@@ -72,10 +72,10 @@ export function draftSendState(routeKey: string) {
 }
 
 /**
- * Starts one thread of a multiple-model send. A request that may have
- * reached the server before failing is remembered by `retryKey`, so sending
- * again cannot silently create a duplicate thread; its failure toast offers
- * to open that thread or to allow the retry.
+ * Starts one thread of a multiple-model send and returns its id, or null when it
+ * did not start. A request that may have reached the server before failing is
+ * remembered by `retryKey`, so sending again cannot silently create a duplicate
+ * thread; its failure toast offers to open that thread or to allow the retry.
  */
 export async function startFanoutThread(input: {
   readonly retryKey: string;
@@ -83,7 +83,7 @@ export async function startFanoutThread(input: {
   readonly uncertainSubmissions: Map<string, ThreadId>;
   readonly start: (threadId: ThreadId) => Promise<AtomCommandResult<unknown, unknown>>;
   readonly openThread: (threadId: ThreadId) => void;
-}): Promise<boolean> {
+}): Promise<ThreadId | null> {
   const { retryKey, uncertainSubmissions } = input;
   const uncertainThreadId = uncertainSubmissions.get(retryKey);
   const targetThreadId = uncertainThreadId ?? newThreadId();
@@ -107,7 +107,7 @@ export async function startFanoutThread(input: {
       }
       throw error;
     }
-    return true;
+    return targetThreadId;
   } catch (error) {
     if (requestMayHaveStarted && !uncertainSubmissions.has(retryKey)) {
       uncertainSubmissions.set(retryKey, targetThreadId);
@@ -156,7 +156,7 @@ export async function startFanoutThread(input: {
           : {}),
       }),
     );
-    return false;
+    return null;
   }
 }
 

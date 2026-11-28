@@ -97,6 +97,9 @@ export function multipleModelSendBlock(input: {
   return null;
 }
 
+/** A comparison reads side by side, so a wider fanout stops being one. */
+export const MULTIPLE_MODEL_MAX_SELECTIONS = 4;
+
 /** Why a message sent over pending approvals did not go out, or null to stop quietly. */
 export function approvalRedirectNotice(
   input: {
