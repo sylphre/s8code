@@ -19,7 +19,7 @@ Threads don't require a project. Pick **No project** (or press `mod+alt+n` on we
 ### Start in the background and multi-model runs
 
 - **Background start** (web/desktop): Press `Cmd+Enter` (macOS) or `Ctrl+Enter` (Windows/Linux) in a new thread to submit it and immediately open another draft with the same workspace mode and base branch.
-- **Same prompt, multiple models** (web/desktop, Git projects): `Shift`-click models in a new thread's model picker to select several. Sending starts a separate thread and worktree for each model.
+- **Same prompt, multiple models** (web/desktop, Git projects): `Shift`-click models in a new thread's model picker to select several (up to 4). Sending starts a separate thread and worktree for each model, and the toast then offers to compare the answers side by side and continue in one thread.
 
 ## Sidebar layout and organization
 
